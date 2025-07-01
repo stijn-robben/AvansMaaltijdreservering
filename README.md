@@ -1,3 +1,5 @@
+cd /mnt/c/Users/stijn/Documents/GitHub/AvansMaaltijdreservering
+
 # Complete Project Context - Avans Maaltijdreservering Systeem
 
 ## 🎯 CASUS OVERZICHT
