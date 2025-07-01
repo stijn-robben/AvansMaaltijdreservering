@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\AvansMaaltijdreservering.Core.Domain\AvansMaaltijdreservering.Core.Domain.csproj" />
+    <ProjectReference Include="..\AvansMaaltijdreservering.Core.DomainService\AvansMaaltijdreservering.Core.DomainService.csproj" />
+    <ProjectReference Include="..\AvansMaaltijdreservering.Infrastructure\AvansMaaltijdreservering.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.6" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
