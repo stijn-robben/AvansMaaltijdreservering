@@ -1,0 +1,14 @@
+using AvansMaaltijdreservering.Core.Domain.Enums;
+
+namespace AvansMaaltijdreservering.Core.Domain.Entities;
+
+public class Canteen
+{
+    public int Id { get; set; }
+    public CanteenLocation Location { get; set; }
+    public City City { get; set; }
+    public bool ServesWarmMeals { get; set; }
+    
+    public virtual ICollection<CanteenEmployee> Employees { get; set; } = new List<CanteenEmployee>();
+    public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
+}

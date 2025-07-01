@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AvansMaaltijdreservering.Core.Domain.Entities;
 
-namespace AvansMaaltijdreservering.Core.Domain.Interfaces
+namespace AvansMaaltijdreservering.Core.Domain.Interfaces;
+
+public interface IProductRepository
 {
-    internal interface IProductRepository
-    {
-    }
+    Task<IEnumerable<Product>> GetAllAsync();
+    Task<Product?> GetByIdAsync(int id);
+    Task<IEnumerable<Product>> GetProductsByPackageIdAsync(int packageId);
+    Task<Product> AddAsync(Product product);
+    Task<Product> UpdateAsync(Product product);
+    Task DeleteAsync(int id);
+    Task<bool> ExistsAsync(int id);
 }
