@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AvansMaaltijdreservering.Infrastructure.Data;
 
-public class IdentityDbContext : IdentityDbContext
+public class ApplicationIdentityDbContext : IdentityDbContext
 {
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
+    public ApplicationIdentityDbContext(DbContextOptions<ApplicationIdentityDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

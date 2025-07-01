@@ -1,0 +1,255 @@
+@model AvansMaaltijdreservering.Core.Domain.Entities.Package
+
+@{
+    ViewData["Title"] = "Package Details";
+    var canReserve = ViewBag.CanReserve as bool? ?? false;
+    var student = ViewBag.Student as AvansMaaltijdreservering.Core.Domain.Entities.Student;
+}
+
+<div class="container py-4 fade-in-up">
+    <!-- Back Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard")" class="text-decoration-none">
+                    <i class="bi bi-house me-1"></i>Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("AvailablePackages")" class="text-decoration-none">Available Packages</a>
+            </li>
+            <li class="breadcrumb-item active">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Main Package Details -->
+        <div class="col-lg-8 mb-4">
+            <div class="card package-card">
+                <div class="card-body">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h2 class="mb-2">@Model.Name</h2>
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-primary">@Model.MealType</span>
+                                @if (Model.Is18Plus)
+                                {
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-shield-exclamation me-1"></i>18+ Only
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price-badge mb-2" style="font-size: 2rem;">€@Model.Price.ToString("F2")</div>
+                            @if (Model.IsReserved)
+                            {
+                                <span class="badge bg-secondary px-3 py-2">
+                                    <i class="bi bi-bookmark-check me-1"></i>Reserved
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Location & Time Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-geo-alt text-primary" style="font-size: 2rem;"></i>
+                                    <h6 class="mt-2 mb-1">Location</h6>
+                                    <div class="fw-bold">@Model.CanteenLocation</div>
+                                    <div class="text-muted">@Model.City</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-clock text-success" style="font-size: 2rem;"></i>
+                                    <h6 class="mt-2 mb-1">Pickup Time</h6>
+                                    <div class="fw-bold">@Model.PickupTime.ToString("HH:mm")</div>
+                                    <div class="text-muted">@Model.PickupTime.ToString("dddd, dd MMMM yyyy")</div>
+                                    <small class="text-muted">
+                                        Latest: @Model.LatestPickupTime.ToString("HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Section -->
+                    @if (Model.Products.Any())
+                    {
+                        <div class="mb-4">
+                            <h5 class="mb-3">
+                                <i class="bi bi-box-seam text-primary me-2"></i>
+                                What's Included
+                            </h5>
+                            <div class="row g-3">
+                                @foreach (var product in Model.Products)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center p-3 border rounded">
+                                            <div class="me-3">
+                                                <i class="bi bi-check-circle-fill text-success" style="font-size: 1.5rem;"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">@product.Name</h6>
+                                                @if (product.ContainsAlcohol)
+                                                {
+                                                    <span class="badge bg-warning">
+                                                        <i class="bi bi-cup me-1"></i>Contains Alcohol
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="alert alert-info mt-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <small>
+                                    <strong>Please note:</strong> The actual package contents may vary based on availability. 
+                                    This list shows example products that are typically included.
+                                </small>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Age Restrictions -->
+                    @if (Model.Is18Plus)
+                    {
+                        <div class="alert alert-warning">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-shield-exclamation me-2"></i>Age Restriction
+                            </h6>
+                            <p class="mb-0">
+                                This package contains alcohol and is only available to students aged 18 and over. 
+                                Age verification will be required at pickup.
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservation Panel -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header text-center">
+                    <h5 class="mb-0">Make Reservation</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.IsReserved)
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-bookmark-check text-secondary" style="font-size: 3rem;"></i>
+                            <h6 class="mt-3 text-muted">Already Reserved</h6>
+                            <p class="text-muted small">This package has been reserved by another student.</p>
+                        </div>
+                    }
+                    else if (!canReserve)
+                    {
+                        <div class="text-center py-4">
+                            @if (student?.IsBlocked() == true)
+                            {
+                                <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                                <h6 class="mt-3 text-danger">Account Blocked</h6>
+                                <p class="text-muted small">Your account is blocked due to no-shows. Contact canteen staff.</p>
+                            }
+                            else if (Model.Is18Plus && student?.IsAdult() != true)
+                            {
+                                <i class="bi bi-shield-exclamation text-warning" style="font-size: 3rem;"></i>
+                                <h6 class="mt-3 text-warning">Age Restriction</h6>
+                                <p class="text-muted small">You must be 18+ to reserve this package.</p>
+                            }
+                            else
+                            {
+                                <i class="bi bi-x-circle text-danger" style="font-size: 3rem;"></i>
+                                <h6 class="mt-3 text-danger">Cannot Reserve</h6>
+                                <p class="text-muted small">You may already have a reservation for this pickup date.</p>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center mb-4">
+                            <div class="price-badge" style="font-size: 2.5rem;">€@Model.Price.ToString("F2")</div>
+                            <p class="text-muted small">Save money, reduce waste</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Pickup</small>
+                                    <strong>@Model.PickupTime.ToString("HH:mm")</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Latest</small>
+                                    <strong>@Model.LatestPickupTime.ToString("HH:mm")</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="post" asp-action="MakeReservation">
+                            <input type="hidden" name="packageId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-success w-100 btn-lg">
+                                <i class="bi bi-bookmark-heart me-2"></i>
+                                Reserve Package
+                            </button>
+                        </form>
+
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Reservation is binding. No-shows will be recorded.
+                            </small>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Student Info -->
+            @if (student != null)
+            {
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-person-circle me-2"></i>Student Info
+                        </h6>
+                        <div class="small">
+                            <div class="mb-2">
+                                <strong>Name:</strong> @student.Name
+                            </div>
+                            <div class="mb-2">
+                                <strong>Study City:</strong> @student.StudyCity
+                            </div>
+                            <div class="mb-2">
+                                <strong>Age:</strong> @student.GetAge() years
+                            </div>
+                            <div class="mb-2">
+                                <strong>No-Shows:</strong> 
+                                <span class="@(student.NoShowCount >= 2 ? "text-danger" : "text-success")">
+                                    @student.NoShowCount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Confirm reservation
+        document.querySelector('form[asp-action="MakeReservation"]')?.addEventListener('submit', function(e) {
+            if (!confirm('Are you sure you want to reserve this package? No-shows will be recorded on your account.')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}
