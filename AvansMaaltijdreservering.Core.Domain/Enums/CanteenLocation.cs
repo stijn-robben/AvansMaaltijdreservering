@@ -3,14 +3,13 @@ namespace AvansMaaltijdreservering.Core.Domain.Enums;
 public enum CanteenLocation
 {
     // Breda
-    Hogeschoollaan,
-    LovensdijkstraatLA,
-    LovensdijkstraatLD,
-    ClaudiusPrinsenlaan,
+    BREDA_LA_BUILDING,
+    BREDA_LD_BUILDING,
+    BREDA_HA_BUILDING,
 
     // Den Bosch
-    Onderwijsboulevard,
+    DENBOSCH_BUILDING,
 
     // Tilburg
-    ProfessorCobbenhagenlaan
+    TILBURG_BUILDING
 }

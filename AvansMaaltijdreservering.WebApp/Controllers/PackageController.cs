@@ -4,6 +4,7 @@ using AvansMaaltijdreservering.Core.Domain.Entities;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 using AvansMaaltijdreservering.Core.Domain.Interfaces;
+using AvansMaaltijdreservering.Infrastructure.Identity;
 
 namespace AvansMaaltijdreservering.WebApp.Controllers;
 
@@ -12,13 +13,16 @@ public class PackageController : Controller
 {
     private readonly IPackageService _packageService;
     private readonly ICanteenEmployeeRepository _canteenEmployeeRepository;
+    private readonly Infrastructure.Identity.IAuthorizationService _authService;
 
     public PackageController(
         IPackageService packageService, 
-        ICanteenEmployeeRepository canteenEmployeeRepository)
+        ICanteenEmployeeRepository canteenEmployeeRepository,
+        Infrastructure.Identity.IAuthorizationService authService)
     {
         _packageService = packageService;
         _canteenEmployeeRepository = canteenEmployeeRepository;
+        _authService = authService;
     }
 
     // US_01: Student view - Available packages
@@ -42,12 +46,14 @@ public class PackageController : Controller
     }
 
     // US_02: Canteen employee view - Own canteen packages
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> Index()
     {
-        // TODO: Get current employee ID from user claims
-        int currentEmployeeId = 1; // Placeholder
+        var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+        if (currentEmployeeId == null)
+            return Forbid();
         
-        var employee = await _canteenEmployeeRepository.GetByIdAsync(currentEmployeeId);
+        var employee = await _canteenEmployeeRepository.GetByIdAsync(currentEmployeeId.Value);
         if (employee == null)
             return Forbid();
 
@@ -56,6 +62,7 @@ public class PackageController : Controller
     }
 
     // US_02: All canteens overview
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> AllCanteens()
     {
         var packages = await _packageService.GetAvailablePackagesAsync();
@@ -63,6 +70,7 @@ public class PackageController : Controller
     }
 
     // US_03: Create package
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public IActionResult Create()
     {
         ViewBag.Cities = Enum.GetValues<City>();
@@ -73,16 +81,18 @@ public class PackageController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> Create(Package package)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                // TODO: Get current employee ID from user claims
-                int currentEmployeeId = 1; // Placeholder
+                var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+                if (currentEmployeeId == null)
+                    return Forbid();
                 
-                await _packageService.CreatePackageAsync(package, currentEmployeeId);
+                await _packageService.CreatePackageAsync(package, currentEmployeeId.Value);
                 TempData["Success"] = "Package created successfully!";
                 return RedirectToAction(nameof(Index));
             }
@@ -99,15 +109,17 @@ public class PackageController : Controller
     }
 
     // US_03: Edit package
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> Edit(int id)
     {
         var package = await _packageService.GetPackageByIdAsync(id);
         if (package == null)
             return NotFound();
 
-        // TODO: Check if current employee can modify this package
-        int currentEmployeeId = 1; // Placeholder
-        if (!await _packageService.CanEmployeeModifyPackageAsync(id, currentEmployeeId))
+        var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+        if (currentEmployeeId == null)
+            return Forbid();
+        if (!await _packageService.CanEmployeeModifyPackageAsync(id, currentEmployeeId.Value))
             return Forbid();
 
         ViewBag.Cities = Enum.GetValues<City>();
@@ -118,16 +130,18 @@ public class PackageController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> Edit(Package package)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                // TODO: Get current employee ID from user claims
-                int currentEmployeeId = 1; // Placeholder
+                var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+                if (currentEmployeeId == null)
+                    return Forbid();
                 
-                await _packageService.UpdatePackageAsync(package, currentEmployeeId);
+                await _packageService.UpdatePackageAsync(package, currentEmployeeId.Value);
                 TempData["Success"] = "Package updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
@@ -144,15 +158,17 @@ public class PackageController : Controller
     }
 
     // US_03: Delete package
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> Delete(int id)
     {
         var package = await _packageService.GetPackageByIdAsync(id);
         if (package == null)
             return NotFound();
 
-        // TODO: Check if current employee can modify this package
-        int currentEmployeeId = 1; // Placeholder
-        if (!await _packageService.CanEmployeeModifyPackageAsync(id, currentEmployeeId))
+        var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+        if (currentEmployeeId == null)
+            return Forbid();
+        if (!await _packageService.CanEmployeeModifyPackageAsync(id, currentEmployeeId.Value))
             return Forbid();
 
         return View(package);
@@ -160,14 +176,16 @@ public class PackageController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         try
         {
-            // TODO: Get current employee ID from user claims
-            int currentEmployeeId = 1; // Placeholder
+            var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+            if (currentEmployeeId == null)
+                return Forbid();
             
-            await _packageService.DeletePackageAsync(id, currentEmployeeId);
+            await _packageService.DeletePackageAsync(id, currentEmployeeId.Value);
             TempData["Success"] = "Package deleted successfully!";
         }
         catch (Exception ex)

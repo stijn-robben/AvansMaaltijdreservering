@@ -2,12 +2,10 @@ using System.ComponentModel.DataAnnotations;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.Domain.ValidationAttributes;
 
-namespace AvansMaaltijdreservering.Core.Domain.Entities;
+namespace AvansMaaltijdreservering.API.DTOs;
 
-public class Package
+public class CreatePackageDto
 {
-    public int Id { get; set; }
-    
     [Required(ErrorMessage = "Package name is required")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Package name must be between 3 and 100 characters")]
     public string Name { get; set; } = string.Empty;
@@ -30,8 +28,6 @@ public class Package
     [MaxDaysAhead(2)]
     public DateTime LatestPickupTime { get; set; }
     
-    public bool Is18Plus { get; set; }
-    
     [Required(ErrorMessage = "Price is required")]
     [Range(0.01, 999.99, ErrorMessage = "Price must be between €0.01 and €999.99")]
     [DataType(DataType.Currency)]
@@ -40,23 +36,5 @@ public class Package
     [Required(ErrorMessage = "Meal type is required")]
     public MealType MealType { get; set; }
     
-    public int? ReservedByStudentId { get; set; }
-    public virtual Student? ReservedByStudent { get; set; }
-    
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-    
-    public bool IsReserved => ReservedByStudentId.HasValue;
-    
-    public bool CanBeModified => !IsReserved;
-    
-    public bool IsValidPickupTime()
-    {
-        var maxDaysAhead = DateTime.Today.AddDays(2);
-        return PickupTime.Date <= maxDaysAhead && PickupTime > DateTime.Now;
-    }
-    
-    public bool ContainsAlcohol()
-    {
-        return Products.Any(p => p.ContainsAlcohol);
-    }
+    public List<int> ProductIds { get; set; } = new List<int>();
 }

@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using AvansMaaltijdreservering.Infrastructure.Data;
+using AvansMaaltijdreservering.Infrastructure.Identity;
 using AvansMaaltijdreservering.Core.Domain.Interfaces;
 using AvansMaaltijdreservering.Infrastructure.Repositories;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 using AvansMaaltijdreservering.Core.DomainService.Services;
+using AvansMaaltijdreservering.Infrastructure.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +17,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
-// Add Identity services
-builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+// Add Identity services with roles
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
 })
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
 // Register Repository interfaces with implementations
@@ -35,6 +38,15 @@ builder.Services.AddScoped<ICanteenEmployeeRepository, CanteenEmployeeRepository
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
+
+// Register thread-safety services
+builder.Services.AddSingleton<IPackageLockService, PackageLockService>();
+
+// Register Authorization Service
+builder.Services.AddScoped<AvansMaaltijdreservering.Infrastructure.Identity.IAuthorizationService, AvansMaaltijdreservering.Infrastructure.Identity.AuthorizationService>();
+
+// Register Logging Service
+builder.Services.AddScoped<ILoggerService, LoggerService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

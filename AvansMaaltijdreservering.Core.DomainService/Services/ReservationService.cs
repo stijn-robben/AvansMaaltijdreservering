@@ -1,5 +1,6 @@
 using AvansMaaltijdreservering.Core.Domain.Entities;
 using AvansMaaltijdreservering.Core.Domain.Interfaces;
+using AvansMaaltijdreservering.Core.Domain.Exceptions;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 
 namespace AvansMaaltijdreservering.Core.DomainService.Services;
@@ -9,41 +10,83 @@ public class ReservationService : IReservationService
     private readonly IPackageRepository _packageRepository;
     private readonly IStudentRepository _studentRepository;
     private readonly IStudentService _studentService;
+    private readonly IPackageLockService _lockService;
+    private readonly ILoggerService _logger;
 
     public ReservationService(
         IPackageRepository packageRepository,
         IStudentRepository studentRepository,
-        IStudentService studentService)
+        IStudentService studentService,
+        IPackageLockService lockService,
+        ILoggerService logger)
     {
         _packageRepository = packageRepository;
         _studentRepository = studentRepository;
         _studentService = studentService;
+        _lockService = lockService;
+        _logger = logger;
     }
 
     public async Task<Package> MakeReservationAsync(int packageId, int studentId)
     {
-        await ValidateReservationRulesAsync(packageId, studentId);
+        _logger.LogInformation("Starting reservation process for Package {PackageId} by Student {StudentId}", packageId, studentId);
 
-        var package = await _packageRepository.GetByIdAsync(packageId);
-        if (package == null)
-            throw new ArgumentException("Package not found");
+        try
+        {
+            return await _lockService.ExecuteWithPackageLockAsync(packageId, async () =>
+            {
+                _logger.LogDebug("Acquired lock for Package {PackageId}", packageId);
 
-        package.ReservedByStudentId = studentId;
-        return await _packageRepository.UpdateAsync(package);
+                // Re-validate inside the lock to ensure package is still available
+                var package = await _packageRepository.GetByIdAsync(packageId);
+                if (package == null)
+                {
+                    _logger.LogWarning("Package {PackageId} not found during reservation attempt by Student {StudentId}", packageId, studentId);
+                    throw new ArgumentException("Package not found");
+                }
+
+                // Check if package was reserved by another thread while we were waiting for the lock
+                if (package.ReservedByStudentId != null)
+                {
+                    _logger.LogInformation("Package {PackageId} already reserved by Student {ExistingStudentId} when Student {StudentId} tried to reserve", 
+                        packageId, package.ReservedByStudentId, studentId);
+                    throw new ReservationException("Package is already reserved", packageId, studentId);
+                }
+
+                // Validate all business rules inside the lock
+                await ValidateReservationRulesAsync(packageId, studentId);
+
+                // Atomically reserve the package
+                package.ReservedByStudentId = studentId;
+                var updatedPackage = await _packageRepository.UpdateAsync(package);
+
+                _logger.LogInformation("Successfully reserved Package {PackageId} for Student {StudentId}", packageId, studentId);
+                return updatedPackage;
+            });
+        }
+        catch (Exception ex) when (!(ex is ReservationException || ex is BusinessRuleException))
+        {
+            _logger.LogError(ex, "Unexpected error during reservation of Package {PackageId} by Student {StudentId}", packageId, studentId);
+            throw;
+        }
     }
 
     public async Task CancelReservationAsync(int packageId, int studentId)
     {
-        var package = await _packageRepository.GetByIdAsync(packageId);
-        if (package == null)
-            throw new ArgumentException("Package not found");
+        await _lockService.ExecuteWithPackageLockAsync(packageId, async () =>
+        {
+            var package = await _packageRepository.GetByIdAsync(packageId);
+            if (package == null)
+                throw new ArgumentException("Package not found");
 
-        if (package.ReservedByStudentId != studentId)
-            throw new InvalidOperationException("Package is not reserved by this student");
+            if (package.ReservedByStudentId != studentId)
+                throw new UnauthorizedAccessException("Package is not reserved by you");
 
-        package.ReservedByStudentId = null;
-        package.ReservedByStudent = null;
-        await _packageRepository.UpdateAsync(package);
+            // Atomically cancel the reservation
+            package.ReservedByStudentId = null;
+            package.ReservedByStudent = null;
+            await _packageRepository.UpdateAsync(package);
+        });
     }
 
     public async Task<IEnumerable<Package>> GetStudentReservationsAsync(int studentId)

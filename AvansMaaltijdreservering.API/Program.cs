@@ -1,41 +1,136 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using AvansMaaltijdreservering.Infrastructure.Data;
+using AvansMaaltijdreservering.Infrastructure.Identity;
+using AvansMaaltijdreservering.Core.Domain.Interfaces;
+using AvansMaaltijdreservering.Infrastructure.Repositories;
+using AvansMaaltijdreservering.Core.DomainService.Interfaces;
+using AvansMaaltijdreservering.Core.DomainService.Services;
+using AvansMaaltijdreservering.Infrastructure.Logging;
+using AvansMaaltijdreservering.API.GraphQL;
+using AvansMaaltijdreservering.API.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Configure structured logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Logging.SetMinimumLevel(LogLevel.Debug);
+}
+else
+{
+    builder.Logging.SetMinimumLevel(LogLevel.Information);
+}
+
+// Add Entity Framework DbContexts (same as WebApp)
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+
+// Add Identity services with roles
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+// Register Repository interfaces with implementations
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IPackageRepository, PackageRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICanteenRepository, CanteenRepository>();
+builder.Services.AddScoped<ICanteenEmployeeRepository, CanteenEmployeeRepository>();
+
+// Register Domain Service interfaces with implementations
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IPackageService, PackageService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+
+// Register thread-safety services
+builder.Services.AddSingleton<IPackageLockService, PackageLockService>();
+
+// Register Authorization Service
+builder.Services.AddScoped<AvansMaaltijdreservering.Infrastructure.Identity.IAuthorizationService, AvansMaaltijdreservering.Infrastructure.Identity.AuthorizationService>();
+
+// Register Logging Service
+builder.Services.AddScoped<ILoggerService, LoggerService>();
+
+// Add API services
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo 
+    { 
+        Title = "Avans Meal Rescue API", 
+        Version = "v1",
+        Description = "RESTful API for the Avans Meal Rescue platform - Richardson Maturity Model Level 2",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Avans Development Team",
+            Email = "support@avans.nl"
+        }
+    });
+    
+    // Enable XML comments for better documentation
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+});
+
+// Add GraphQL services
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+    .AddProjections()
+    .AddFiltering()
+    .AddSorting();
+
+// Add CORS for mobile app
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MobileApp", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+    // Enable GraphQL IDE (Banana Cake Pop)
+    app.MapGraphQL("/graphql").WithName("GraphQL");
 }
 
 app.UseHttpsRedirection();
+app.UseCors("MobileApp");
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Add global exception handling middleware
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

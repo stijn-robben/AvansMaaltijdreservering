@@ -3,38 +3,43 @@ using Microsoft.AspNetCore.Authorization;
 using AvansMaaltijdreservering.Core.Domain.Entities;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
+using AvansMaaltijdreservering.Infrastructure.Identity;
 
 namespace AvansMaaltijdreservering.WebApp.Controllers;
 
-[Authorize]
+[Authorize(Roles = IdentityRoles.Student)]
 public class StudentController : Controller
 {
     private readonly IStudentService _studentService;
     private readonly IReservationService _reservationService;
     private readonly IPackageService _packageService;
+    private readonly Infrastructure.Identity.IAuthorizationService _authService;
 
     public StudentController(
         IStudentService studentService,
         IReservationService reservationService,
-        IPackageService packageService)
+        IPackageService packageService,
+        Infrastructure.Identity.IAuthorizationService authService)
     {
         _studentService = studentService;
         _reservationService = reservationService;
         _packageService = packageService;
+        _authService = authService;
     }
 
     // US_01: Student Overview - Main dashboard
     public async Task<IActionResult> Dashboard()
     {
-        // TODO: Get current student ID from user claims
-        int currentStudentId = 1; // Placeholder
+        var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+        if (currentStudentId == null)
+            return Forbid();
 
-        var student = await _studentService.GetStudentByIdAsync(currentStudentId);
+        var student = await _studentService.GetStudentByIdAsync(currentStudentId.Value);
         if (student == null)
             return Forbid();
 
         var availablePackages = await _packageService.GetAvailablePackagesAsync();
-        var studentReservations = await _reservationService.GetStudentReservationsAsync(currentStudentId);
+        var studentReservations = await _reservationService.GetStudentReservationsAsync(currentStudentId.Value);
 
         var viewModel = new StudentDashboardViewModel
         {
@@ -49,10 +54,11 @@ public class StudentController : Controller
     // US_01: Available Packages page with filtering (US_08)
     public async Task<IActionResult> AvailablePackages(City? city = null, MealType? mealType = null)
     {
-        // TODO: Get current student ID from user claims  
-        int currentStudentId = 1; // Placeholder
+        var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+        if (currentStudentId == null)
+            return Forbid();
         
-        var student = await _studentService.GetStudentByIdAsync(currentStudentId);
+        var student = await _studentService.GetStudentByIdAsync(currentStudentId.Value);
         if (student == null)
             return Forbid();
 
@@ -80,10 +86,11 @@ public class StudentController : Controller
     // US_01: My Reservations page
     public async Task<IActionResult> MyReservations()
     {
-        // TODO: Get current student ID from user claims
-        int currentStudentId = 1; // Placeholder
+        var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+        if (currentStudentId == null)
+            return Forbid();
 
-        var reservations = await _reservationService.GetStudentReservationsAsync(currentStudentId);
+        var reservations = await _reservationService.GetStudentReservationsAsync(currentStudentId.Value);
         return View(reservations);
     }
 
@@ -94,10 +101,11 @@ public class StudentController : Controller
     {
         try
         {
-            // TODO: Get current student ID from user claims
-            int currentStudentId = 1; // Placeholder
+            var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+            if (currentStudentId == null)
+                return Forbid();
 
-            await _reservationService.MakeReservationAsync(packageId, currentStudentId);
+            await _reservationService.MakeReservationAsync(packageId, currentStudentId.Value);
             TempData["Success"] = "Reservation made successfully!";
         }
         catch (Exception ex)
@@ -115,10 +123,11 @@ public class StudentController : Controller
     {
         try
         {
-            // TODO: Get current student ID from user claims
-            int currentStudentId = 1; // Placeholder
+            var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+            if (currentStudentId == null)
+                return Forbid();
 
-            await _reservationService.CancelReservationAsync(packageId, currentStudentId);
+            await _reservationService.CancelReservationAsync(packageId, currentStudentId.Value);
             TempData["Success"] = "Reservation cancelled successfully!";
         }
         catch (Exception ex)
@@ -136,13 +145,14 @@ public class StudentController : Controller
         if (package == null)
             return NotFound();
 
-        // TODO: Get current student ID from user claims
-        int currentStudentId = 1; // Placeholder
+        var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+        if (currentStudentId == null)
+            return Forbid();
         
-        var student = await _studentService.GetStudentByIdAsync(currentStudentId);
+        var student = await _studentService.GetStudentByIdAsync(currentStudentId.Value);
         
         ViewBag.CanReserve = student != null && 
-                            await _reservationService.IsStudentEligibleForPackageAsync(currentStudentId, id) &&
+                            await _reservationService.IsStudentEligibleForPackageAsync(currentStudentId.Value, id) &&
                             await _reservationService.IsPackageAvailableAsync(id);
         ViewBag.Student = student;
 
@@ -152,10 +162,11 @@ public class StudentController : Controller
     // Student registration/profile
     public async Task<IActionResult> Profile()
     {
-        // TODO: Get current student ID from user claims
-        int currentStudentId = 1; // Placeholder
+        var currentStudentId = await _authService.GetCurrentStudentIdAsync(User);
+        if (currentStudentId == null)
+            return Forbid();
 
-        var student = await _studentService.GetStudentByIdAsync(currentStudentId);
+        var student = await _studentService.GetStudentByIdAsync(currentStudentId.Value);
         if (student == null)
         {
             // New student registration
