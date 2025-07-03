@@ -78,12 +78,12 @@ public class ApplicationDbContext : DbContext
 
         // Seed data for Canteens
         modelBuilder.Entity<Canteen>().HasData(
-            new Canteen { Id = 1, Location = CanteenLocation.Hogeschoollaan, City = City.Breda, ServesWarmMeals = true },
-            new Canteen { Id = 2, Location = CanteenLocation.LovensdijkstraatLA, City = City.Breda, ServesWarmMeals = false },
-            new Canteen { Id = 3, Location = CanteenLocation.LovensdijkstraatLD, City = City.Breda, ServesWarmMeals = false },
-            new Canteen { Id = 4, Location = CanteenLocation.ClaudiusPrinsenlaan, City = City.Breda, ServesWarmMeals = true },
-            new Canteen { Id = 5, Location = CanteenLocation.Onderwijsboulevard, City = City.DenBosch, ServesWarmMeals = true },
-            new Canteen { Id = 6, Location = CanteenLocation.ProfessorCobbenhagenlaan, City = City.Tilburg, ServesWarmMeals = true }
+            new Canteen { Id = 1, Location = CanteenLocation.BREDA_LA_BUILDING, City = City.BREDA, ServesWarmMeals = true },
+            new Canteen { Id = 2, Location = CanteenLocation.BREDA_LD_BUILDING, City = City.BREDA, ServesWarmMeals = false },
+            new Canteen { Id = 3, Location = CanteenLocation.BREDA_LD_BUILDING, City = City.BREDA, ServesWarmMeals = false },
+            new Canteen { Id = 4, Location = CanteenLocation.BREDA_LA_BUILDING, City = City.BREDA, ServesWarmMeals = true },
+            new Canteen { Id = 5, Location = CanteenLocation.DENBOSCH_BUILDING, City = City.DENBOSCH, ServesWarmMeals = true },
+            new Canteen { Id = 6, Location = CanteenLocation.TILBURG_BUILDING, City = City.TILBURG, ServesWarmMeals = true }
         );
     }
 }

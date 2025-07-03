@@ -36,12 +36,13 @@ public class GlobalExceptionMiddleware
 
         switch (exception)
         {
-            case BusinessRuleException businessEx:
-                response.Message = businessEx.Message;
-                response.Details = businessEx.RuleName;
-                response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                _logger.LogWarning("Business rule violation: {Rule} - {Message}", businessEx.RuleName, businessEx.Message);
+            case StudentBlockedException blockedEx:
+                response.Message = blockedEx.Message;
+                response.Details = $"Student {blockedEx.StudentId} has {blockedEx.NoShowCount} no-shows";
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                _logger.LogWarning("Blocked student attempted action: {StudentId} with {NoShowCount} no-shows", 
+                    blockedEx.StudentId, blockedEx.NoShowCount);
                 break;
 
             case ReservationException reservationEx:
@@ -53,13 +54,12 @@ public class GlobalExceptionMiddleware
                     reservationEx.PackageId, reservationEx.StudentId, reservationEx.Message);
                 break;
 
-            case StudentBlockedException blockedEx:
-                response.Message = blockedEx.Message;
-                response.Details = $"Student {blockedEx.StudentId} has {blockedEx.NoShowCount} no-shows";
-                response.StatusCode = (int)HttpStatusCode.Forbidden;
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                _logger.LogWarning("Blocked student attempted action: {StudentId} with {NoShowCount} no-shows", 
-                    blockedEx.StudentId, blockedEx.NoShowCount);
+            case BusinessRuleException businessEx:
+                response.Message = businessEx.Message;
+                response.Details = businessEx.RuleName;
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _logger.LogWarning("Business rule violation: {Rule} - {Message}", businessEx.RuleName, businessEx.Message);
                 break;
 
             case ArgumentException argEx:

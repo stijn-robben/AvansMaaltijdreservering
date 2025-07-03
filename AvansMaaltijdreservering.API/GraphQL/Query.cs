@@ -23,7 +23,7 @@ public class Query
             packages = packages.Where(p => p.MealType == mealType.Value);
 
         if (isAvailable.HasValue && isAvailable.Value)
-            packages = packages.Where(p => p.ReservedById == null);
+            packages = packages.Where(p => p.ReservedByStudentId == null);
 
         return packages;
     }
