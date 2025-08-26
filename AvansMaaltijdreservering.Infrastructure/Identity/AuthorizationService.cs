@@ -14,7 +14,7 @@ public class AuthorizationService : IAuthorizationService
 
     public async Task<int?> GetCurrentStudentIdAsync(ClaimsPrincipal user)
     {
-        if (!user.Identity?.IsAuthenticated == true)
+        if (user.Identity?.IsAuthenticated != true)
             return null;
 
         var appUser = await _userManager.GetUserAsync(user);
@@ -23,7 +23,7 @@ public class AuthorizationService : IAuthorizationService
 
     public async Task<int?> GetCurrentCanteenEmployeeIdAsync(ClaimsPrincipal user)
     {
-        if (!user.Identity?.IsAuthenticated == true)
+        if (user.Identity?.IsAuthenticated != true)
             return null;
 
         var appUser = await _userManager.GetUserAsync(user);

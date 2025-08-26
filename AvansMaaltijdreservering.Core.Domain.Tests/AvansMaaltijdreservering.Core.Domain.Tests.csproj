@@ -25,4 +25,9 @@
     <ProjectReference Include="..\AvansMaaltijdreservering.Core.DomainService\AvansMaaltijdreservering.Core.DomainService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

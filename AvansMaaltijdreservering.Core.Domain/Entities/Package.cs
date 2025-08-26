@@ -43,6 +43,9 @@ public class Package
     public int? ReservedByStudentId { get; set; }
     public virtual Student? ReservedByStudent { get; set; }
     
+    public int? CanteenId { get; set; }
+    public virtual Canteen? Canteen { get; set; }
+    
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     
     public bool IsReserved => ReservedByStudentId.HasValue;

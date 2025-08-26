@@ -1,0 +1,44 @@
+@model IEnumerable<Package>
+@{
+    ViewData["Title"] = "Available Packages";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Avans Meal Rescue</h1>
+    <p>Available food packages to reduce waste</p>
+</div>
+
+<div class="row">
+    @if (Model.Any())
+    {
+        @foreach (var package in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@package.Name</h5>
+                        <p class="card-text">
+                            <strong>Price:</strong> €@package.Price<br/>
+                            <strong>Location:</strong> @package.City - @package.CanteenLocation<br/>
+                            <strong>Pickup:</strong> @package.PickupTime.ToString("dd/MM/yyyy HH:mm")<br/>
+                            <strong>Type:</strong> @package.MealType
+                            @if (package.Is18Plus)
+                            {
+                                <br/><span class="badge bg-warning">18+</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h4>No packages available</h4>
+                <p>Check back later for new food packages!</p>
+            </div>
+        </div>
+    }
+</div>

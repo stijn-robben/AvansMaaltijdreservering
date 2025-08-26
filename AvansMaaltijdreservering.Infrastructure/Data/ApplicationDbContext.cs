@@ -40,6 +40,10 @@ public class ApplicationDbContext : DbContext
                   .WithMany(s => s.Reservations)
                   .HasForeignKey(e => e.ReservedByStudentId)
                   .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Canteen)
+                  .WithMany(c => c.Packages)
+                  .HasForeignKey(e => e.CanteenId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Product configuration
@@ -80,10 +84,9 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Canteen>().HasData(
             new Canteen { Id = 1, Location = CanteenLocation.BREDA_LA_BUILDING, City = City.BREDA, ServesWarmMeals = true },
             new Canteen { Id = 2, Location = CanteenLocation.BREDA_LD_BUILDING, City = City.BREDA, ServesWarmMeals = false },
-            new Canteen { Id = 3, Location = CanteenLocation.BREDA_LD_BUILDING, City = City.BREDA, ServesWarmMeals = false },
-            new Canteen { Id = 4, Location = CanteenLocation.BREDA_LA_BUILDING, City = City.BREDA, ServesWarmMeals = true },
-            new Canteen { Id = 5, Location = CanteenLocation.DENBOSCH_BUILDING, City = City.DENBOSCH, ServesWarmMeals = true },
-            new Canteen { Id = 6, Location = CanteenLocation.TILBURG_BUILDING, City = City.TILBURG, ServesWarmMeals = true }
+            new Canteen { Id = 3, Location = CanteenLocation.BREDA_HA_BUILDING, City = City.BREDA, ServesWarmMeals = false },
+            new Canteen { Id = 4, Location = CanteenLocation.DENBOSCH_BUILDING, City = City.DENBOSCH, ServesWarmMeals = true },
+            new Canteen { Id = 5, Location = CanteenLocation.TILBURG_BUILDING, City = City.TILBURG, ServesWarmMeals = true }
         );
     }
 }

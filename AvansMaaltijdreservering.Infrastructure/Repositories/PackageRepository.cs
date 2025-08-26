@@ -20,6 +20,7 @@ public class PackageRepository : IPackageRepository
         return await _context.Packages
             .Include(p => p.Products)
             .Include(p => p.ReservedByStudent)
+            .Include(p => p.Canteen)
             .ToListAsync();
     }
 
@@ -28,6 +29,7 @@ public class PackageRepository : IPackageRepository
         return await _context.Packages
             .Include(p => p.Products)
             .Include(p => p.ReservedByStudent)
+            .Include(p => p.Canteen)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -36,6 +38,7 @@ public class PackageRepository : IPackageRepository
         return await _context.Packages
             .Include(p => p.Products)
             .Include(p => p.ReservedByStudent)
+            .Include(p => p.Canteen)
             .Where(p => p.ReservedByStudentId == null && p.PickupTime > DateTime.Now)
             .OrderBy(p => p.PickupTime)
             .ToListAsync();
@@ -46,6 +49,7 @@ public class PackageRepository : IPackageRepository
         return await _context.Packages
             .Include(p => p.Products)
             .Include(p => p.ReservedByStudent)
+            .Include(p => p.Canteen)
             .Where(p => p.CanteenLocation == canteenLocation)
             .OrderBy(p => p.PickupTime)
             .ToListAsync();
@@ -56,6 +60,7 @@ public class PackageRepository : IPackageRepository
         return await _context.Packages
             .Include(p => p.Products)
             .Include(p => p.ReservedByStudent)
+            .Include(p => p.Canteen)
             .Where(p => p.City == city)
             .OrderBy(p => p.PickupTime)
             .ToListAsync();
@@ -66,6 +71,7 @@ public class PackageRepository : IPackageRepository
         return await _context.Packages
             .Include(p => p.Products)
             .Include(p => p.ReservedByStudent)
+            .Include(p => p.Canteen)
             .Where(p => p.MealType == mealType)
             .OrderBy(p => p.PickupTime)
             .ToListAsync();

@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Integration Test Result";
+}
+
+<div class="container mt-4">
+    @if (ViewBag.Success)
+    {
+        <div class="alert alert-success">
+            <h4>✅ Success!</h4>
+            <p>@ViewBag.Message</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <h4>❌ Error!</h4>
+            <p>@ViewBag.Message</p>
+            
+            @if (ViewBag.StackTrace != null)
+            {
+                <details class="mt-3">
+                    <summary>Click for detailed error information</summary>
+                    <pre class="mt-2" style="font-size: 12px; max-height: 400px; overflow-y: scroll;">@ViewBag.StackTrace</pre>
+                </details>
+            }
+        </div>
+    }
+    
+    <div class="mt-3">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to Home</a>
+    </div>
+</div>

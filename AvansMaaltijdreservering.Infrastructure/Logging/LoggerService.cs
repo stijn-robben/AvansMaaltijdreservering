@@ -12,33 +12,29 @@ public class LoggerService : ILoggerService
         _logger = logger;
     }
 
-    public void LogInformation(string message, params object[] args)
+    public void LogInfo(string message)
     {
-        _logger.LogInformation(message, args);
+        _logger.LogInformation("{Message}", message);
     }
 
-    public void LogWarning(string message, params object[] args)
+    public void LogWarning(string message)
     {
-        _logger.LogWarning(message, args);
+        _logger.LogWarning("{Message}", message);
     }
 
-    public void LogError(Exception exception, string message, params object[] args)
+    public void LogError(string message, Exception? exception = null)
     {
-        _logger.LogError(exception, message, args);
+        if (exception != null)
+            _logger.LogError(exception, "{Message}", message);
+        else
+            _logger.LogError("{Message}", message);
     }
 
-    public void LogError(string message, params object[] args)
+    public void LogCritical(string message, Exception? exception = null)
     {
-        _logger.LogError(message, args);
-    }
-
-    public void LogDebug(string message, params object[] args)
-    {
-        _logger.LogDebug(message, args);
-    }
-
-    public void LogCritical(Exception exception, string message, params object[] args)
-    {
-        _logger.LogCritical(exception, message, args);
+        if (exception != null)
+            _logger.LogCritical(exception, "{Message}", message);
+        else
+            _logger.LogCritical("{Message}", message);
     }
 }
