@@ -106,10 +106,20 @@ public class PackageService : IPackageService
 
         await ValidatePackageForEmployeeAsync(package, employee);
 
+        // Update existing tracked entity properties
+        existing.Name = package.Name;
+        existing.City = package.City;
+        existing.CanteenLocation = package.CanteenLocation;
+        existing.PickupTime = package.PickupTime;
+        existing.LatestPickupTime = package.LatestPickupTime;
+        existing.Price = package.Price;
+        existing.MealType = package.MealType;
+        // Note: CanteenId should not be changed - employee can only update packages for their own canteen
+        
         // Is18Plus is now automatically calculated from ContainsAlcohol()
 
         _logger.LogInfo($"Updating package: {package.Id} by employee {employeeId}");
-        return await _packageRepository.UpdateAsync(package);
+        return await _packageRepository.UpdateAsync(existing);
     }
 
     public async Task DeletePackageAsync(int packageId, int employeeId)
