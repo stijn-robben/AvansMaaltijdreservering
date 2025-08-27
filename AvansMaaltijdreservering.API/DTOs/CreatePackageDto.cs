@@ -4,6 +4,7 @@ using AvansMaaltijdreservering.Core.Domain.ValidationAttributes;
 
 namespace AvansMaaltijdreservering.API.DTOs;
 
+[WarmMealLocation]
 public class CreatePackageDto
 {
     [Required(ErrorMessage = "Package name is required")]

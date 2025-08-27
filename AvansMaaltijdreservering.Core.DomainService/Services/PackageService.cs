@@ -151,8 +151,7 @@ public class PackageService : IPackageService
         if (employeeCanteen.Location != package.CanteenLocation)
             throw new UnauthorizedAccessException("Employee can only manage packages for their own canteen");
 
-        if (package.MealType == MealType.WarmEveningMeal && !employeeCanteen.ServesWarmMeals)
-            throw new ArgumentException("This canteen does not serve warm meals");
+        // Note: Warm meal validation is now handled by WarmMealLocationAttribute at DTO level
 
         if (!package.IsValidPickupTime())
             throw new ArgumentException("Package pickup time must be within 2 days");
