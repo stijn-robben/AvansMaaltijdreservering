@@ -10,17 +10,20 @@ public class PackageService : IPackageService
     private readonly IPackageRepository _packageRepository;
     private readonly ICanteenEmployeeRepository _employeeRepository;
     private readonly ICanteenRepository _canteenRepository;
+    private readonly IProductRepository _productRepository;
     private readonly ILoggerService _logger;
 
     public PackageService(
         IPackageRepository packageRepository,
         ICanteenEmployeeRepository employeeRepository,
         ICanteenRepository canteenRepository,
+        IProductRepository productRepository,
         ILoggerService logger)
     {
         _packageRepository = packageRepository;
         _employeeRepository = employeeRepository;
         _canteenRepository = canteenRepository;
+        _productRepository = productRepository;
         _logger = logger;
     }
 
@@ -39,6 +42,15 @@ public class PackageService : IPackageService
         return await _packageRepository.GetPackagesByCanteenAsync(location);
     }
 
+    public async Task<IEnumerable<Package>> GetPackagesForEmployeeCanteenAsync(int employeeId)
+    {
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        if (employee == null)
+            throw new UnauthorizedAccessException("Employee not found");
+
+        return await _packageRepository.GetPackagesByCanteenIdAsync(employee.CanteenId);
+    }
+
     public async Task<IEnumerable<Package>> GetPackagesByCityAsync(City city)
     {
         return await _packageRepository.GetPackagesByCityAsync(city);
@@ -49,7 +61,7 @@ public class PackageService : IPackageService
         return await _packageRepository.GetPackagesByMealTypeAsync(mealType);
     }
 
-    public async Task<Package> CreatePackageAsync(Package package, int employeeId)
+    public async Task<Package> CreatePackageAsync(Package package, int employeeId, List<int>? productIds = null)
     {
         var employee = await _employeeRepository.GetByIdAsync(employeeId);
         if (employee == null)
@@ -59,6 +71,19 @@ public class PackageService : IPackageService
         
         // Set the canteen relationship
         package.CanteenId = employee.CanteenId;
+
+        // Add products if specified
+        if (productIds != null && productIds.Count > 0)
+        {
+            foreach (var productId in productIds)
+            {
+                var product = await _productRepository.GetByIdAsync(productId);
+                if (product != null)
+                {
+                    package.Products.Add(product);
+                }
+            }
+        }
         
         // Is18Plus is now automatically calculated from ContainsAlcohol()
 

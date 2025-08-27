@@ -35,7 +35,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"adult.student@test.com\",\n  \"password\": \"Test123!\",\n  \"role\": \"Student\",\n  \"studentNumber\": \"ST001\",\n  \"studentId\": 1\n}"
+							"raw": "{\n  \"email\": \"adult.student@test.com\",\n  \"password\": \"Test123!\",\n  \"role\": \"Student\",\n  \"studentNumber\": \"ST001\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/register",

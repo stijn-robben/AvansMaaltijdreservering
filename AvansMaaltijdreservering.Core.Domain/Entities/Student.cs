@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.Domain.ValidationAttributes;
 
@@ -37,6 +38,7 @@ public class Student
     [Range(0, int.MaxValue, ErrorMessage = "No-show count cannot be negative")]
     public int NoShowCount { get; set; } = 0;
     
+    [JsonIgnore]
     public virtual ICollection<Package> Reservations { get; set; } = new List<Package>();
     
     public int GetAge()

@@ -8,10 +8,11 @@ public interface IPackageService
     Task<IEnumerable<Package>> GetAvailablePackagesAsync();
     Task<Package?> GetPackageByIdAsync(int id);
     Task<IEnumerable<Package>> GetPackagesByCanteenAsync(CanteenLocation location);
+    Task<IEnumerable<Package>> GetPackagesForEmployeeCanteenAsync(int employeeId);
     Task<IEnumerable<Package>> GetPackagesByCityAsync(City city);
     Task<IEnumerable<Package>> GetPackagesByMealTypeAsync(MealType mealType);
     
-    Task<Package> CreatePackageAsync(Package package, int employeeId);
+    Task<Package> CreatePackageAsync(Package package, int employeeId, List<int>? productIds = null);
     Task<Package> UpdatePackageAsync(Package package, int employeeId);
     Task DeletePackageAsync(int packageId, int employeeId);
 }

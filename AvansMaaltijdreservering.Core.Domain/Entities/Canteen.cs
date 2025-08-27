@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 
 namespace AvansMaaltijdreservering.Core.Domain.Entities;
@@ -15,6 +16,8 @@ public class Canteen
     
     public bool ServesWarmMeals { get; set; }
     
+    [JsonIgnore]
     public virtual ICollection<CanteenEmployee> Employees { get; set; } = new List<CanteenEmployee>();
+    [JsonIgnore]
     public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
 }

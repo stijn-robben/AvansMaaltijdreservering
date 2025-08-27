@@ -37,8 +37,6 @@ public class PackageRepository : IPackageRepository
     {
         return await _context.Packages
             .Include(p => p.Products)
-            .Include(p => p.ReservedByStudent)
-            .Include(p => p.Canteen)
             .Where(p => p.ReservedByStudentId == null && p.PickupTime > DateTime.Now)
             .OrderBy(p => p.PickupTime)
             .ToListAsync();
@@ -51,6 +49,16 @@ public class PackageRepository : IPackageRepository
             .Include(p => p.ReservedByStudent)
             .Include(p => p.Canteen)
             .Where(p => p.CanteenLocation == canteenLocation)
+            .OrderBy(p => p.PickupTime)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Package>> GetPackagesByCanteenIdAsync(int canteenId)
+    {
+        return await _context.Packages
+            .Include(p => p.Products)
+            .Include(p => p.ReservedByStudent)
+            .Where(p => p.CanteenId == canteenId)
             .OrderBy(p => p.PickupTime)
             .ToListAsync();
     }

@@ -4,7 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 using AvansMaaltijdreservering.Infrastructure.Identity;
+using AvansMaaltijdreservering.Core.Domain.Interfaces;
+using AvansMaaltijdreservering.Core.Domain.Entities;
+using AvansMaaltijdreservering.Core.Domain.Enums;
 
 namespace AvansMaaltijdreservering.API.Controllers;
 
@@ -16,17 +20,26 @@ public class AccountController : ControllerBase
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
+    private readonly ICanteenEmployeeRepository _employeeRepository;
+    private readonly IStudentRepository _studentRepository;
+    private readonly ICanteenRepository _canteenRepository;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IConfiguration configuration,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        ICanteenEmployeeRepository employeeRepository,
+        IStudentRepository studentRepository,
+        ICanteenRepository canteenRepository)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
         _environment = environment;
+        _employeeRepository = employeeRepository;
+        _studentRepository = studentRepository;
+        _canteenRepository = canteenRepository;
     }
 
     /// <summary>
@@ -60,7 +73,7 @@ public class AccountController : ControllerBase
             return Ok(new LoginResponse
             {
                 Token = token,
-                Email = user.Email,
+                Email = user.Email ?? string.Empty,
                 Roles = roles.ToList(),
                 EmployeeId = user.CanteenEmployeeId,
                 StudentId = user.StudentId
@@ -86,6 +99,52 @@ public class AccountController : ControllerBase
         
         try
         {
+            // Create business entity first (CanteenEmployee or Student)
+            int? canteenEmployeeId = null;
+            int? studentId = null;
+
+            if (request.Role == IdentityRoles.CanteenEmployee)
+            {
+                if (!request.WorksAtCanteen.HasValue)
+                {
+                    return BadRequest(new { message = "WorksAtCanteen is required for employee registration" });
+                }
+
+                // Find the canteen by location
+                var canteen = await _canteenRepository.GetByLocationAsync(request.WorksAtCanteen.Value);
+                
+                if (canteen == null)
+                {
+                    return BadRequest(new { message = $"Canteen at location {request.WorksAtCanteen.Value} not found. Please run database seed script first." });
+                }
+
+                var employee = new CanteenEmployee
+                {
+                    Name = request.Email.Split('@')[0], // Use email prefix as name
+                    EmployeeNumber = request.EmployeeNumber ?? $"EMP{DateTime.Now:yyyyMMddHHmmss}",
+                    CanteenId = canteen.Id
+                };
+                
+                var createdEmployee = await _employeeRepository.AddAsync(employee);
+                canteenEmployeeId = createdEmployee.Id;
+            }
+            else if (request.Role == IdentityRoles.Student)
+            {
+                var student = new Student
+                {
+                    Name = request.Email.Split('@')[0], // Use email prefix as name
+                    Email = request.Email,
+                    StudentNumber = request.StudentNumber ?? $"STU{DateTime.Now:yyyyMMddHHmmss}",
+                    PhoneNumber = "06-12345678", // Default phone number
+                    StudyCity = City.BREDA, // Default city
+                    DateOfBirth = DateTime.Now.AddYears(-20) // Default age 20
+                };
+                
+                var createdStudent = await _studentRepository.AddAsync(student);
+                studentId = createdStudent.Id;
+            }
+
+            // Create Identity user with proper linking
             var user = new ApplicationUser
             {
                 UserName = request.Email,
@@ -93,8 +152,8 @@ public class AccountController : ControllerBase
                 EmailConfirmed = true,
                 EmployeeNumber = request.EmployeeNumber,
                 StudentNumber = request.StudentNumber,
-                CanteenEmployeeId = request.CanteenEmployeeId,
-                StudentId = request.StudentId
+                CanteenEmployeeId = canteenEmployeeId,
+                StudentId = studentId
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -109,7 +168,11 @@ public class AccountController : ControllerBase
                 await _userManager.AddToRoleAsync(user, request.Role);
             }
 
-            return Ok(new { message = "User registered successfully" });
+            return Ok(new { 
+                message = "User registered successfully",
+                canteenEmployeeId = canteenEmployeeId,
+                studentId = studentId
+            });
         }
         catch (Exception ex)
         {
@@ -135,7 +198,7 @@ public class AccountController : ControllerBase
 
             return Ok(new UserInfo
             {
-                Email = user.Email,
+                Email = user.Email ?? string.Empty,
                 Roles = roles.ToList(),
                 EmployeeId = user.CanteenEmployeeId,
                 StudentId = user.StudentId
@@ -152,7 +215,7 @@ public class AccountController : ControllerBase
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Email, user.Email ?? string.Empty),
         };
 
         // Add role claims
@@ -212,6 +275,8 @@ public class RegisterRequest
     public string? StudentNumber { get; set; }
     public int? CanteenEmployeeId { get; set; }
     public int? StudentId { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public CanteenLocation? WorksAtCanteen { get; set; }
 }
 
 public class UserInfo

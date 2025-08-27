@@ -63,7 +63,7 @@ public class ReservationsController : ControllerBase
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Forbid(ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {
@@ -97,7 +97,7 @@ public class ReservationsController : ControllerBase
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Forbid(ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {

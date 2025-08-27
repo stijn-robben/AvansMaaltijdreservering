@@ -4,6 +4,7 @@ using AvansMaaltijdreservering.Core.Domain.Entities;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 using AvansMaaltijdreservering.Infrastructure.Identity;
+using AvansMaaltijdreservering.API.DTOs;
 
 namespace AvansMaaltijdreservering.API.Controllers;
 
@@ -74,7 +75,7 @@ public class PackagesController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = IdentityRoles.CanteenEmployee)]
-    public async Task<ActionResult<Package>> CreatePackage([FromBody] Package package)
+    public async Task<ActionResult<Package>> CreatePackage([FromBody] CreatePackageDto dto)
     {
         try
         {
@@ -85,16 +86,28 @@ public class PackagesController : ControllerBase
             if (currentEmployeeId == null)
                 return Forbid();
 
-            await _packageService.CreatePackageAsync(package, currentEmployeeId.Value);
+            // Convert DTO to Package entity
+            var package = new Package
+            {
+                Name = dto.Name,
+                City = dto.City,
+                CanteenLocation = dto.CanteenLocation,
+                PickupTime = dto.PickupTime,
+                LatestPickupTime = dto.LatestPickupTime,
+                Price = dto.Price,
+                MealType = dto.MealType
+            };
+
+            var createdPackage = await _packageService.CreatePackageAsync(package, currentEmployeeId.Value, dto.ProductIds);
             
             return CreatedAtAction(
                 nameof(GetPackage), 
-                new { id = package.Id }, 
-                package);
+                new { id = createdPackage.Id }, 
+                createdPackage);
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Forbid(ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {
@@ -131,7 +144,7 @@ public class PackagesController : ControllerBase
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Forbid(ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {
@@ -162,11 +175,33 @@ public class PackagesController : ControllerBase
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Forbid(ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Get packages for current employee's canteen (CanteenEmployee only)
+    /// </summary>
+    [HttpGet("my-canteen")]
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
+    public async Task<ActionResult<IEnumerable<Package>>> GetMyCanteenPackages()
+    {
+        try
+        {
+            var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+            if (currentEmployeeId == null)
+                return Forbid();
+
+            var packages = await _packageService.GetPackagesForEmployeeCanteenAsync(currentEmployeeId.Value);
+            return Ok(packages);
         }
         catch (Exception ex)
         {

@@ -35,7 +35,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"employee@test.com\",\n  \"password\": \"Test123!\",\n  \"role\": \"CanteenEmployee\",\n  \"employeeNumber\": \"EMP001\",\n  \"canteenEmployeeId\": 1\n}"
+							"raw": "{\n  \"email\": \"employee@test.com\",\n  \"password\": \"Test123!\",\n  \"role\": \"CanteenEmployee\",\n  \"employeeNumber\": \"EMP001\",\n  \"worksAtCanteen\": \"BREDA_LA_BUILDING\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/register",
@@ -225,9 +225,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/packages/canteen/0",
+							"raw": "{{base_url}}/api/packages/my-canteen",
 							"host": ["{{base_url}}"],
-							"path": ["api", "packages", "canteen", "0"]
+							"path": ["api", "packages", "my-canteen"]
 						}
 					}
 				},

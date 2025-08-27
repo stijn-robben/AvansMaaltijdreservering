@@ -9,6 +9,7 @@ public interface IPackageRepository
     Task<Package?> GetByIdAsync(int id);
     Task<IEnumerable<Package>> GetAvailablePackagesAsync();
     Task<IEnumerable<Package>> GetPackagesByCanteenAsync(CanteenLocation canteenLocation);
+    Task<IEnumerable<Package>> GetPackagesByCanteenIdAsync(int canteenId);
     Task<IEnumerable<Package>> GetPackagesByCityAsync(City city);
     Task<IEnumerable<Package>> GetPackagesByMealTypeAsync(MealType mealType);
     Task<Package> AddAsync(Package package);

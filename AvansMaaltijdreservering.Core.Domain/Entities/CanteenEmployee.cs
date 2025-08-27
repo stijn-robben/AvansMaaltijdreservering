@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AvansMaaltijdreservering.Core.Domain.Entities;
 
@@ -15,6 +16,7 @@ public class CanteenEmployee
     public string EmployeeNumber { get; set; } = string.Empty;
     
     public int CanteenId { get; set; }
+    [JsonIgnore]
     public virtual Canteen Canteen { get; set; } = null!;
     
     public bool WorksAtCanteen(int canteenId)
