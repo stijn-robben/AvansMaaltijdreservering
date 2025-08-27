@@ -107,7 +107,8 @@ namespace AvansMaaltijdreservering.Infrastructure.Migrations
                         name: "FK_Packages_Canteens_CanteenId",
                         column: x => x.CanteenId,
                         principalTable: "Canteens",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Packages_Students_ReservedByStudentId",
                         column: x => x.ReservedByStudentId,
@@ -148,9 +149,8 @@ namespace AvansMaaltijdreservering.Infrastructure.Migrations
                     { 1, 0, 0, true },
                     { 2, 0, 1, false },
                     { 3, 0, 2, false },
-                    { 4, 0, 3, true },
-                    { 5, 2, 4, true },
-                    { 6, 1, 5, true }
+                    { 4, 2, 3, true },
+                    { 5, 1, 4, true }
                 });
 
             migrationBuilder.CreateIndex(

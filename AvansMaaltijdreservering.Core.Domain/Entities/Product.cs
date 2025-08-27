@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace AvansMaaltijdreservering.Core.Domain.Entities;
 
@@ -16,5 +17,7 @@ public class Product
     [StringLength(500, ErrorMessage = "Photo URL must not exceed 500 characters")]
     public string? PhotoUrl { get; set; }
     
+    // Navigation property for EF Core many-to-many - not used in business logic
+    [JsonIgnore]
     public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
 }

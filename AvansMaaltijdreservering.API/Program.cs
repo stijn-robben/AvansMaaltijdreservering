@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using AvansMaaltijdreservering.Infrastructure.Data;
 using AvansMaaltijdreservering.Infrastructure.Identity;
 using AvansMaaltijdreservering.Core.Domain.Interfaces;
@@ -64,8 +67,13 @@ builder.Services.AddScoped<AvansMaaltijdreservering.Infrastructure.Identity.IAut
 // Register Logging Service
 builder.Services.AddScoped<ILoggerService, LoggerService>();
 
-// Add API services
-builder.Services.AddControllers();
+// Add API services with JSON cycle handling
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -98,6 +106,27 @@ builder.Services
     .AddProjections()
     .AddFiltering()
     .AddSorting();
+
+// Add JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "AvansMaaltijdreservering",
+        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "AvansMaaltijdreservering",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration["Jwt:Key"] ?? "YourDefaultSecretKeyThatIsLongEnoughForHMAC256"))
+    };
+});
 
 // Add CORS for mobile app
 builder.Services.AddCors(options =>

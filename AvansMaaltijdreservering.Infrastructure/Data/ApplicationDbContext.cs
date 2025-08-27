@@ -36,6 +36,8 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Price).HasPrecision(18, 2);
+            // Is18Plus is a computed property, not stored in database
+            entity.Ignore(e => e.Is18Plus);
             entity.HasOne(e => e.ReservedByStudent)
                   .WithMany(s => s.Reservations)
                   .HasForeignKey(e => e.ReservedByStudentId)

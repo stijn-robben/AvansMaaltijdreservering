@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvansMaaltijdreservering.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250701172800_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250827172936_RemoveIs18PlusFromPackages")]
+    partial class RemoveIs18PlusFromPackages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,22 +74,15 @@ namespace AvansMaaltijdreservering.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            City = 0,
+                            City = 2,
                             Location = 3,
                             ServesWarmMeals = true
                         },
                         new
                         {
                             Id = 5,
-                            City = 2,
-                            Location = 4,
-                            ServesWarmMeals = true
-                        },
-                        new
-                        {
-                            Id = 6,
                             City = 1,
-                            Location = 5,
+                            Location = 4,
                             ServesWarmMeals = true
                         });
                 });
@@ -141,9 +134,6 @@ namespace AvansMaaltijdreservering.Infrastructure.Migrations
 
                     b.Property<int>("City")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Is18Plus")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LatestPickupTime")
                         .HasColumnType("datetime2");
@@ -276,14 +266,17 @@ namespace AvansMaaltijdreservering.Infrastructure.Migrations
 
             modelBuilder.Entity("AvansMaaltijdreservering.Core.Domain.Entities.Package", b =>
                 {
-                    b.HasOne("AvansMaaltijdreservering.Core.Domain.Entities.Canteen", null)
+                    b.HasOne("AvansMaaltijdreservering.Core.Domain.Entities.Canteen", "Canteen")
                         .WithMany("Packages")
-                        .HasForeignKey("CanteenId");
+                        .HasForeignKey("CanteenId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("AvansMaaltijdreservering.Core.Domain.Entities.Student", "ReservedByStudent")
                         .WithMany("Reservations")
                         .HasForeignKey("ReservedByStudentId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Canteen");
 
                     b.Navigation("ReservedByStudent");
                 });

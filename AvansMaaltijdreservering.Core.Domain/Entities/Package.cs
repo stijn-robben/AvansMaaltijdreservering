@@ -30,7 +30,8 @@ public class Package
     [MaxDaysAhead(2)]
     public DateTime LatestPickupTime { get; set; }
     
-    public bool Is18Plus { get; set; }
+    // Is18Plus is calculated from products (if any contain alcohol)
+    public bool Is18Plus => ContainsAlcohol();
     
     [Required(ErrorMessage = "Price is required")]
     [Range(0.01, 999.99, ErrorMessage = "Price must be between €0.01 and €999.99")]

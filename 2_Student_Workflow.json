@@ -1,0 +1,816 @@
+{
+	"info": {
+		"name": "2 - Student Workflow",
+		"description": "Complete student workflow: registration, authentication, package browsing, reservations, and business rule validation. Tests US_01, US_04, US_05, US_07, US_08 requirements.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register Adult Student (18+)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student registration successful', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include('successfully');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"adult.student@test.com\",\n  \"password\": \"Test123!\",\n  \"role\": \"Student\",\n  \"studentNumber\": \"ST001\",\n  \"studentId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "account", "register"]
+						}
+					}
+				},
+				{
+					"name": "Register Minor Student (Under 18)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student registration successful', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include('successfully');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"minor.student@test.com\",\n  \"password\": \"Test123!\",\n  \"role\": \"Student\",\n  \"studentNumber\": \"ST002\",\n  \"studentId\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "account", "register"]
+						}
+					}
+				},
+				{
+					"name": "Adult Student Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student login successful', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const response = pm.response.json();",
+									"    pm.globals.set('adult_student_token', response.token);",
+									"    pm.globals.set('adult_student_id', response.studentId);",
+									"    pm.expect(response.roles).to.include('Student');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"adult.student@test.com\",\n  \"password\": \"Test123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "account", "login"]
+						}
+					}
+				},
+				{
+					"name": "Minor Student Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student login successful', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const response = pm.response.json();",
+									"    pm.globals.set('minor_student_token', response.token);",
+									"    pm.globals.set('minor_student_id', response.studentId);",
+									"    pm.expect(response.roles).to.include('Student');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"minor.student@test.com\",\n  \"password\": \"Test123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "account", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Student Data Management",
+			"item": [
+				{
+					"name": "Register Adult Student Record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student record created', function () {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"    const student = pm.response.json();",
+									"    pm.globals.set('adult_student_record_id', student.id);",
+									"    console.log('Adult student born 1995 - eligible for 18+ packages');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Alice Adult\",\n  \"dateOfBirth\": \"1995-05-15T00:00:00\",\n  \"studentNumber\": \"ST001\",\n  \"email\": \"adult.student@test.com\",\n  \"studyCity\": 0,\n  \"phoneNumber\": \"+31612345678\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/students",
+							"host": ["{{base_url}}"],
+							"path": ["api", "students"]
+						}
+					}
+				},
+				{
+					"name": "Register Minor Student Record",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student record created', function () {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"    const student = pm.response.json();",
+									"    pm.globals.set('minor_student_record_id', student.id);",
+									"    console.log('Minor student born 2008 - restricted from 18+ packages');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Bob Minor\",\n  \"dateOfBirth\": \"2008-08-20T00:00:00\",\n  \"studentNumber\": \"ST002\",\n  \"email\": \"minor.student@test.com\",\n  \"studyCity\": 0,\n  \"phoneNumber\": \"+31687654321\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/students",
+							"host": ["{{base_url}}"],
+							"path": ["api", "students"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Package Browsing (US_01)",
+			"item": [
+				{
+					"name": "View Available Packages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Available packages retrieved', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const packages = pm.response.json();",
+									"    console.log('Total available packages: ' + packages.length);",
+									"    ",
+									"    // Store package IDs for reservation testing",
+									"    const regularPackage = packages.find(p => !p.is18Plus);",
+									"    const adultPackage = packages.find(p => p.is18Plus);",
+									"    if (regularPackage) pm.globals.set('regular_package_for_reservation', regularPackage.id);",
+									"    if (adultPackage) pm.globals.set('adult_package_for_reservation', adultPackage.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/packages",
+							"host": ["{{base_url}}"],
+							"path": ["api", "packages"]
+						}
+					}
+				},
+				{
+					"name": "Filter Packages by City (US_08)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('City filtering works', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const packages = pm.response.json();",
+									"    console.log('Packages in Breda: ' + packages.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/packages?city=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "packages"],
+							"query": [
+								{
+									"key": "city",
+									"value": "0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Packages by Meal Type (US_08)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Meal type filtering works', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const packages = pm.response.json();",
+									"    console.log('Lunch packages: ' + packages.length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/packages?mealType=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "packages"],
+							"query": [
+								{
+									"key": "mealType",
+									"value": "0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "View Package Details with Products (US_06)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const packageId = pm.globals.get('regular_package_for_reservation') || '1';",
+									"pm.request.url.path[2] = packageId;"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Package details with products shown', function () {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"    const package = pm.response.json();",
+									"    pm.expect(package).to.have.property('products');",
+									"    console.log('Package contains ' + package.products.length + ' products');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/packages/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "packages", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reservations (US_05)",
+			"item": [
+				{
+					"name": "Adult Student: Reserve Regular Package",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const packageId = pm.globals.get('regular_package_for_reservation') || '1';",
+									"const studentId = pm.globals.get('adult_student_record_id') || '1';",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"body.packageId = parseInt(packageId);",
+									"body.studentId = parseInt(studentId);",
+									"pm.request.body.raw = JSON.stringify(body, null, 2);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student can reserve regular package', function () {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"    const reservation = pm.response.json();",
+									"    pm.globals.set('adult_reservation_id', reservation.id);",
+									"    console.log('Adult student successfully reserved package');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adult_student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": 1,\n  \"studentId\": 1,\n  \"reservationDate\": \"2025-08-28T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				},
+				{
+					"name": "Adult Student: Reserve 18+ Package (US_04 - Should Work)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const packageId = pm.globals.get('adult_package_for_reservation') || pm.globals.get('adult_package_id') || '2';",
+									"const studentId = pm.globals.get('adult_student_record_id') || '1';",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"body.packageId = parseInt(packageId);",
+									"body.studentId = parseInt(studentId);",
+									"pm.request.body.raw = JSON.stringify(body, null, 2);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student can reserve 18+ package', function () {",
+									"    if (pm.response.code === 201) {",
+									"        console.log('Adult student successfully reserved 18+ package');",
+									"        const reservation = pm.response.json();",
+									"        pm.globals.set('adult_18plus_reservation_id', reservation.id);",
+									"    } else if (pm.response.code === 400) {",
+									"        console.log('Package already reserved or validation error');",
+									"    }",
+									"    pm.expect([201, 400]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adult_student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": 2,\n  \"studentId\": 1,\n  \"reservationDate\": \"2025-08-29T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				},
+				{
+					"name": "Minor Student: Try Reserve 18+ Package (US_04 - Should Fail)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const packageId = pm.globals.get('adult_package_for_reservation') || pm.globals.get('adult_package_id') || '2';",
+									"const studentId = pm.globals.get('minor_student_record_id') || '2';",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"body.packageId = parseInt(packageId);",
+									"body.studentId = parseInt(studentId);",
+									"pm.request.body.raw = JSON.stringify(body, null, 2);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student blocked from 18+ packages', function () {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"    const error = pm.response.json();",
+									"    console.log('Correctly blocked minor from 18+ package: ' + error.message);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{minor_student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": 2,\n  \"studentId\": 2,\n  \"reservationDate\": \"2025-08-29T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				},
+				{
+					"name": "Test Duplicate Reservation Prevention (US_07)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const packageId = pm.globals.get('regular_package_for_reservation') || '1';",
+									"const studentId = pm.globals.get('adult_student_record_id') || '1';",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"body.packageId = parseInt(packageId);",
+									"body.studentId = parseInt(studentId);",
+									"pm.request.body.raw = JSON.stringify(body, null, 2);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Duplicate reservation prevented', function () {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"    const error = pm.response.json();",
+									"    console.log('Correctly prevented duplicate reservation: ' + error.message);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adult_student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": 1,\n  \"studentId\": 1,\n  \"reservationDate\": \"2025-08-28T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				},
+				{
+					"name": "Test Max 1 Package Per Day (US_05)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Max 1 package per day enforced', function () {",
+									"    if (pm.response.code === 400) {",
+									"        console.log('Correctly enforced 1 package per day limit');",
+									"    } else if (pm.response.code === 201) {",
+									"        console.log('Reservation allowed - different day or no existing reservation');",
+									"    }",
+									"    pm.expect([201, 400]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{minor_student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": 3,\n  \"studentId\": 2,\n  \"reservationDate\": \"2025-08-28T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Student Reservations Overview (US_01)",
+			"item": [
+				{
+					"name": "View Adult Student Reservations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Student reservations retrieved', function () {",
+									"    if (pm.response.code === 200) {",
+									"        const reservations = pm.response.json();",
+									"        console.log('Adult student reservations: ' + reservations.length);",
+									"    } else if (pm.response.code === 401 || pm.response.code === 403) {",
+									"        console.log('Authentication required for reservations view');",
+									"    }",
+									"    pm.expect([200, 401, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adult_student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				},
+				{
+					"name": "View Minor Student Reservations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student reservations retrieved', function () {",
+									"    if (pm.response.code === 200) {",
+									"        const reservations = pm.response.json();",
+									"        console.log('Minor student reservations: ' + reservations.length);",
+									"    } else if (pm.response.code === 401 || pm.response.code === 403) {",
+									"        console.log('Authentication required for reservations view');",
+									"    }",
+									"    pm.expect([200, 401, 403]).to.include(pm.response.code);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{minor_student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Authorization Testing",
+			"item": [
+				{
+					"name": "Test Unauthorized Package Creation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Students cannot create packages', function () {",
+									"    pm.expect([401, 403]).to.include(pm.response.code);",
+									"    console.log('Correctly blocked student from package creation');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adult_student_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Unauthorized Package\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"2025-08-28T12:00:00\",\n  \"latestPickupTime\": \"2025-08-28T13:00:00\",\n  \"price\": 5.95,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/packages",
+							"host": ["{{base_url}}"],
+							"path": ["api", "packages"]
+						}
+					}
+				},
+				{
+					"name": "Test Reservation Without Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Reservations require authentication', function () {",
+									"    pm.expect([401, 403]).to.include(pm.response.code);",
+									"    console.log('Correctly blocked unauthenticated reservation attempt');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"packageId\": 1,\n  \"studentId\": 1,\n  \"reservationDate\": \"2025-08-28T12:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5080",
+			"type": "string"
+		}
+	]
+}

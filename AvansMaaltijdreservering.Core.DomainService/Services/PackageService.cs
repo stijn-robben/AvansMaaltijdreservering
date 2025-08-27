@@ -60,8 +60,7 @@ public class PackageService : IPackageService
         // Set the canteen relationship
         package.CanteenId = employee.CanteenId;
         
-        if (package.ContainsAlcohol())
-            package.Is18Plus = true;
+        // Is18Plus is now automatically calculated from ContainsAlcohol()
 
         _logger.LogInfo($"Creating package: {package.Name} by employee {employeeId}");
         return await _packageRepository.AddAsync(package);
@@ -82,8 +81,7 @@ public class PackageService : IPackageService
 
         await ValidatePackageForEmployeeAsync(package, employee);
 
-        if (package.ContainsAlcohol())
-            package.Is18Plus = true;
+        // Is18Plus is now automatically calculated from ContainsAlcohol()
 
         _logger.LogInfo($"Updating package: {package.Id} by employee {employeeId}");
         return await _packageRepository.UpdateAsync(package);
