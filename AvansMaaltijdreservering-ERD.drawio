@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2025-08-28T20:30:00.000Z" agent="5.0" etag="draw.io" version="24.7.17">
+  <diagram name="Avans Maaltijdreservering ERD" id="avans-erd">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Student Entity -->
+        <mxCell id="student-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="80" y="80" width="200" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="student-title" value="Student" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;" parent="student-entity" vertex="1">
+          <mxGeometry y="30" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="student-attrs" value="+ Id: int (PK)&lt;br&gt;+ Name: string&lt;br&gt;+ DateOfBirth: DateTime&lt;br&gt;+ StudentNumber: string&lt;br&gt;+ Email: string&lt;br&gt;+ StudyCity: City&lt;br&gt;+ PhoneNumber: string&lt;br&gt;+ NoShowCount: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="student-entity" vertex="1">
+          <mxGeometry y="60" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="student-methods" value="+ GetAge(): int&lt;br&gt;+ IsAdult(): bool&lt;br&gt;+ IsBlocked(): bool&lt;br&gt;+ HasReservationOnDate(): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=2;" parent="student-entity" vertex="1">
+          <mxGeometry y="180" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Package Entity -->
+        <mxCell id="package-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="400" y="80" width="220" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="package-title" value="Package" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;" parent="package-entity" vertex="1">
+          <mxGeometry y="30" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="package-attrs" value="+ Id: int (PK)&lt;br&gt;+ Name: string&lt;br&gt;+ City: City&lt;br&gt;+ CanteenLocation: CanteenLocation&lt;br&gt;+ PickupTime: DateTime&lt;br&gt;+ LatestPickupTime: DateTime&lt;br&gt;+ Price: decimal&lt;br&gt;+ MealType: MealType&lt;br&gt;+ ReservedByStudentId: int? (FK)&lt;br&gt;+ CanteenId: int? (FK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="package-entity" vertex="1">
+          <mxGeometry y="60" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="package-methods" value="+ ContainsAlcohol(): bool&lt;br&gt;+ IsValidPickupTime(): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=2;" parent="package-entity" vertex="1">
+          <mxGeometry y="200" width="220" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Product Entity -->
+        <mxCell id="product-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="720" y="80" width="180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="product-title" value="Product" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;" parent="product-entity" vertex="1">
+          <mxGeometry y="30" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="product-attrs" value="+ Id: int (PK)&lt;br&gt;+ Name: string&lt;br&gt;+ ContainsAlcohol: bool&lt;br&gt;+ PhotoUrl: string?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="product-entity" vertex="1">
+          <mxGeometry y="60" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Canteen Entity -->
+        <mxCell id="canteen-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="400" y="400" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="canteen-title" value="Canteen" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;" parent="canteen-entity" vertex="1">
+          <mxGeometry y="30" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="canteen-attrs" value="+ Id: int (PK)&lt;br&gt;+ Location: CanteenLocation&lt;br&gt;+ City: City&lt;br&gt;+ ServesWarmMeals: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="canteen-entity" vertex="1">
+          <mxGeometry y="60" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- CanteenEmployee Entity -->
+        <mxCell id="employee-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="80" y="400" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="employee-title" value="CanteenEmployee" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;" parent="employee-entity" vertex="1">
+          <mxGeometry y="30" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="employee-attrs" value="+ Id: int (PK)&lt;br&gt;+ Name: string&lt;br&gt;+ EmployeeNumber: string&lt;br&gt;+ CanteenId: int (FK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="employee-entity" vertex="1">
+          <mxGeometry y="60" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="employee-methods" value="+ WorksAtCanteen(): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=2;" parent="employee-entity" vertex="1">
+          <mxGeometry y="140" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ApplicationUser Entity -->
+        <mxCell id="appuser-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="720" y="400" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="appuser-title" value="ApplicationUser" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;" parent="appuser-entity" vertex="1">
+          <mxGeometry y="30" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="appuser-attrs" value="+ Id: string (PK)&lt;br&gt;+ UserName: string&lt;br&gt;+ Email: string&lt;br&gt;+ StudentNumber: string?&lt;br&gt;+ EmployeeNumber: string?&lt;br&gt;+ StudentId: int?&lt;br&gt;+ CanteenEmployeeId: int?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="appuser-entity" vertex="1">
+          <mxGeometry y="60" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- PackageProducts Junction Entity (Many-to-Many) -->
+        <mxCell id="packageproducts-entity" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="520" y="250" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="packageproducts-title" value="PackageProducts" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=12;" parent="packageproducts-entity" vertex="1">
+          <mxGeometry y="30" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="packageproducts-attrs" value="+ PackagesId: int (FK)&lt;br&gt;+ ProductsId: int (FK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="packageproducts-entity" vertex="1">
+          <mxGeometry y="60" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Relationships -->
+        
+        <!-- Student -> Package (One-to-Many: Reservations) -->
+        <mxCell id="student-package-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;" parent="1" source="student-entity" target="package-entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="student-package-label" value="reserves" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="student-package-rel" vertex="1" connectable="0">
+          <mxGeometry x="0.1" y="-1" relative="1" as="geometry">
+            <mxPoint x="-10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Package -> Canteen (Many-to-One) -->
+        <mxCell id="package-canteen-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERone;endFill=0;startArrow=ERmany;startFill=0;" parent="1" source="package-entity" target="canteen-entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="package-canteen-label" value="belongs to" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="package-canteen-rel" vertex="1" connectable="0">
+          <mxGeometry x="0.1" y="-1" relative="1" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- CanteenEmployee -> Canteen (Many-to-One) -->
+        <mxCell id="employee-canteen-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERone;endFill=0;startArrow=ERmany;startFill=0;" parent="1" source="employee-entity" target="canteen-entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="employee-canteen-label" value="works at" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="employee-canteen-rel" vertex="1" connectable="0">
+          <mxGeometry x="0.1" y="-1" relative="1" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Package -> PackageProducts (One-to-Many) -->
+        <mxCell id="package-packageproducts-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;" parent="1" source="package-entity" target="packageproducts-entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Product -> PackageProducts (One-to-Many) -->
+        <mxCell id="product-packageproducts-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;" parent="1" source="product-entity" target="packageproducts-entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ApplicationUser -> Student (One-to-One) -->
+        <mxCell id="appuser-student-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;dashed=1;" parent="1" source="appuser-entity" target="student-entity" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="350" />
+              <mxPoint x="180" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="appuser-student-label" value="authenticates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="appuser-student-rel" vertex="1" connectable="0">
+          <mxGeometry x="0.1" y="-1" relative="1" as="geometry">
+            <mxPoint x="30" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ApplicationUser -> CanteenEmployee (One-to-One) -->
+        <mxCell id="appuser-employee-rel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;dashed=1;" parent="1" source="appuser-entity" target="employee-entity" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="480" />
+              <mxPoint x="280" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="appuser-employee-label" value="authenticates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="appuser-employee-rel" vertex="1" connectable="0">
+          <mxGeometry x="0.1" y="-1" relative="1" as="geometry">
+            <mxPoint x="30" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-title" value="Legend" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="80" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-content" value="PK = Primary Key&lt;br&gt;FK = Foreign Key&lt;br&gt;&lt;br&gt;Enums:&lt;br&gt;• City: BREDA, TILBURG, DENBOSCH&lt;br&gt;• CanteenLocation: BREDA_LA_BUILDING, BREDA_LD_BUILDING, BREDA_HA_BUILDING, DENBOSCH_BUILDING, TILBURG_BUILDING&lt;br&gt;• MealType: Bread, WarmEveningMeal, Drink, Snack, Lunch, Breakfast&lt;br&gt;&lt;br&gt;Relationships:&lt;br&gt;• Solid lines: Direct FK relationships&lt;br&gt;• Dashed lines: Authentication links" style="text;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="120" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Title -->
+        <mxCell id="diagram-title" value="Avans Maaltijdreservering - Entity Relationship Diagram" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry x="400" y="20" width="480" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -41,17 +41,37 @@ public class ReservationService : IReservationService
             if (package == null)
                 throw new ReservationException("Package not found", packageId, studentId);
 
+            // US_07: First-come-first-served with user-friendly error message  
             if (package.IsReserved)
-                throw new ReservationException("Package is already reserved", packageId, studentId);
+                throw new ReservationException("😔 Sorry! This package has already been reserved by another student. Please check our other available packages.", packageId, studentId);
 
-            if (!await _studentService.CanReservePackageAsync(studentId, package))
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null)
+                throw new ReservationException("Student not found", packageId, studentId);
+
+            // Provide specific error messages for each business rule violation
+            if (student.IsBlocked())
+                throw new StudentBlockedException(studentId, student.NoShowCount);
+
+            // US_04: Age restriction with clear message  
+            if (package.ContainsAlcohol() && !student.IsAdultOnDate(package.PickupTime.Date))
             {
-                var student = await _studentRepository.GetByIdAsync(studentId);
-                if (student?.IsBlocked() == true)
-                    throw new StudentBlockedException(studentId, student.NoShowCount);
-                    
-                throw new ReservationException("Student cannot reserve this package", packageId, studentId);
+                var ageOnPickup = student.GetAgeOnDate(package.PickupTime.Date);
+                throw new ReservationException($"🚫 This package contains alcohol and requires you to be 18+ on pickup date. You will be {ageOnPickup} years old on {package.PickupTime.Date:dd-MM-yyyy}.", packageId, studentId);
             }
+
+            // US_05: One package per day with helpful message
+            if (student.HasReservationOnDate(package.PickupTime.Date))
+            {
+                var existingReservation = student.Reservations?.FirstOrDefault(r => r.PickupTime.Date == package.PickupTime.Date);
+                var conflictDate = existingReservation?.PickupTime.Date ?? package.PickupTime.Date;
+                throw new ReservationException($"📅 You already have a package reservation for {conflictDate:dd-MM-yyyy}. You can only reserve one package per day.", packageId, studentId);
+            }
+
+            // General eligibility check (shouldn't happen if above checks pass)
+            var canReserve = await _studentService.CanReservePackageAsync(studentId, package);
+            if (!canReserve)
+                throw new ReservationException("You are not eligible to reserve this package", packageId, studentId);
 
             package.ReservedByStudentId = studentId;
             var updatedPackage = await _packageRepository.UpdateAsync(package);
@@ -128,9 +148,14 @@ public class ReservationService : IReservationService
     {
         var package = await _packageRepository.GetByIdAsync(packageId);
         if (package == null)
+        {
+            _logger.LogInfo($"Package {packageId} not found for eligibility check");
             return false;
-            
-        return await _studentService.CanReservePackageAsync(studentId, package);
+        }
+        
+        var isEligible = await _studentService.CanReservePackageAsync(studentId, package);
+        _logger.LogInfo($"Eligibility check for student {studentId} and package {packageId}: {isEligible}");
+        return isEligible;
     }
 
     public async Task<bool> IsPackageAvailableAsync(int packageId)

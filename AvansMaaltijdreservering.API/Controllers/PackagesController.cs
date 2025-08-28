@@ -52,10 +52,10 @@ public class PackagesController : ControllerBase
     }
 
     /// <summary>
-    /// Get specific package by ID (RMM Level 2)
+    /// Get specific package by ID with product information (US_06 - RMM Level 2)
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ActionResult<Package>> GetPackage(int id)
+    public async Task<ActionResult<PackageDetailsDto>> GetPackage(int id)
     {
         try
         {
@@ -64,7 +64,21 @@ public class PackagesController : ControllerBase
             if (package == null)
                 return NotFound(new { message = $"Package with ID {id} not found" });
 
-            return Ok(package);
+            var packageDto = new PackageDetailsDto
+            {
+                Package = package.ToResponseDto(),
+                ProductDisclaimer = "⚠️ DISCLAIMER: The products shown are examples based on historical data. The actual contents may vary and are not guaranteed. Products are subject to availability.",
+                ReservationInfo = new ReservationInfoDto
+                {
+                    IsAvailable = !package.IsReserved && package.IsValidPickupTime(),
+                    RequiresAge18Plus = package.Is18Plus,
+                    PickupWindow = $"{package.PickupTime:HH:mm} - {package.LatestPickupTime:HH:mm}",
+                    Location = $"{package.City} - {package.CanteenLocation}",
+                    ReservationDeadline = package.PickupTime.AddHours(-2) // 2 hours before pickup
+                }
+            };
+
+            return Ok(packageDto);
         }
         catch (Exception ex)
         {

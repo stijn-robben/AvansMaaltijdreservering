@@ -39,10 +39,14 @@ public class Student
     
     public int GetAge()
     {
-        var today = DateTime.Today;
-        var age = today.Year - DateOfBirth.Year;
+        return GetAgeOnDate(DateTime.Today);
+    }
+    
+    public int GetAgeOnDate(DateTime date)
+    {
+        var age = date.Year - DateOfBirth.Year;
         
-        if (DateOfBirth.Date > today.AddYears(-age))
+        if (DateOfBirth.Date > date.AddYears(-age))
         {
             age--;
         }
@@ -55,6 +59,11 @@ public class Student
         return GetAge() >= 18;
     }
     
+    public bool IsAdultOnDate(DateTime date)
+    {
+        return GetAgeOnDate(date) >= 18;
+    }
+    
     public bool IsBlocked()
     {
         return NoShowCount >= 2;
@@ -62,6 +71,12 @@ public class Student
     
     public bool HasReservationOnDate(DateTime date)
     {
-        return Reservations.Any(r => r.PickupTime.Date == date.Date);
+        if (Reservations == null)
+        {
+            // Reservations collection not loaded - this should not happen in normal operation
+            return false;
+        }
+        
+        return Reservations.Any(r => r != null && r.PickupTime.Date == date.Date);
     }
 }

@@ -135,19 +135,35 @@ public class AccountController : ControllerBase
             }
             else if (request.Role == IdentityRoles.Student)
             {
-                // Generate a more user-friendly name from email
-                var emailPrefix = request.Email.Split('@')[0];
-                var displayName = emailPrefix.Replace(".", " ").Replace("_", " ");
-                displayName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName.ToLower());
+                // Validate required student fields
+                if (string.IsNullOrEmpty(request.Name))
+                {
+                    return BadRequest(new { message = "Name is required for student registration" });
+                }
+                
+                if (!request.DateOfBirth.HasValue)
+                {
+                    return BadRequest(new { message = "Date of birth is required for student registration" });
+                }
+                
+                if (!request.StudyCity.HasValue)
+                {
+                    return BadRequest(new { message = "Study city is required for student registration" });
+                }
+                
+                if (string.IsNullOrEmpty(request.PhoneNumber))
+                {
+                    return BadRequest(new { message = "Phone number is required for student registration" });
+                }
                 
                 var student = new Student
                 {
-                    Name = displayName,
+                    Name = request.Name,
                     Email = request.Email,
                     StudentNumber = request.StudentNumber ?? GenerateUniqueStudentNumber(),
-                    PhoneNumber = "06-12345678", // Default phone number
-                    StudyCity = City.BREDA, // Default city
-                    DateOfBirth = DateTime.Now.AddYears(-20) // Default age 20
+                    PhoneNumber = request.PhoneNumber,
+                    StudyCity = request.StudyCity.Value,
+                    DateOfBirth = request.DateOfBirth.Value
                 };
                 
                 var createdStudent = await _studentRepository.AddAsync(student);
@@ -305,6 +321,12 @@ public class RegisterRequest
     public string? StudentNumber { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public CanteenLocation? WorksAtCanteen { get; set; }
+    
+    // Student-specific fields
+    public string? Name { get; set; }
+    public DateTime? DateOfBirth { get; set; }
+    public City? StudyCity { get; set; }
+    public string? PhoneNumber { get; set; }
 }
 
 public class UserInfo

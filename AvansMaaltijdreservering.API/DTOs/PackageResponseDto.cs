@@ -40,3 +40,19 @@ public class StudentResponseDto
     public bool IsAdult { get; set; }
     public bool IsBlocked { get; set; }
 }
+
+public class PackageDetailsDto
+{
+    public PackageResponseDto Package { get; set; } = new();
+    public string ProductDisclaimer { get; set; } = string.Empty;
+    public ReservationInfoDto ReservationInfo { get; set; } = new();
+}
+
+public class ReservationInfoDto
+{
+    public bool IsAvailable { get; set; }
+    public bool RequiresAge18Plus { get; set; }
+    public string PickupWindow { get; set; } = string.Empty;
+    public string Location { get; set; } = string.Empty;
+    public DateTime ReservationDeadline { get; set; }
+}

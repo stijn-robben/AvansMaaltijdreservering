@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "3 - Cleanup Workflow",
-		"description": "Resets the application state to original condition by cleaning up test data created in Collections 1 and 2. Removes test users, reservations, and packages to restore clean state for future testing.",
+		"description": "🧹 RESET EVERYTHING: Cleans up all test data created in Collections 1 and 2. Cancels student reservations, deletes test packages, removes test users (both employees and students), and resets the system to a clean state for future testing. Run this after testing Collections 1 & 2.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -48,10 +48,91 @@
 						}
 					}
 				}
+				},
+				{
+					"name": "Login Adult Student for Cleanup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student cleanup login', function () {",
+									"    if (pm.response.code === 200) {",
+									"        const response = pm.response.json();",
+									"        pm.globals.set('cleanup_adult_token', response.token);",
+									"        console.log('✅ Adult student authenticated for cleanup');",
+									"    } else {",
+									"        console.log('⚠️  Adult student login failed - may not exist');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"adult.student@avans.nl\",\n  \"password\": \"Test123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "account", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login Minor Student for Cleanup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student cleanup login', function () {",
+									"    if (pm.response.code === 200) {",
+									"        const response = pm.response.json();",
+									"        pm.globals.set('cleanup_minor_token', response.token);",
+									"        console.log('✅ Minor student authenticated for cleanup');",
+									"    } else {",
+									"        console.log('⚠️  Minor student login failed - may not exist');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"minor.student@avans.nl\",\n  \"password\": \"Test123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "account", "login"]
+						}
+					}
+				}
 			]
 		},
 		{
-			"name": "Reservation Cleanup",
+			"name": "🧹 Reservation Cleanup",
 			"item": [
 				{
 					"name": "Cancel Adult Student Reservation",
@@ -87,7 +168,12 @@
 					],
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{cleanup_adult_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/reservations/1",
 							"host": ["{{base_url}}"],
@@ -127,7 +213,12 @@
 					],
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization", 
+								"value": "Bearer {{cleanup_adult_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/reservations/2",
 							"host": ["{{base_url}}"],

@@ -67,15 +67,36 @@ public class StudentService : IStudentService
         var student = await _studentRepository.GetByIdAsync(studentId);
         if (student == null) return false;
 
+        // Check if student is blocked due to no-shows (US_10)
         if (student.IsBlocked())
+        {
+            _logger.LogInfo($"Student {studentId} is blocked due to {student.NoShowCount} no-shows");
             return false;
+        }
 
-        if (package.Is18Plus && !student.IsAdult())
+        // US_04: Age validation on pickup date, not current date
+        var containsAlcohol = package.ContainsAlcohol();
+        var isAdult = student.IsAdultOnDate(package.PickupTime.Date);
+        _logger.LogInfo($"StudentService: Package {package.Id} containsAlcohol: {containsAlcohol}, Products count: {package.Products?.Count ?? 0}, student adult: {isAdult}");
+        
+        if (containsAlcohol && !isAdult)
+        {
+            var ageOnPickup = student.GetAgeOnDate(package.PickupTime.Date);
+            _logger.LogInfo($"Student {studentId} will be {ageOnPickup} years old on pickup date - cannot reserve 18+ package");
             return false;
+        }
 
-        if (student.HasReservationOnDate(package.PickupTime.Date))
+        // US_05: Max 1 package per pickup day
+        var hasReservation = student.HasReservationOnDate(package.PickupTime.Date);
+        _logger.LogInfo($"Student {studentId} hasReservationOnDate {package.PickupTime.Date:yyyy-MM-dd}: {hasReservation}, Reservations count: {student.Reservations?.Count ?? 0}");
+        
+        if (hasReservation)
+        {
+            _logger.LogInfo($"Student {studentId} already has reservation on {package.PickupTime.Date:yyyy-MM-dd}");
             return false;
+        }
 
+        _logger.LogInfo($"Student {studentId} is eligible for package {package.Id}");
         return true;
     }
 }

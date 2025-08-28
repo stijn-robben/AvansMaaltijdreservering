@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AvansMaaltijdreservering.Core.Domain.Entities;
+using AvansMaaltijdreservering.Core.Domain.Exceptions;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 using AvansMaaltijdreservering.Infrastructure.Identity;
 
@@ -61,6 +62,18 @@ public class ReservationsController : ControllerBase
             return CreatedAtAction(
                 nameof(GetMyReservations), 
                 new { message = "Reservation created successfully" });
+        }
+        catch (ReservationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (StudentBlockedException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (BusinessRuleException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
         catch (UnauthorizedAccessException ex)
         {
