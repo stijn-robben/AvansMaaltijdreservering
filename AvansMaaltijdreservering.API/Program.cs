@@ -62,7 +62,7 @@ builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddSingleton<IPackageLockService, PackageLockService>();
 
 // Register Authorization Service
-builder.Services.AddScoped<AvansMaaltijdreservering.Infrastructure.Identity.IAuthorizationService, AvansMaaltijdreservering.Infrastructure.Identity.AuthorizationService>();
+builder.Services.AddScoped<AvansMaaltijdreservering.Infrastructure.Identity.IUserAuthorizationService, AvansMaaltijdreservering.Infrastructure.Identity.UserAuthorizationService>();
 
 // Register Logging Service
 builder.Services.AddScoped<ILoggerService, LoggerService>();

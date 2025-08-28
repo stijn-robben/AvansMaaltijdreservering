@@ -5,6 +5,7 @@ using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 using AvansMaaltijdreservering.Infrastructure.Identity;
 using AvansMaaltijdreservering.API.DTOs;
+using AvansMaaltijdreservering.API.Extensions;
 
 namespace AvansMaaltijdreservering.API.Controllers;
 
@@ -13,11 +14,11 @@ namespace AvansMaaltijdreservering.API.Controllers;
 public class PackagesController : ControllerBase
 {
     private readonly IPackageService _packageService;
-    private readonly Infrastructure.Identity.IAuthorizationService _authService;
+    private readonly Infrastructure.Identity.IUserAuthorizationService _authService;
 
     public PackagesController(
         IPackageService packageService,
-        Infrastructure.Identity.IAuthorizationService authService)
+        Infrastructure.Identity.IUserAuthorizationService authService)
     {
         _packageService = packageService;
         _authService = authService;
@@ -27,7 +28,7 @@ public class PackagesController : ControllerBase
     /// Get all available packages (RMM Level 2)
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Package>>> GetAvailablePackages(
+    public async Task<ActionResult<IEnumerable<PackageResponseDto>>> GetAvailablePackages(
         [FromQuery] City? city = null,
         [FromQuery] MealType? mealType = null)
     {
@@ -41,7 +42,8 @@ public class PackagesController : ControllerBase
             if (mealType.HasValue)
                 packages = packages.Where(p => p.MealType == mealType.Value);
 
-            return Ok(packages);
+            var packageDtos = packages.Select(p => p.ToResponseDto());
+            return Ok(packageDtos);
         }
         catch (Exception ex)
         {

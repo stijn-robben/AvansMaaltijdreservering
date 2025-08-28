@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvansMaaltijdreservering.Infrastructure.Identity;
 
-public class AuthorizationService : IAuthorizationService
+public class UserAuthorizationService : IUserAuthorizationService
 {
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public AuthorizationService(UserManager<ApplicationUser> userManager)
+    public UserAuthorizationService(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
     }

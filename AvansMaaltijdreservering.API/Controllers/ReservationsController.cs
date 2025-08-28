@@ -8,15 +8,14 @@ namespace AvansMaaltijdreservering.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = IdentityRoles.Student)]
 public class ReservationsController : ControllerBase
 {
     private readonly IReservationService _reservationService;
-    private readonly Infrastructure.Identity.IAuthorizationService _authService;
+    private readonly Infrastructure.Identity.IUserAuthorizationService _authService;
 
     public ReservationsController(
         IReservationService reservationService,
-        Infrastructure.Identity.IAuthorizationService authService)
+        Infrastructure.Identity.IUserAuthorizationService authService)
     {
         _reservationService = reservationService;
         _authService = authService;
@@ -26,6 +25,7 @@ public class ReservationsController : ControllerBase
     /// Get current student's reservations
     /// </summary>
     [HttpGet]
+    [Authorize(Roles = IdentityRoles.Student)]
     public async Task<ActionResult<IEnumerable<Package>>> GetMyReservations()
     {
         try
@@ -47,6 +47,7 @@ public class ReservationsController : ControllerBase
     /// Make a reservation for a package
     /// </summary>
     [HttpPost("{packageId}")]
+    [Authorize(Roles = IdentityRoles.Student)]
     public async Task<IActionResult> MakeReservation(int packageId)
     {
         try
@@ -83,6 +84,7 @@ public class ReservationsController : ControllerBase
     /// Cancel a reservation
     /// </summary>
     [HttpDelete("{packageId}")]
+    [Authorize(Roles = IdentityRoles.Student)]
     public async Task<IActionResult> CancelReservation(int packageId)
     {
         try
@@ -113,6 +115,7 @@ public class ReservationsController : ControllerBase
     /// Check if student is eligible for a specific package
     /// </summary>
     [HttpGet("eligibility/{packageId}")]
+    [Authorize(Roles = IdentityRoles.Student)]
     public async Task<ActionResult<bool>> CheckEligibility(int packageId)
     {
         try

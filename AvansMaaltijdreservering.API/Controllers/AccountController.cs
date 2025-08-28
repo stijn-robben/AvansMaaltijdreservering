@@ -118,10 +118,15 @@ public class AccountController : ControllerBase
                     return BadRequest(new { message = $"Canteen at location {request.WorksAtCanteen.Value} not found. Please run database seed script first." });
                 }
 
+                // Generate a more user-friendly name from email
+                var emailPrefix = request.Email.Split('@')[0];
+                var displayName = emailPrefix.Replace(".", " ").Replace("_", " ");
+                displayName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName.ToLower());
+                
                 var employee = new CanteenEmployee
                 {
-                    Name = request.Email.Split('@')[0], // Use email prefix as name
-                    EmployeeNumber = request.EmployeeNumber ?? $"EMP{DateTime.Now:yyyyMMddHHmmss}",
+                    Name = displayName,
+                    EmployeeNumber = request.EmployeeNumber ?? GenerateUniqueEmployeeNumber(),
                     CanteenId = canteen.Id
                 };
                 
@@ -130,11 +135,16 @@ public class AccountController : ControllerBase
             }
             else if (request.Role == IdentityRoles.Student)
             {
+                // Generate a more user-friendly name from email
+                var emailPrefix = request.Email.Split('@')[0];
+                var displayName = emailPrefix.Replace(".", " ").Replace("_", " ");
+                displayName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(displayName.ToLower());
+                
                 var student = new Student
                 {
-                    Name = request.Email.Split('@')[0], // Use email prefix as name
+                    Name = displayName,
                     Email = request.Email,
-                    StudentNumber = request.StudentNumber ?? $"STU{DateTime.Now:yyyyMMddHHmmss}",
+                    StudentNumber = request.StudentNumber ?? GenerateUniqueStudentNumber(),
                     PhoneNumber = "06-12345678", // Default phone number
                     StudyCity = City.BREDA, // Default city
                     DateOfBirth = DateTime.Now.AddYears(-20) // Default age 20
@@ -234,7 +244,13 @@ public class AccountController : ControllerBase
             claims.Add(new Claim("StudentId", user.StudentId.Value.ToString()));
         }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "YourDefaultSecretKeyThatIsLongEnoughForHMAC256"));
+        var jwtKey = _configuration["Jwt:Key"];
+        if (string.IsNullOrEmpty(jwtKey))
+        {
+            throw new InvalidOperationException("JWT:Key configuration is missing. Please configure a secure JWT key.");
+        }
+        
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var expires = DateTime.Now.AddHours(24);
 
@@ -247,6 +263,20 @@ public class AccountController : ControllerBase
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateUniqueEmployeeNumber()
+    {
+        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+        var random = new Random().Next(100, 999);
+        return $"EMP{timestamp}{random}";
+    }
+
+    private string GenerateUniqueStudentNumber()
+    {
+        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+        var random = new Random().Next(100, 999);
+        return $"STU{timestamp}{random}";
     }
 }
 
@@ -273,8 +303,6 @@ public class RegisterRequest
     public string Role { get; set; } = string.Empty;
     public string? EmployeeNumber { get; set; }
     public string? StudentNumber { get; set; }
-    public int? CanteenEmployeeId { get; set; }
-    public int? StudentId { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public CanteenLocation? WorksAtCanteen { get; set; }
 }

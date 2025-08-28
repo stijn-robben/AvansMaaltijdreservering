@@ -14,7 +14,6 @@ public class Student
     public string Name { get; set; } = string.Empty;
     
     [Required(ErrorMessage = "Date of birth is required")]
-    [DataType(DataType.Date)]
     [MinimumAge(16)]
     public DateTime DateOfBirth { get; set; }
     
@@ -24,15 +23,12 @@ public class Student
     
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress(ErrorMessage = "Invalid email format")]
-    [StringLength(100, ErrorMessage = "Email must not exceed 100 characters")]
     public string Email { get; set; } = string.Empty;
     
-    [Required(ErrorMessage = "Study city is required")]
     public City StudyCity { get; set; }
     
     [Required(ErrorMessage = "Phone number is required")]
     [Phone(ErrorMessage = "Invalid phone number format")]
-    [StringLength(20, MinimumLength = 10, ErrorMessage = "Phone number must be between 10 and 20 characters")]
     public string PhoneNumber { get; set; } = string.Empty;
     
     [Range(0, int.MaxValue, ErrorMessage = "No-show count cannot be negative")]
@@ -43,8 +39,15 @@ public class Student
     
     public int GetAge()
     {
-        return DateTime.Today.Year - DateOfBirth.Year - 
-               (DateTime.Today.DayOfYear < DateOfBirth.DayOfYear ? 1 : 0);
+        var today = DateTime.Today;
+        var age = today.Year - DateOfBirth.Year;
+        
+        if (DateOfBirth.Date > today.AddYears(-age))
+        {
+            age--;
+        }
+        
+        return age;
     }
     
     public bool IsAdult()

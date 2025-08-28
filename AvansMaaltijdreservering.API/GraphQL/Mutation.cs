@@ -10,7 +10,7 @@ public class Mutation
     // Make a reservation for a package
     public async Task<ReservationResult> MakeReservation(
         [Service] IReservationService reservationService,
-        [Service] Infrastructure.Identity.IAuthorizationService authService,
+        [Service] Infrastructure.Identity.IUserAuthorizationService authService,
         ClaimsPrincipal claimsPrincipal,
         int packageId)
     {
@@ -49,7 +49,7 @@ public class Mutation
     // Cancel a reservation
     public async Task<ReservationResult> CancelReservation(
         [Service] IReservationService reservationService,
-        [Service] Infrastructure.Identity.IAuthorizationService authService,
+        [Service] Infrastructure.Identity.IUserAuthorizationService authService,
         ClaimsPrincipal claimsPrincipal,
         int packageId)
     {

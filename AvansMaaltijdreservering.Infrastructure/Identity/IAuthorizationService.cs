@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace AvansMaaltijdreservering.Infrastructure.Identity;
 
-public interface IAuthorizationService
+public interface IUserAuthorizationService
 {
     Task<int?> GetCurrentStudentIdAsync(ClaimsPrincipal user);
     Task<int?> GetCurrentCanteenEmployeeIdAsync(ClaimsPrincipal user);

@@ -12,11 +12,11 @@ namespace AvansMaaltijdreservering.API.Controllers;
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
-    private readonly Infrastructure.Identity.IAuthorizationService _authService;
+    private readonly Infrastructure.Identity.IUserAuthorizationService _authService;
 
     public StudentsController(
         IStudentService studentService,
-        Infrastructure.Identity.IAuthorizationService authService)
+        Infrastructure.Identity.IUserAuthorizationService authService)
     {
         _studentService = studentService;
         _authService = authService;
