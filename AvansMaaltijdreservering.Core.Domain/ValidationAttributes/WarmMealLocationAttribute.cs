@@ -35,9 +35,10 @@ public class WarmMealLocationAttribute : ValidationAttribute
         if (mealType == MealType.WarmEveningMeal)
         {
             // Locations that don't serve warm meals:
-            // BREDA_LD_BUILDING, BREDA_HA_BUILDING
+            // BREDA_LD_BUILDING, BREDA_HA_BUILDING, TILBURG_BUILDING
             if (canteenLocation == CanteenLocation.BREDA_LD_BUILDING || 
-                canteenLocation == CanteenLocation.BREDA_HA_BUILDING)
+                canteenLocation == CanteenLocation.BREDA_HA_BUILDING ||
+                canteenLocation == CanteenLocation.TILBURG_BUILDING)
             {
                 return new ValidationResult(
                     "This canteen location does not serve warm meals.",
