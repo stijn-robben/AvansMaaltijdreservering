@@ -11,4 +11,5 @@ public interface IReservationService
     Task RegisterNoShowAsync(int packageId, int employeeId);
     Task<bool> IsStudentEligibleForPackageAsync(int studentId, int packageId);
     Task<bool> IsPackageAvailableAsync(int packageId);
+    Task<bool> CanStudentReservePackageAsync(int studentId, int packageId);
 }

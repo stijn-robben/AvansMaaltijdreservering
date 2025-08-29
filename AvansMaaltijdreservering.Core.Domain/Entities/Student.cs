@@ -71,12 +71,6 @@ public class Student
     
     public bool HasReservationOnDate(DateTime date)
     {
-        if (Reservations == null)
-        {
-            // Reservations collection not loaded - this should not happen in normal operation
-            return false;
-        }
-        
-        return Reservations.Any(r => r != null && r.PickupTime.Date == date.Date);
+        return Reservations?.Any(r => r?.PickupTime.Date == date.Date) ?? false;
     }
 }

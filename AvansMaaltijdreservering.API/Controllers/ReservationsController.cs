@@ -139,11 +139,12 @@ public class ReservationsController : ControllerBase
 
             var isEligible = await _reservationService.IsStudentEligibleForPackageAsync(currentStudentId.Value, packageId);
             var isAvailable = await _reservationService.IsPackageAvailableAsync(packageId);
+            var canReserve = await _reservationService.CanStudentReservePackageAsync(currentStudentId.Value, packageId);
             
             return Ok(new { 
                 isEligible = isEligible,
                 isAvailable = isAvailable,
-                canReserve = isEligible && isAvailable
+                canReserve = canReserve
             });
         }
         catch (Exception ex)

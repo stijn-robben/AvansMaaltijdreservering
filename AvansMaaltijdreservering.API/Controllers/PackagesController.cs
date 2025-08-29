@@ -154,9 +154,9 @@ public class PackagesController : ControllerBase
             if (currentEmployeeId == null)
                 return Forbid();
 
-            var updatedPackage = await _packageService.UpdatePackageAsync(package, currentEmployeeId.Value);
+            await _packageService.UpdatePackageAsync(package, currentEmployeeId.Value);
             
-            return Ok(updatedPackage);
+            return NoContent();
         }
         catch (UnauthorizedAccessException ex)
         {

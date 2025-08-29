@@ -62,6 +62,35 @@ public class StudentService : IStudentService
         return student?.IsBlocked() ?? false;
     }
 
+    public async Task<bool> IsStudentEligibleForPackageAsync(int studentId, Package package)
+    {
+        var student = await _studentRepository.GetByIdAsync(studentId);
+        if (student == null) return false;
+
+        // Check if student is blocked due to no-shows (US_10)
+        if (student.IsBlocked())
+        {
+            _logger.LogInfo($"Student {studentId} is blocked due to {student.NoShowCount} no-shows");
+            return false;
+        }
+
+        // US_04: Age validation on pickup date, not current date
+        var containsAlcohol = package.ContainsAlcohol();
+        var isAdult = student.IsAdultOnDate(package.PickupTime.Date);
+        _logger.LogInfo($"StudentService: Package {package.Id} containsAlcohol: {containsAlcohol}, student adult: {isAdult}");
+        
+        if (containsAlcohol && !isAdult)
+        {
+            var ageOnPickup = student.GetAgeOnDate(package.PickupTime.Date);
+            _logger.LogInfo($"Student {studentId} will be {ageOnPickup} years old on pickup date - cannot reserve 18+ package");
+            return false;
+        }
+
+        // Student is eligible based on basic requirements (age, not blocked)
+        _logger.LogInfo($"Student {studentId} is eligible for package {package.Id}");
+        return true;
+    }
+
     public async Task<bool> CanReservePackageAsync(int studentId, Package package)
     {
         var student = await _studentRepository.GetByIdAsync(studentId);

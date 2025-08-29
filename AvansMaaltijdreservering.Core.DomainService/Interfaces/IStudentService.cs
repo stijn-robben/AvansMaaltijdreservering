@@ -12,5 +12,6 @@ public interface IStudentService
     Task<Student> UpdateStudentAsync(Student student);
     
     Task<bool> IsStudentBlockedAsync(int studentId);
+    Task<bool> IsStudentEligibleForPackageAsync(int studentId, Package package);
     Task<bool> CanReservePackageAsync(int studentId, Package package);
 }

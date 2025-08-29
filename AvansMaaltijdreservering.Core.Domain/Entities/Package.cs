@@ -51,16 +51,6 @@ public class Package
     
     public bool ContainsAlcohol()
     {
-        if (Products == null)
-        {
-            return false;
-        }
-        
-        if (!Products.Any())
-        {
-            return false;
-        }
-        
-        return Products.Any(p => p != null && p.ContainsAlcohol);
+        return Products?.Any(p => p?.ContainsAlcohol == true) ?? false;
     }
 }

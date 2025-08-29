@@ -904,8 +904,9 @@
 									"    console.log(`   Eligible: ${result.isEligible}`);",
 									"    console.log(`   Available: ${result.isAvailable}`);",
 									"    ",
-									"    // Adult should be eligible since Package 8 is on tomorrow (different from reservations)",
-									"    pm.expect(result.isEligible).to.be.false; // False because already has reservation tomorrow",
+									"    // Adult should be eligible (18+, not blocked) but canReserve should be false",
+									"    pm.expect(result.isEligible).to.be.true; // Adult is eligible (basic requirements)",
+									"    pm.expect(result.canReserve).to.be.false; // But cannot reserve (US_05 - already has reservation same day)",
 									"});"
 								],
 								"type": "text/javascript"

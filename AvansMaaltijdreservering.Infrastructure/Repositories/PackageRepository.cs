@@ -85,6 +85,16 @@ public class PackageRepository : IPackageRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Package>> GetPackagesByStudentIdAsync(int studentId)
+    {
+        return await _context.Packages
+            .Include(p => p.Products)
+            .Include(p => p.Canteen)
+            .Where(p => p.ReservedByStudentId == studentId)
+            .OrderBy(p => p.PickupTime)
+            .ToListAsync();
+    }
+
     public async Task<Package> AddAsync(Package package)
     {
         _context.Packages.Add(package);

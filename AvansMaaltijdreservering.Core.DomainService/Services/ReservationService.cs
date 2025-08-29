@@ -108,8 +108,7 @@ public class ReservationService : IReservationService
 
     public async Task<IEnumerable<Package>> GetStudentReservationsAsync(int studentId)
     {
-        var packages = await _packageRepository.GetAllAsync();
-        return packages.Where(p => p.ReservedByStudentId == studentId);
+        return await _packageRepository.GetPackagesByStudentIdAsync(studentId);
     }
 
     public async Task RegisterNoShowAsync(int packageId, int employeeId)
@@ -153,7 +152,7 @@ public class ReservationService : IReservationService
             return false;
         }
         
-        var isEligible = await _studentService.CanReservePackageAsync(studentId, package);
+        var isEligible = await _studentService.IsStudentEligibleForPackageAsync(studentId, package);
         _logger.LogInfo($"Eligibility check for student {studentId} and package {packageId}: {isEligible}");
         return isEligible;
     }
@@ -162,5 +161,19 @@ public class ReservationService : IReservationService
     {
         var package = await _packageRepository.GetByIdAsync(packageId);
         return package != null && !package.IsReserved && package.PickupTime > DateTime.Now;
+    }
+
+    public async Task<bool> CanStudentReservePackageAsync(int studentId, int packageId)
+    {
+        var package = await _packageRepository.GetByIdAsync(packageId);
+        if (package == null)
+        {
+            _logger.LogInfo($"Package {packageId} not found for reservation check");
+            return false;
+        }
+        
+        var canReserve = await _studentService.CanReservePackageAsync(studentId, package);
+        _logger.LogInfo($"Can reserve check for student {studentId} and package {packageId}: {canReserve}");
+        return canReserve;
     }
 }

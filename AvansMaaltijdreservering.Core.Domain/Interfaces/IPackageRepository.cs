@@ -12,6 +12,7 @@ public interface IPackageRepository
     Task<IEnumerable<Package>> GetPackagesByCanteenIdAsync(int canteenId);
     Task<IEnumerable<Package>> GetPackagesByCityAsync(City city);
     Task<IEnumerable<Package>> GetPackagesByMealTypeAsync(MealType mealType);
+    Task<IEnumerable<Package>> GetPackagesByStudentIdAsync(int studentId);
     Task<Package> AddAsync(Package package);
     Task<Package> UpdateAsync(Package package);
     Task DeleteAsync(int id);
