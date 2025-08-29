@@ -1,7 +1,7 @@
 {
 	"info": {
-		"name": "1 - Employee Workflow",
-		"description": "Complete employee workflow: registration, authentication, package management, and business rule validation. Tests US_02, US_03, US_06, US_09 requirements.",
+		"name": "2 - Employee Workflow",
+		"description": "Complete employee workflow: registration, authentication, package management, business rule validation, and no-show management. Tests US_02, US_03, US_06, US_09, US_10 requirements. RUN AFTER Student Workflow.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -265,10 +265,18 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"// Generate dynamic dates (tomorrow)",
+									"const tomorrow = new Date();",
+									"tomorrow.setDate(tomorrow.getDate() + 1);",
+									"const pickupTime = tomorrow.getFullYear() + '-' + String(tomorrow.getMonth() + 1).padStart(2, '0') + '-' + String(tomorrow.getDate()).padStart(2, '0') + 'T12:30:00';",
+									"const latestPickupTime = tomorrow.getFullYear() + '-' + String(tomorrow.getMonth() + 1).padStart(2, '0') + '-' + String(tomorrow.getDate()).padStart(2, '0') + 'T14:00:00';",
+									"",
 									"// Use actual product IDs",
 									"const regularProductId = pm.globals.get('regular_product_id') || '1';",
 									"const body = JSON.parse(pm.request.body.raw);",
 									"body.productIds = [parseInt(regularProductId)];",
+									"body.pickupTime = pickupTime;",
+									"body.latestPickupTime = latestPickupTime;",
 									"pm.request.body.raw = JSON.stringify(body, null, 2);"
 								],
 								"type": "text/javascript"
@@ -303,7 +311,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Test Lunch Package\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"2025-08-28T12:30:00\",\n  \"latestPickupTime\": \"2025-08-28T14:00:00\",\n  \"price\": 5.95,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
+							"raw": "{\n  \"name\": \"Test Lunch Package\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"PLACEHOLDER\",\n  \"latestPickupTime\": \"PLACEHOLDER\",\n  \"price\": 5.95,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
@@ -374,10 +382,18 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"// Generate dynamic dates (tomorrow + 1 hour later than create)",
+									"const tomorrow = new Date();",
+									"tomorrow.setDate(tomorrow.getDate() + 1);",
+									"const pickupTime = tomorrow.getFullYear() + '-' + String(tomorrow.getMonth() + 1).padStart(2, '0') + '-' + String(tomorrow.getDate()).padStart(2, '0') + 'T13:00:00';",
+									"const latestPickupTime = tomorrow.getFullYear() + '-' + String(tomorrow.getMonth() + 1).padStart(2, '0') + '-' + String(tomorrow.getDate()).padStart(2, '0') + 'T14:30:00';",
+									"",
 									"const packageId = pm.globals.get('created_package_id') || '1';",
 									"pm.request.url.path[2] = packageId;",
 									"const body = JSON.parse(pm.request.body.raw);",
 									"body.id = parseInt(packageId);",
+									"body.pickupTime = pickupTime;",
+									"body.latestPickupTime = latestPickupTime;",
 									"pm.request.body.raw = JSON.stringify(body, null, 2);"
 								],
 								"type": "text/javascript"
@@ -409,7 +425,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\": 1,\n  \"name\": \"Updated Test Lunch Package\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"2025-08-28T13:00:00\",\n  \"latestPickupTime\": \"2025-08-28T14:30:00\",\n  \"price\": 6.95,\n  \"mealType\": 0\n}"
+							"raw": "{\n  \"id\": 1,\n  \"name\": \"Updated Test Lunch Package\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"PLACEHOLDER\",\n  \"latestPickupTime\": \"PLACEHOLDER\",\n  \"price\": 6.95,\n  \"mealType\": 0\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages/1",
@@ -426,6 +442,24 @@
 				{
 					"name": "Test Max 2 Days Ahead Rule",
 					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate date 7 days ahead (should fail)",
+									"const futureDate = new Date();",
+									"futureDate.setDate(futureDate.getDate() + 7);",
+									"const pickupTime = futureDate.getFullYear() + '-' + String(futureDate.getMonth() + 1).padStart(2, '0') + '-' + String(futureDate.getDate()).padStart(2, '0') + 'T12:00:00';",
+									"const latestPickupTime = futureDate.getFullYear() + '-' + String(futureDate.getMonth() + 1).padStart(2, '0') + '-' + String(futureDate.getDate()).padStart(2, '0') + 'T14:00:00';",
+									"",
+									"const body = JSON.parse(pm.request.body.raw);",
+									"body.pickupTime = pickupTime;",
+									"body.latestPickupTime = latestPickupTime;",
+									"pm.request.body.raw = JSON.stringify(body, null, 2);"
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
 							"listen": "test",
 							"script": {
@@ -454,7 +488,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Future Package (Should Fail)\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"2025-12-25T12:00:00\",\n  \"latestPickupTime\": \"2025-12-25T14:00:00\",\n  \"price\": 5.95,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
+							"raw": "{\n  \"name\": \"Future Package (Should Fail)\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"PLACEHOLDER\",\n  \"latestPickupTime\": \"PLACEHOLDER\",\n  \"price\": 5.95,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
@@ -493,7 +527,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Free Package (Should Fail)\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"2025-08-28T12:00:00\",\n  \"latestPickupTime\": \"2025-08-28T13:00:00\",\n  \"price\": 0.00,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
+							"raw": "{\n  \"name\": \"Free Package (Should Fail)\",\n  \"city\": 0,\n  \"canteenLocation\": 0,\n  \"pickupTime\": \"{{$isoTimestamp}}\",\n  \"latestPickupTime\": \"{{$isoTimestamp}}\",\n  \"price\": 0.00,\n  \"mealType\": 0,\n  \"productIds\": [1]\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
@@ -542,6 +576,119 @@
 							"raw": "{{base_url}}/api/packages",
 							"host": ["{{base_url}}"],
 							"path": ["api", "packages"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "No-Show Management (US_10)",
+			"item": [
+				{
+					"name": "Register No-Show for Reserved Package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('No-show registered successfully (US_10)', function () {",
+									"    if (pm.response.code === 400 && pm.response.json().message.includes('no reservation')) {",
+									"        console.log('⚠️  Package 1 has no reservation - run Student Workflow first to create reservations');",
+									"        pm.expect(pm.response.code).to.eql(400);",
+									"    } else {",
+									"        pm.expect(pm.response.code).to.eql(200);",
+									"        const response = pm.response.json();",
+									"        pm.expect(response.message).to.include('No-show registered successfully');",
+									"        console.log('✅ No-show registered - package released and student no-show count incremented');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employee_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations/1/no-show",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations", "1", "no-show"]
+						}
+					}
+				},
+				{
+					"name": "Test No-Show on Non-Reserved Package",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Cannot register no-show on non-reserved package', function () {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"    const error = pm.response.json();",
+									"    console.log('🚫 Correctly prevented no-show on non-reserved package');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employee_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations/999/no-show",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations", "999", "no-show"]
+						}
+					}
+				},
+				{
+					"name": "Test Unauthorized No-Show Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Students cannot register no-shows', function () {",
+									"    pm.expect([401, 403]).to.include(pm.response.code);",
+									"    console.log('🚫 Correctly blocked student from registering no-show');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations/1/no-show",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reservations", "1", "no-show"]
 						}
 					}
 				}

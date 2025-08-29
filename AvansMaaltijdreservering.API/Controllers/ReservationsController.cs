@@ -152,4 +152,35 @@ public class ReservationsController : ControllerBase
             return StatusCode(500, new { message = "Internal server error", details = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Register a no-show for a reserved package (Employee only)
+    /// </summary>
+    [HttpPost("{packageId}/no-show")]
+    [Authorize(Roles = IdentityRoles.CanteenEmployee)]
+    public async Task<IActionResult> RegisterNoShow(int packageId)
+    {
+        try
+        {
+            var currentEmployeeId = await _authService.GetCurrentCanteenEmployeeIdAsync(User);
+            if (currentEmployeeId == null)
+                return Forbid();
+
+            await _reservationService.RegisterNoShowAsync(packageId, currentEmployeeId.Value);
+            
+            return Ok(new { message = "No-show registered successfully. Package has been released and student's no-show count updated." });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+        }
+    }
 }

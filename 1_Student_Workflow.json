@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "cfe190bd-de66-4aa5-8657-f28b7ca425ab",
-		"name": "2 - Student Workflow",
-		"description": "Complete student workflow: authentication, dashboard overview, package browsing with filtering, reservations, and comprehensive business rule testing. Tests ALL student user stories: US_01, US_04, US_05, US_06, US_07, US_08.",
+		"name": "1 - Student Workflow",
+		"description": "Complete student workflow: authentication, dashboard overview, package browsing with filtering, reservations, and comprehensive business rule testing. Tests ALL student user stories: US_01, US_04, US_05, US_06, US_07, US_08. RUN THIS FIRST to create reservations.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "26200282"
 	},
