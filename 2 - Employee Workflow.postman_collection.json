@@ -1,8 +1,10 @@
 {
 	"info": {
+		"_postman_id": "9eba51d0-4854-4cd2-8e62-bbe0b14566be",
 		"name": "2 - Employee Workflow",
 		"description": "Complete employee workflow: registration, authentication, package management, business rule validation, and no-show management. Tests US_02, US_03, US_06, US_09, US_10 requirements. RUN AFTER Student Workflow.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26200282"
 	},
 	"item": [
 		{
@@ -39,10 +41,17 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/register",
-							"host": ["{{base_url}}"],
-							"path": ["api", "account", "register"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"register"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Employee Login",
@@ -77,10 +86,17 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "account", "login"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Verify Authentication",
@@ -109,10 +125,17 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/account/me",
-							"host": ["{{base_url}}"],
-							"path": ["api", "account", "me"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"me"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -147,10 +170,16 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/products",
-							"host": ["{{base_url}}"],
-							"path": ["api", "products"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "View Specific Product",
@@ -185,10 +214,17 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/products/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "products", "1"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -226,10 +262,17 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/packages/my-canteen",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages", "my-canteen"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages",
+								"my-canteen"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "View All Available Packages (US_02)",
@@ -253,10 +296,16 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Create Regular Package",
@@ -315,10 +364,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Create 18+ Package (US_04)",
@@ -370,10 +425,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Update Package (Own Location Only)",
@@ -429,10 +490,17 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages", "1"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages",
+								"1"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -492,10 +560,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Test Price Validation",
@@ -531,10 +605,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Test Warm Meal Restriction (US_09)",
@@ -574,10 +654,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -621,10 +707,18 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/reservations/1/no-show",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reservations", "1", "no-show"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"1",
+								"no-show"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Test No-Show on Non-Reserved Package",
@@ -657,10 +751,18 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/reservations/999/no-show",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reservations", "999", "no-show"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"999",
+								"no-show"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Test Unauthorized No-Show Registration",
@@ -687,10 +789,18 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/reservations/1/no-show",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reservations", "1", "no-show"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"1",
+								"no-show"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -727,10 +837,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		}

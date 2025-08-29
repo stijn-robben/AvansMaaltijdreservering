@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cfe190bd-de66-4aa5-8657-f28b7ca425ab",
+		"_postman_id": "a14ec2d6-5fd4-4fe9-bcc1-c9fcdeee8bc0",
 		"name": "1 - Student Workflow",
 		"description": "Complete student workflow: authentication, dashboard overview, package browsing with filtering, reservations, and comprehensive business rule testing. Tests ALL student user stories: US_01, US_04, US_05, US_06, US_07, US_08. RUN THIS FIRST to create reservations.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "🔐 Authentication",
+			"name": "Authentication",
 			"item": [
 				{
 					"name": "Register Adult Student (Born 1995)",
@@ -193,7 +193,7 @@
 			]
 		},
 		{
-			"name": "📊 Student Dashboard (US_01)",
+			"name": "Student Dashboard (US_01)",
 			"item": [
 				{
 					"name": "Adult Student Dashboard Overview",
@@ -290,7 +290,7 @@
 			]
 		},
 		{
-			"name": "📦 Package Browsing & Filtering (US_06, US_08)",
+			"name": "Package Browsing & Filtering (US_06, US_08)",
 			"item": [
 				{
 					"name": "Browse All Available Packages",
@@ -482,7 +482,7 @@
 			]
 		},
 		{
-			"name": "🛒 Reservations & Business Rules (US_04, US_05, US_07)",
+			"name": "Reservations & Business Rules (US_04, US_05, US_07)",
 			"item": [
 				{
 					"name": "Adult: Reserve Package 1 (Tomorrow)",
@@ -792,7 +792,7 @@
 			]
 		},
 		{
-			"name": "📋 My Reservations (US_01)",
+			"name": "My Reservations (US_01)",
 			"item": [
 				{
 					"name": "View Adult Student Reservations",
@@ -884,7 +884,7 @@
 			]
 		},
 		{
-			"name": "🔍 Eligibility Checking",
+			"name": "Eligibility Checking",
 			"item": [
 				{
 					"name": "Check Adult Eligibility for Available Package",
@@ -995,7 +995,7 @@
 			]
 		},
 		{
-			"name": "🚫 Authorization Testing",
+			"name": "Authorization Testing",
 			"item": [
 				{
 					"name": "Test Unauthorized Package Creation",

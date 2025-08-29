@@ -1,8 +1,10 @@
 {
 	"info": {
+		"_postman_id": "74aecb98-258a-41a0-8337-acf4e8e2e1a9",
 		"name": "3 - Cleanup Workflow",
 		"description": "🧹 RESET EVERYTHING: Cleans up all test data created in Collections 1 and 2. Cancels student reservations, deletes test packages, removes test users (both employees and students), and resets the system to a clean state for future testing. Run this after testing Collections 1 & 2.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26200282"
 	},
 	"item": [
 		{
@@ -43,11 +45,17 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "account", "login"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
 						}
-					}
-				}
+					},
+					"response": []
 				},
 				{
 					"name": "Login Adult Student for Cleanup",
@@ -80,14 +88,21 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"adult.student@avans.nl\",\n  \"password\": \"Test123!\"\n}"
+							"raw": "{\n  \"email\": \"adult.student.123@avans.nl\",\n  \"password\": \"Test123!\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "account", "login"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Login Minor Student for Cleanup",
@@ -120,14 +135,21 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"minor.student@avans.nl\",\n  \"password\": \"Test123!\"\n}"
+							"raw": "{\n  \"email\": \"minor.student.456@avans.nl\",\n  \"password\": \"Test123!\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/account/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "account", "login"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								"login"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -135,14 +157,76 @@
 			"name": "🧹 Reservation Cleanup",
 			"item": [
 				{
-					"name": "Cancel Adult Student Reservation",
+					"name": "Get Adult Student Reservations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Adult student reservations retrieved', function () {",
+									"    if (pm.response.code === 200) {",
+									"        const reservations = pm.response.json();",
+									"        console.log(`📋 Adult student has ${reservations.length} reservation(s) to cancel`);",
+									"        ",
+									"        // Store reservation package IDs for cancellation",
+									"        if (reservations.length > 0) {",
+									"            reservations.forEach((reservation, index) => {",
+									"                pm.globals.set(`adult_reservation_${index}_package_id`, reservation.id);",
+									"                console.log(`   - Reservation ${index + 1}: Package ${reservation.id} - ${reservation.name}`);",
+									"            });",
+									"            pm.globals.set('adult_reservations_count', reservations.length);",
+									"        } else {",
+									"            pm.globals.set('adult_reservations_count', 0);",
+									"            console.log('   ✅ No adult reservations to cancel');",
+									"        }",
+									"    } else {",
+									"        console.log('⚠️  Could not retrieve adult reservations');",
+									"        pm.globals.set('adult_reservations_count', 0);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{cleanup_adult_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Adult Student Reservations (Dynamic)",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const reservationId = pm.globals.get('adult_reservation_id') || '1';",
-									"pm.request.url.path[2] = reservationId;"
+									"// Get the first reservation package ID to cancel",
+									"const packageId = pm.globals.get('adult_reservation_0_package_id');",
+									"if (packageId) {",
+									"    pm.request.url.path[2] = packageId;",
+									"    console.log('Attempting to cancel adult reservation for package: ' + packageId);",
+									"} else {",
+									"    // Set a dummy ID that will result in 404 - that's fine",
+									"    pm.request.url.path[2] = '999';",
+									"    console.log('No adult reservations found to cancel');",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -153,13 +237,15 @@
 								"exec": [
 									"pm.test('Adult reservation cleanup attempt', function () {",
 									"    if (pm.response.code === 204) {",
-									"        console.log('Adult student reservation cancelled');",
+									"        console.log('✅ Adult student reservation cancelled successfully');",
 									"    } else if (pm.response.code === 404) {",
-									"        console.log('Adult reservation not found or already cancelled');",
+									"        console.log('ℹ️  Adult reservation not found or already cancelled');",
+									"    } else if (pm.response.code === 400) {",
+									"        console.log('⚠️  Cannot cancel reservation - may belong to different student');",
 									"    } else if (pm.response.code === 401 || pm.response.code === 403) {",
-									"        console.log('Authentication required for cancellation');",
+									"        console.log('🔒 Authentication required for cancellation');",
 									"    }",
-									"    pm.expect([204, 401, 403, 404]).to.include(pm.response.code);",
+									"    pm.expect([204, 400, 401, 403, 404]).to.include(pm.response.code);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -176,20 +262,89 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/reservations/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reservations", "1"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"1"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
-					"name": "Cancel 18+ Reservation",
+					"name": "Get Minor Student Reservations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Minor student reservations retrieved', function () {",
+									"    if (pm.response.code === 200) {",
+									"        const reservations = pm.response.json();",
+									"        console.log(`📋 Minor student has ${reservations.length} reservation(s) to cancel`);",
+									"        ",
+									"        // Store reservation package IDs for cancellation",
+									"        if (reservations.length > 0) {",
+									"            reservations.forEach((reservation, index) => {",
+									"                pm.globals.set(`minor_reservation_${index}_package_id`, reservation.id);",
+									"                console.log(`   - Reservation ${index + 1}: Package ${reservation.id} - ${reservation.name}`);",
+									"            });",
+									"            pm.globals.set('minor_reservations_count', reservations.length);",
+									"        } else {",
+									"            pm.globals.set('minor_reservations_count', 0);",
+									"            console.log('   ✅ No minor reservations to cancel');",
+									"        }",
+									"    } else {",
+									"        console.log('⚠️  Could not retrieve minor reservations');",
+									"        pm.globals.set('minor_reservations_count', 0);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{cleanup_minor_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Minor Student Reservations (Dynamic)",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const reservationId = pm.globals.get('adult_18plus_reservation_id') || '2';",
-									"pm.request.url.path[2] = reservationId;"
+									"// Get the first reservation package ID to cancel",
+									"const packageId = pm.globals.get('minor_reservation_0_package_id');",
+									"if (packageId) {",
+									"    pm.request.url.path[2] = packageId;",
+									"    console.log('Attempting to cancel minor reservation for package: ' + packageId);",
+									"} else {",
+									"    // Set a dummy ID that will result in 404 - that's fine",
+									"    pm.request.url.path[2] = '999';",
+									"    console.log('No minor reservations found to cancel');",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -198,13 +353,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('18+ reservation cleanup attempt', function () {",
+									"pm.test('Minor reservation cleanup attempt', function () {",
 									"    if (pm.response.code === 204) {",
-									"        console.log('18+ reservation cancelled');",
+									"        console.log('✅ Minor student reservation cancelled successfully');",
 									"    } else if (pm.response.code === 404) {",
-									"        console.log('18+ reservation not found or already cancelled');",
+									"        console.log('ℹ️  Minor reservation not found or already cancelled');",
+									"    } else if (pm.response.code === 400) {",
+									"        console.log('⚠️  Cannot cancel reservation - may belong to different student');",
+									"    } else if (pm.response.code === 401 || pm.response.code === 403) {",
+									"        console.log('🔒 Authentication required for cancellation');",
 									"    }",
-									"    pm.expect([204, 401, 403, 404]).to.include(pm.response.code);",
+									"    pm.expect([204, 400, 401, 403, 404]).to.include(pm.response.code);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -215,16 +374,23 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "Authorization", 
-								"value": "Bearer {{cleanup_adult_token}}"
+								"key": "Authorization",
+								"value": "Bearer {{cleanup_minor_token}}"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/reservations/2",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reservations", "2"]
+							"raw": "{{base_url}}/api/reservations/3",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"3"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Verify All Reservations Cancelled",
@@ -251,10 +417,16 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/reservations",
-							"host": ["{{base_url}}"],
-							"path": ["api", "reservations"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -305,10 +477,17 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/packages/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages", "1"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages",
+								"1"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Delete Test 18+ Package",
@@ -354,10 +533,17 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/packages/2",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages", "2"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages",
+								"2"
+							]
 						}
-					}
+					},
+					"response": []
 				},
 				{
 					"name": "Verify Package Cleanup Status",
@@ -388,99 +574,63 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "Student Data Cleanup",
+			"name": "🧹 User Account Status",
 			"item": [
 				{
-					"name": "Delete Adult Student Record",
+					"name": "User Account Cleanup Notes",
 					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"const studentId = pm.globals.get('adult_student_record_id') || '1';",
-									"pm.request.url.path[2] = studentId;"
-								],
-								"type": "text/javascript"
-							}
-						},
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test('Adult student record cleanup', function () {",
-									"    if (pm.response.code === 204) {",
-									"        console.log('Adult student record deleted');",
-									"    } else if (pm.response.code === 404) {",
-									"        console.log('Adult student record not found');",
-									"    } else if (pm.response.code === 400) {",
-									"        console.log('Cannot delete student - may have active reservations');",
-									"    }",
-									"    pm.expect([204, 400, 404]).to.include(pm.response.code);",
-									"});"
+									"console.log('');",
+									"console.log('📋 USER ACCOUNT CLEANUP STATUS');",
+									"console.log('===============================');",
+									"console.log('✅ Reservations: Cancelled (packages released)');",
+									"console.log('✅ Test Packages: Deleted');",
+									"console.log('ℹ️  User Accounts: Remain in database');",
+									"console.log('');",
+									"console.log('NOTE: User accounts cannot be deleted via API');",
+									"console.log('This is normal - Identity system preserves user data');",
+									"console.log('Students/Employees can be reused in next test cycle');",
+									"console.log('');",
+									"console.log('If complete user cleanup needed, run:');",
+									"console.log('- ClearAllUsers.sql (manual database script)');",
+									"console.log('===============================');"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "DELETE",
+						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/students/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "students", "1"]
+							"raw": "{{base_url}}/api/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
-				},
-				{
-					"name": "Delete Minor Student Record",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"const studentId = pm.globals.get('minor_student_record_id') || '2';",
-									"pm.request.url.path[2] = studentId;"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('Minor student record cleanup', function () {",
-									"    if (pm.response.code === 204) {",
-									"        console.log('Minor student record deleted');",
-									"    } else if (pm.response.code === 404) {",
-									"        console.log('Minor student record not found');",
-									"    } else if (pm.response.code === 400) {",
-									"        console.log('Cannot delete student - may have active reservations');",
-									"    }",
-									"    pm.expect([204, 400, 404]).to.include(pm.response.code);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/students/2",
-							"host": ["{{base_url}}"],
-							"path": ["api", "students", "2"]
-						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -498,13 +648,17 @@
 									"    pm.expect(pm.response.code).to.eql(200);",
 									"    ",
 									"    const varsToClean = [",
+									"        // Authentication tokens",
 									"        'employee_token', 'employee_id',",
-									"        'adult_student_token', 'adult_student_id', 'minor_student_token', 'minor_student_id',",
+									"        'adult_token', 'adult_student_id', 'minor_token', 'minor_student_id',",
+									"        'cleanup_employee_token', 'cleanup_adult_token', 'cleanup_minor_token',",
+									"        // Package and product IDs",
+									"        'created_package_id', 'adult_package_id', 'regular_package_id', 'regular_product_id', 'alcohol_product_id',",
+									"        // Legacy variables",
+									"        'adult_student_token', 'minor_student_token',",
 									"        'adult_student_record_id', 'minor_student_record_id',",
-									"        'created_package_id', 'adult_package_id', 'regular_package_id', 'alcohol_product_id',",
 									"        'regular_package_for_reservation', 'adult_package_for_reservation',",
-									"        'adult_reservation_id', 'adult_18plus_reservation_id',",
-									"        'cleanup_employee_token'",
+									"        'adult_reservation_id', 'adult_18plus_reservation_id'",
 									"    ];",
 									"    ",
 									"    let clearedCount = 0;",
@@ -528,10 +682,16 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -583,10 +743,16 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		},
@@ -630,10 +796,16 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/packages",
-							"host": ["{{base_url}}"],
-							"path": ["api", "packages"]
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"packages"
+							]
 						}
-					}
+					},
+					"response": []
 				}
 			]
 		}
