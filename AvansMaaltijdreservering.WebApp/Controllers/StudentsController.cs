@@ -39,9 +39,12 @@ public class StudentsController : Controller
             if (currentUser == null)
                 return RedirectToAction("Login", "Account");
 
-            var student = await _studentService.GetStudentByEmailAsync(currentUser.Email!);
+            var student = await GetCurrentStudentAsync(currentUser);
             if (student == null)
+            {
+                TempData["ErrorMessage"] = "Student record not found. Please contact IT support.";
                 return RedirectToAction("Login", "Account");
+            }
 
             // US_10: Check if student is blocked
             if (student.IsBlocked())
@@ -129,9 +132,12 @@ public class StudentsController : Controller
             if (currentUser == null)
                 return RedirectToAction("Login", "Account");
 
-            var student = await _studentService.GetStudentByEmailAsync(currentUser.Email!);
+            var student = await GetCurrentStudentAsync(currentUser);
             if (student == null)
+            {
+                TempData["ErrorMessage"] = "Student record not found. Please contact IT support.";
                 return RedirectToAction("Login", "Account");
+            }
 
             var reservations = await _reservationService.GetStudentReservationsAsync(student.Id);
 
@@ -163,9 +169,12 @@ public class StudentsController : Controller
             if (currentUser == null)
                 return RedirectToAction("Login", "Account");
 
-            var student = await _studentService.GetStudentByEmailAsync(currentUser.Email!);
+            var student = await GetCurrentStudentAsync(currentUser);
             if (student == null)
+            {
+                TempData["ErrorMessage"] = "Student record not found. Please contact IT support.";
                 return RedirectToAction("Login", "Account");
+            }
 
             var canReserve = await _reservationService.CanStudentReservePackageAsync(student.Id, id);
             var isAvailable = await _reservationService.IsPackageAvailableAsync(id);
@@ -198,9 +207,12 @@ public class StudentsController : Controller
             if (currentUser == null)
                 return RedirectToAction("Login", "Account");
 
-            var student = await _studentService.GetStudentByEmailAsync(currentUser.Email!);
+            var student = await GetCurrentStudentAsync(currentUser);
             if (student == null)
+            {
+                TempData["ErrorMessage"] = "Student record not found. Please contact IT support.";
                 return RedirectToAction("Login", "Account");
+            }
 
             // US_05 & US_07: Attempt reservation with business rule validation
             var reservedPackage = await _reservationService.ReservePackageAsync(packageId, student.Id);
@@ -237,9 +249,12 @@ public class StudentsController : Controller
             if (currentUser == null)
                 return RedirectToAction("Login", "Account");
 
-            var student = await _studentService.GetStudentByEmailAsync(currentUser.Email!);
+            var student = await GetCurrentStudentAsync(currentUser);
             if (student == null)
+            {
+                TempData["ErrorMessage"] = "Student record not found. Please contact IT support.";
                 return RedirectToAction("Login", "Account");
+            }
 
             await _reservationService.CancelReservationAsync(packageId, student.Id);
             
@@ -251,5 +266,32 @@ public class StudentsController : Controller
             TempData["ErrorMessage"] = $"Error cancelling reservation: {ex.Message}";
             return RedirectToAction("Reservations");
         }
+    }
+
+    // Helper Methods
+    private async Task<Student?> GetCurrentStudentAsync(ApplicationUser currentUser)
+    {
+        // Try to get student using the linked StudentId from ApplicationUser
+        if (currentUser.StudentId.HasValue)
+        {
+            var studentById = await _studentService.GetStudentByIdAsync(currentUser.StudentId.Value);
+            if (studentById != null) return studentById;
+        }
+        
+        // Fallback: try to find by email
+        if (!string.IsNullOrEmpty(currentUser.Email))
+        {
+            var studentByEmail = await _studentService.GetStudentByEmailAsync(currentUser.Email);
+            if (studentByEmail != null) return studentByEmail;
+        }
+        
+        // Last resort: try to find by StudentNumber if stored in ApplicationUser
+        if (!string.IsNullOrEmpty(currentUser.StudentNumber))
+        {
+            var studentByNumber = await _studentService.GetStudentByStudentNumberAsync(currentUser.StudentNumber);
+            if (studentByNumber != null) return studentByNumber;
+        }
+        
+        return null;
     }
 }

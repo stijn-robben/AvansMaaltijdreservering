@@ -1,0 +1,230 @@
+@model AvansMaaltijdreservering.WebApp.ViewModels.Employees.EditPackageViewModel
+@{
+    ViewData["Title"] = "Edit Package";
+}
+
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Edit Package</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pencil-fill"></i> Edit Package
+                    </h3>
+                    <p class="mb-0 opacity-75">Update package details - @Model.Name</p>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditPackage" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Package Basic Info -->
+                        <h5 class="mb-3"><i class="bi bi-box2"></i> Package Information</h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label">Package Name *</label>
+                                <input asp-for="Name" class="form-control" placeholder="e.g., Fresh Bread Selection, Evening Meal Deal" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Price" class="form-label">Price (€) *</label>
+                                <input asp-for="Price" class="form-control" placeholder="0.00" step="0.01" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Location & Time -->
+                        <h5 class="mb-3"><i class="bi bi-geo-alt"></i> Location & Timing</h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="City" class="form-label">City</label>
+                                <select asp-for="City" class="form-select">
+                                    <option value="0" selected="@(Model.City == AvansMaaltijdreservering.Core.Domain.Enums.City.BREDA)">Breda</option>
+                                    <option value="1" selected="@(Model.City == AvansMaaltijdreservering.Core.Domain.Enums.City.TILBURG)">Tilburg</option>
+                                    <option value="2" selected="@(Model.City == AvansMaaltijdreservering.Core.Domain.Enums.City.DENBOSCH)">Den Bosch</option>
+                                </select>
+                                <small class="form-text text-muted">Automatically set to your canteen's city</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CanteenLocation" class="form-label">Canteen Location</label>
+                                <select asp-for="CanteenLocation" name="CanteenLocation" class="form-select">
+                                    <option value="0" selected="@((int)Model.CanteenLocation == 0)">Breda - LA Building</option>
+                                    <option value="1" selected="@((int)Model.CanteenLocation == 1)">Breda - LD Building</option>
+                                    <option value="2" selected="@((int)Model.CanteenLocation == 2)">Breda - HA Building</option>
+                                    <option value="3" selected="@((int)Model.CanteenLocation == 3)">Den Bosch Building</option>
+                                    <option value="4" selected="@((int)Model.CanteenLocation == 4)">Tilburg Building</option>
+                                </select>
+                                <small class="form-text text-muted">Set to your assigned canteen</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="PickupTime" class="form-label">Pickup Time *</label>
+                                <input asp-for="PickupTime" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="PickupTime" class="text-danger"></span>
+                                <small class="form-text text-muted">When students can start collecting</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LatestPickupTime" class="form-label">Latest Pickup Time *</label>
+                                <input asp-for="LatestPickupTime" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="LatestPickupTime" class="text-danger"></span>
+                                <small class="form-text text-muted">Final deadline for collection</small>
+                            </div>
+                        </div>
+
+                        <!-- Meal Type -->
+                        <h5 class="mb-3"><i class="bi bi-cup-hot"></i> Meal Category</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="MealType" class="form-label">Meal Type *</label>
+                            <select asp-for="MealType" id="mealTypeSelect" class="form-select">
+                                <option value="0" selected="@(Model.MealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread)">🍞 Bread & Bakery Items</option>
+                                <option value="1" selected="@(Model.MealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal)" id="warmMealOption">🍽️ Warm Evening Meal</option>
+                                <option value="2" selected="@(Model.MealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink)">🥤 Beverages</option>
+                                <option value="3" selected="@(Model.MealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack)">🍿 Snacks & Light Bites</option>
+                                <option value="4" selected="@(Model.MealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch)">🥪 Lunch Items</option>
+                                <option value="5" selected="@(Model.MealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast)">🥐 Breakfast Items</option>
+                            </select>
+                            <span asp-validation-for="MealType" class="text-danger"></span>
+                            <div id="warmMealWarning" style="display: none;"></div>
+                        </div>
+
+                        <!-- Product Selection -->
+                        <h5 class="mb-3"><i class="bi bi-list-check"></i> Example Products</h5>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-info-circle"></i> 
+                            Select products that might be included in this package. These serve as examples for students - actual contents may vary.
+                        </p>
+                        
+                        <div class="row">
+                            @if (Model.AvailableProducts?.Any() == true)
+                            {
+                                @foreach (var product in Model.AvailableProducts)
+                                {
+                                    <div class="col-sm-6 col-lg-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="SelectedProductIds" value="@product.Id" 
+                                                   id="product_@product.Id" checked="@(Model.SelectedProductIds?.Contains(product.Id) == true)" />
+                                            <label class="form-check-label" for="product_@product.Id">
+                                                @product.Name
+                                                @if (product.ContainsAlcohol)
+                                                {
+                                                    <span class="badge bg-warning text-dark ms-1">🔞 18+</span>
+                                                }
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle"></i> No products available. Please contact IT support.
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Dashboard" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Update Package
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Editing Tips</h5>
+                </div>
+                <div class="card-body">
+                    <h6>⚠️ Important Restrictions:</h6>
+                    <ul class="list-unstyled">
+                        <li>✅ Max 2 days ahead planning</li>
+                        <li>✅ Cannot modify reserved packages</li>
+                        <li>✅ Warm meals only at equipped locations</li>
+                        <li>✅ Price must be greater than €0</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h6>💡 Best Practices:</h6>
+                    <ul class="list-unstyled">
+                        <li>📝 Use descriptive package names</li>
+                        <li>💰 Price at 50-70% discount</li>
+                        <li>⏰ Allow 1-2 hour pickup window</li>
+                        <li>🥘 Mix different product types</li>
+                    </ul>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <small><strong>Note:</strong> Changes will be applied immediately. Students will see updated information right away.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // US_09: Show warning for warm meal locations that don't serve them
+    document.addEventListener('DOMContentLoaded', function() {
+        const mealTypeSelect = document.getElementById('mealTypeSelect');
+        const canteenLocationSelect = document.querySelector('select[name="CanteenLocation"]');
+        const warmMealWarning = document.getElementById('warmMealWarning');
+
+        function checkWarmMealRestriction() {
+            const selectedMealType = mealTypeSelect.value;
+            const selectedLocation = canteenLocationSelect.value;
+            
+            // Warm evening meal = 1, restricted locations: LD Building (1), HA Building (2), Tilburg Building (4)
+            if (selectedMealType === '1') {
+                if (selectedLocation === '1' || selectedLocation === '2' || selectedLocation === '4') {
+                    warmMealWarning.style.display = 'block';
+                    warmMealWarning.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' +
+                        '<strong>Invalid Combination:</strong> This location does not serve warm meals. ' +
+                        'Please select a different meal type or location.';
+                    warmMealWarning.className = 'alert alert-danger mt-2';
+                } else {
+                    warmMealWarning.style.display = 'block';
+                    warmMealWarning.innerHTML = '<i class="bi bi-check-circle"></i> ' +
+                        '<strong>Valid Location:</strong> This location can serve warm evening meals.';
+                    warmMealWarning.className = 'alert alert-success mt-2';
+                }
+            } else {
+                warmMealWarning.style.display = 'none';
+            }
+        }
+
+        // Check on page load
+        checkWarmMealRestriction();
+
+        // Check when values change
+        mealTypeSelect.addEventListener('change', checkWarmMealRestriction);
+        canteenLocationSelect.addEventListener('change', checkWarmMealRestriction);
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
