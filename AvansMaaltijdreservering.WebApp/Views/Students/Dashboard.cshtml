@@ -3,28 +3,7 @@
     ViewData["Title"] = "Available Packages";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Welcome Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="bg-success text-white p-4 rounded-3 shadow-sm">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h1 class="h2 mb-1"><i class="bi bi-house-heart-fill"></i> Welcome back, @Model.Student.Name!</h1>
-                        <p class="mb-0 opacity-75">
-                            <i class="bi bi-geo-alt"></i> @Model.Student.StudyCity • 
-                            <i class="bi bi-mortarboard"></i> @Model.Student.StudentNumber
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <a asp-action="Reservations" class="btn btn-light btn-lg">
-                            <i class="bi bi-calendar-check"></i> My Reservations
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="mt-4">
 
     @if (TempData["ErrorMessage"] != null)
     {
@@ -42,45 +21,33 @@
         </div>
     }
 
-    <!-- US_08: Filtering Section -->
+    @Html.AntiForgeryToken()
+    
+    <!-- Meal Type Filter Buttons -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0"><i class="bi bi-funnel"></i> Filter Available Packages</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Dashboard" method="get" class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="bi bi-geo-alt"></i> City</label>
-                            <select name="filterCity" class="form-select">
-                                <option value="0" selected="@(Model.FilterCity == AvansMaaltijdreservering.Core.Domain.Enums.City.BREDA)">Breda</option>
-                                <option value="1" selected="@(Model.FilterCity == AvansMaaltijdreservering.Core.Domain.Enums.City.TILBURG)">Tilburg</option>
-                                <option value="2" selected="@(Model.FilterCity == AvansMaaltijdreservering.Core.Domain.Enums.City.DENBOSCH)">Den Bosch</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label"><i class="bi bi-cup-hot"></i> Meal Type (Optional)</label>
-                            <select name="filterMealType" class="form-select">
-                                <option value="">All meal types</option>
-                                <option value="0" selected="@(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread)">🍞 Bread</option>
-                                <option value="1" selected="@(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal)">🍽️ Warm Evening Meal</option>
-                                <option value="2" selected="@(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink)">🥤 Drink</option>
-                                <option value="3" selected="@(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack)">🍿 Snack</option>
-                                <option value="4" selected="@(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch)">🥪 Lunch</option>
-                                <option value="5" selected="@(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast)">🥐 Breakfast</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary me-2">
-                                <i class="bi bi-search"></i> Filter
-                            </button>
-                            <a asp-action="Dashboard" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-clockwise"></i> Reset
-                            </a>
-                        </div>
-                    </form>
-                </div>
+            <div class="meal-type-filters">
+                <button class="meal-filter-btn @(Model.FilterMealType == null ? "active" : "")" data-meal-type="">
+                    🍽️ All
+                </button>
+                <button class="meal-filter-btn @(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread ? "active" : "")" data-meal-type="0">
+                    🍞 Bread
+                </button>
+                <button class="meal-filter-btn @(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal ? "active" : "")" data-meal-type="1">
+                    🍽️ Warm Evening Meal
+                </button>
+                <button class="meal-filter-btn @(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink ? "active" : "")" data-meal-type="2">
+                    🥤 Drink
+                </button>
+                <button class="meal-filter-btn @(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack ? "active" : "")" data-meal-type="3">
+                    🍿 Snack
+                </button>
+                <button class="meal-filter-btn @(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch ? "active" : "")" data-meal-type="4">
+                    🥪 Lunch
+                </button>
+                <button class="meal-filter-btn @(Model.FilterMealType == AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast ? "active" : "")" data-meal-type="5">
+                    🥐 Breakfast
+                </button>
             </div>
         </div>
     </div>
@@ -88,8 +55,8 @@
     <!-- Available Packages -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3><i class="bi bi-box2-heart"></i> Available Packages (@Model.AvailablePackages.Count())</h3>
-            <p class="text-muted mb-4">Showing packages for <strong>@Model.FilterCity</strong> @(Model.FilterMealType.HasValue ? $"• {Model.FilterMealType}" : "")</p>
+            <h3 class="labrada-font">Available Packages (@Model.AvailablePackages.Count())</h3>
+            <p class="text-muted mb-4 labrada-font">Showing packages for <strong>@(Model.FilterCity.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch"))</strong> @(Model.FilterMealType.HasValue ? $"• {System.Text.RegularExpressions.Regex.Replace(Model.FilterMealType.ToString(), "([a-z])([A-Z])", "$1 $2")}" : "")</p>
         </div>
     </div>
 
@@ -113,106 +80,34 @@
         <div class="row">
             @foreach (var item in Model.AvailablePackages)
             {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm @(!item.CanReserve ? "border-warning" : "")">
-                        @if (item.Package.ContainsAlcohol())
-                        {
-                            <div class="position-absolute top-0 end-0 m-2">
-                                <span class="badge bg-warning text-dark">🔞 18+</span>
-                            </div>
-                        }
+                <div class="col-md-6 col-lg-4">
+                    <div class="package-card">
+                        <h3 class="package-card-title">@item.Package.Name</h3>
+                        <div class="package-card-price">€@item.Package.Price.ToString("0.00")</div>
+                        <div class="package-card-location">@item.Package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("HZ BUILDING", "HZ Building")</div>
+                        <div class="package-card-time">@item.Package.PickupTime.ToString("ddd dd MMM, HH:mm")</div>
                         
-                        <div class="card-header bg-light">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h6 class="card-title mb-0">@item.Package.Name</h6>
-                                </div>
-                                <div class="col-auto">
-                                    <span class="badge bg-success fs-6">€@item.Package.Price.ToString("0.00")</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card-body">
-                            <div class="mb-2">
-                                <small class="text-muted">
-                                    <i class="bi bi-geo-alt-fill"></i> @item.Package.City • @item.Package.CanteenLocation.ToString().Replace("_", " ")
-                                </small>
-                            </div>
-                            
-                            <div class="mb-2">
-                                <small class="text-muted">
-                                    <i class="bi bi-clock-fill"></i> Pick up: <strong>@item.Package.PickupTime.ToString("ddd dd MMM, HH:mm")</strong>
-                                </small>
-                            </div>
-
-                            <div class="mb-2">
-                                <small class="text-muted">
-                                    <i class="bi bi-clock-history"></i> Latest: @item.Package.LatestPickupTime.ToString("HH:mm")
-                                </small>
-                            </div>
-
-                            <!-- US_06: Product Information -->
-                            @if (item.Package.Products.Any())
-                            {
-                                <div class="mb-3">
-                                    <small class="text-muted d-block mb-1">
-                                        <i class="bi bi-list-ul"></i> Example products:
-                                    </small>
-                                    <div class="d-flex flex-wrap gap-1">
-                                        @foreach (var product in item.Package.Products.Take(3))
-                                        {
-                                            <span class="badge bg-light text-dark border">
-                                                @if (product.ContainsAlcohol)
-                                                {
-                                                    <span>🍷</span>
-                                                }
-                                                @product.Name
-                                            </span>
-                                        }
-                                        @if (item.Package.Products.Count() > 3)
-                                        {
-                                            <span class="badge bg-light text-muted border">+@(item.Package.Products.Count() - 3) more</span>
-                                        }
-                                    </div>
-                                    <small class="text-muted fst-italic d-block mt-1">
-                                        <i class="bi bi-info-circle"></i> Products may vary - no guarantee for exact contents
-                                    </small>
-                                </div>
-                            }
-
-                            <!-- US_04, US_07, US_10: Eligibility Status -->
-                            @if (!item.CanReserve && !string.IsNullOrEmpty(item.IneligibilityReason))
-                            {
-                                <div class="alert alert-warning py-2 mb-0">
-                                    <small>@item.IneligibilityReason</small>
-                                </div>
-                            }
-                        </div>
-                        
-                        <div class="card-footer bg-transparent">
+                        <div class="package-buttons">
                             @if (item.CanReserve)
                             {
-                                <div class="d-grid gap-2 d-md-flex">
-                                    <a asp-action="PackageDetails" asp-route-id="@item.Package.Id" class="btn btn-outline-primary flex-fill">
-                                        <i class="bi bi-eye"></i> Details
-                                    </a>
-                                    <form asp-action="ReservePackage" method="post" class="flex-fill">
-                                        <input type="hidden" name="packageId" value="@item.Package.Id" />
-                                        <button type="submit" class="btn btn-success w-100" 
-                                                onclick="return confirm('Reserve this package?')">
-                                            <i class="bi bi-plus-circle"></i> Reserve
-                                        </button>
-                                    </form>
-                                </div>
+                                <button type="button" class="btn-package-reserve" onclick="showReserveModal('@item.Package.Id', '@item.Package.Name')">
+                                    Reserve
+                                </button>
+                                <a asp-action="PackageDetails" asp-route-id="@item.Package.Id" class="btn-package-details">
+                                    Details
+                                </a>
                             }
                             else
                             {
-                                <div class="d-grid">
-                                    <a asp-action="PackageDetails" asp-route-id="@item.Package.Id" class="btn btn-outline-secondary">
-                                        <i class="bi bi-eye"></i> View Details
-                                    </a>
-                                </div>
+                                <span class="btn-package-unavailable">
+                                    Cannot Reserve
+                                    <div class="unavailable-tooltip">
+                                        @(!string.IsNullOrEmpty(item.IneligibilityReason) ? item.IneligibilityReason : "Not eligible for reservation")
+                                    </div>
+                                </span>
+                                <a asp-action="PackageDetails" asp-route-id="@item.Package.Id" class="btn-package-details">
+                                    Details
+                                </a>
                             }
                         </div>
                     </div>
@@ -221,3 +116,107 @@
         </div>
     }
 </div>
+
+<!-- Custom Reserve Modal -->
+<div id="reserveModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <h3 class="custom-modal-title">Reserve Package</h3>
+        <p class="custom-modal-text">Are you sure you want to reserve <strong id="packageName"></strong>?</p>
+        <div class="custom-modal-buttons">
+            <button type="button" class="btn-modal-cancel" onclick="hideReserveModal()">Cancel</button>
+            <button type="button" class="btn-modal-confirm" onclick="confirmReservation()">Reserve</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+let currentPackageId = null;
+
+function showReserveModal(packageId, packageName) {
+    currentPackageId = packageId;
+    document.getElementById('packageName').textContent = packageName;
+    document.getElementById('reserveModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function hideReserveModal() {
+    document.getElementById('reserveModal').classList.remove('show');
+    document.body.style.overflow = '';
+    currentPackageId = null;
+}
+
+function confirmReservation() {
+    if (currentPackageId) {
+        // Create and submit form
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '@Url.Action("ReservePackage", "Students")';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'packageId';
+        input.value = currentPackageId;
+        
+        // Add anti-forgery token
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Close modal when clicking outside
+document.getElementById('reserveModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        hideReserveModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        hideReserveModal();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const mealButtons = document.querySelectorAll('.meal-filter-btn');
+    const currentCity = '@Model.FilterCity';
+    
+    mealButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            mealButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Get meal type value
+            const mealType = this.getAttribute('data-meal-type');
+            
+            // Build URL with current city filter and new meal type
+            let url = new URL(window.location.href);
+            url.searchParams.set('filterCity', '@((int)Model.FilterCity)');
+            
+            if (mealType === '') {
+                url.searchParams.delete('filterMealType');
+            } else {
+                url.searchParams.set('filterMealType', mealType);
+            }
+            
+            // Navigate to filtered URL
+            window.location.href = url.toString();
+        });
+    });
+});
+</script>
+}

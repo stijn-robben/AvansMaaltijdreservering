@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="classdiagram" version="22.1.16">
+  <diagram name="Class Diagram - Clean Architecture" id="class-clean-arch">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Avans Maaltijdreservering - Class Diagram (Clean Architecture)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="350" y="30" width="470" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Core Domain Layer -->
+        <mxCell id="domain-layer" value="Core Domain Layer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="1070" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Entities -->
+        <mxCell id="student-class" value="Student&#xa;─────────────────────&#xa;- Id: int&#xa;- Name: string&#xa;- Email: string&#xa;- StudentNumber: string&#xa;- DateOfBirth: DateTime&#xa;- StudyCity: City&#xa;- PhoneNumber: string&#xa;- NoShowCount: int&#xa;- Reservations: ICollection&lt;Package&gt;&#xa;─────────────────────&#xa;+ IsAdultOnDate(date): bool&#xa;+ IsBlocked(): bool&#xa;+ HasReservationOnDate(date): bool&#xa;+ GetAgeOnDate(date): int" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="20" y="40" width="200" height="240" as="geometry" />
+        </mxCell>
+
+        <mxCell id="package-class" value="Package&#xa;─────────────────────&#xa;- Id: int&#xa;- Name: string&#xa;- City: City&#xa;- CanteenLocation: CanteenLocation&#xa;- PickupTime: DateTime&#xa;- LatestPickupTime: DateTime&#xa;- Price: decimal&#xa;- MealType: MealType&#xa;- Products: ICollection&lt;Product&gt;&#xa;- ReservedBy: Student?&#xa;─────────────────────&#xa;+ IsReserved: bool&#xa;+ ContainsAlcohol(): bool&#xa;+ IsPickupTimeValid(): bool" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="240" y="40" width="200" height="240" as="geometry" />
+        </mxCell>
+
+        <mxCell id="product-class" value="Product&#xa;─────────────────────&#xa;- Id: int&#xa;- Name: string&#xa;- ContainsAlcohol: bool&#xa;- PhotoUrl: string&#xa;- Packages: ICollection&lt;Package&gt;&#xa;─────────────────────" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="460" y="40" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="canteen-class" value="Canteen&#xa;─────────────────────&#xa;- Id: int&#xa;- Location: CanteenLocation&#xa;- City: City&#xa;- ServesWarmMeals: bool&#xa;- Employees: ICollection&lt;CanteenEmployee&gt;&#xa;─────────────────────" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="660" y="40" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="employee-class" value="CanteenEmployee&#xa;─────────────────────&#xa;- Id: int&#xa;- Name: string&#xa;- EmployeeNumber: string&#xa;- CanteenId: int&#xa;- Canteen: Canteen&#xa;─────────────────────" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="860" y="40" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Enums -->
+        <mxCell id="city-enum" value="&lt;&lt;enumeration&gt;&gt;&#xa;City&#xa;─────────────────────&#xa;BREDA&#xa;TILBURG&#xa;DENBOSCH" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="20" y="300" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="canteen-location-enum" value="&lt;&lt;enumeration&gt;&gt;&#xa;CanteenLocation&#xa;─────────────────────&#xa;BREDA_LA_BUILDING&#xa;BREDA_LD_BUILDING&#xa;BREDA_HA_BUILDING&#xa;DENBOSCH_BUILDING&#xa;TILBURG_BUILDING" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="160" y="300" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="meal-type-enum" value="&lt;&lt;enumeration&gt;&gt;&#xa;MealType&#xa;─────────────────────&#xa;Bread&#xa;WarmEveningMeal&#xa;Drink&#xa;Snack&#xa;Lunch&#xa;Breakfast" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="320" y="300" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Repository Interfaces -->
+        <mxCell id="student-repo-interface" value="&lt;&lt;interface&gt;&gt;&#xa;IStudentRepository&#xa;─────────────────────&#xa;+ GetByIdAsync(id): Task&lt;Student?&gt;&#xa;+ GetByEmailAsync(email): Task&lt;Student?&gt;&#xa;+ GetAllAsync(): Task&lt;IEnumerable&lt;Student&gt;&gt;&#xa;+ AddAsync(student): Task&lt;Student&gt;&#xa;+ UpdateAsync(student): Task&lt;Student&gt;&#xa;+ DeleteAsync(id): Task" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="480" y="180" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="package-repo-interface" value="&lt;&lt;interface&gt;&gt;&#xa;IPackageRepository&#xa;─────────────────────&#xa;+ GetByIdAsync(id): Task&lt;Package?&gt;&#xa;+ GetAvailableAsync(): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ GetForEmployeeCanteenAsync(empId): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ AddAsync(package): Task&lt;Package&gt;&#xa;+ UpdateAsync(package): Task&lt;Package&gt;&#xa;+ DeleteAsync(id): Task" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="domain-layer">
+          <mxGeometry x="720" y="180" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Domain Service Layer -->
+        <mxCell id="service-layer" value="Domain Service Layer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="500" width="1070" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- Service Interfaces -->
+        <mxCell id="student-service-interface" value="&lt;&lt;interface&gt;&gt;&#xa;IStudentService&#xa;─────────────────────&#xa;+ GetStudentByIdAsync(id): Task&lt;Student?&gt;&#xa;+ GetStudentByEmailAsync(email): Task&lt;Student?&gt;&#xa;+ RegisterStudentAsync(student): Task&lt;Student&gt;&#xa;+ IsStudentEligibleForPackageAsync(studentId, package): Task&lt;bool&gt;&#xa;+ CanReservePackageAsync(studentId, package): Task&lt;bool&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="service-layer">
+          <mxGeometry x="20" y="40" width="280" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="package-service-interface" value="&lt;&lt;interface&gt;&gt;&#xa;IPackageService&#xa;─────────────────────&#xa;+ GetAvailablePackagesAsync(): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ GetPackagesForEmployeeCanteenAsync(empId): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ CreatePackageAsync(package, empId, productIds): Task&lt;Package&gt;&#xa;+ UpdatePackageAsync(package, empId): Task&lt;Package&gt;&#xa;+ DeletePackageAsync(id, empId): Task" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="service-layer">
+          <mxGeometry x="320" y="40" width="320" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="reservation-service-interface" value="&lt;&lt;interface&gt;&gt;&#xa;IReservationService&#xa;─────────────────────&#xa;+ ReservePackageAsync(packageId, studentId): Task&lt;Package&gt;&#xa;+ CancelReservationAsync(packageId, studentId): Task&#xa;+ GetStudentReservationsAsync(studentId): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ RegisterNoShowAsync(packageId, empId): Task&#xa;+ CanStudentReservePackageAsync(studentId, packageId): Task&lt;bool&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="service-layer">
+          <mxGeometry x="660" y="40" width="380" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Service Implementations -->
+        <mxCell id="package-lock-service" value="PackageLockService&#xa;─────────────────────&#xa;- _lockedPackages: ConcurrentDictionary&lt;int, DateTime&gt;&#xa;─────────────────────&#xa;+ TryLockPackageAsync(packageId): Task&lt;bool&gt;&#xa;+ ReleaseLockAsync(packageId): Task&#xa;+ IsPackageLockedAsync(packageId): Task&lt;bool&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="service-layer">
+          <mxGeometry x="20" y="160" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Infrastructure Layer -->
+        <mxCell id="infra-layer" value="Infrastructure Layer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="740" width="1070" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Repository Implementations -->
+        <mxCell id="student-repo-impl" value="StudentRepository&#xa;─────────────────────&#xa;- _context: ApplicationDbContext&#xa;─────────────────────&#xa;+ GetByIdAsync(id): Task&lt;Student?&gt;&#xa;+ GetByEmailAsync(email): Task&lt;Student?&gt;&#xa;+ GetAllAsync(): Task&lt;IEnumerable&lt;Student&gt;&gt;&#xa;+ AddAsync(student): Task&lt;Student&gt;&#xa;+ UpdateAsync(student): Task&lt;Student&gt;&#xa;+ DeleteAsync(id): Task" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="infra-layer">
+          <mxGeometry x="20" y="40" width="200" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="package-repo-impl" value="PackageRepository&#xa;─────────────────────&#xa;- _context: ApplicationDbContext&#xa;─────────────────────&#xa;+ GetByIdAsync(id): Task&lt;Package?&gt;&#xa;+ GetAvailableAsync(): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ GetForEmployeeCanteenAsync(empId): Task&lt;IEnumerable&lt;Package&gt;&gt;&#xa;+ AddAsync(package): Task&lt;Package&gt;&#xa;+ UpdateAsync(package): Task&lt;Package&gt;&#xa;+ DeleteAsync(id): Task" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="infra-layer">
+          <mxGeometry x="240" y="40" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dbcontext" value="ApplicationDbContext&#xa;─────────────────────&#xa;- Students: DbSet&lt;Student&gt;&#xa;- Packages: DbSet&lt;Package&gt;&#xa;- Products: DbSet&lt;Product&gt;&#xa;- Canteens: DbSet&lt;Canteen&gt;&#xa;- CanteenEmployees: DbSet&lt;CanteenEmployee&gt;&#xa;─────────────────────&#xa;+ OnModelCreating(builder): void" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="infra-layer">
+          <mxGeometry x="480" y="40" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="identity-context" value="IdentityDbContext&#xa;─────────────────────&#xa;- Users: DbSet&lt;ApplicationUser&gt;&#xa;- Roles: DbSet&lt;IdentityRole&gt;&#xa;─────────────────────" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="infra-layer">
+          <mxGeometry x="720" y="40" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="app-user" value="ApplicationUser&#xa;─────────────────────&#xa;- StudentNumber: string?&#xa;- EmployeeNumber: string?&#xa;- StudentId: int?&#xa;- CanteenEmployeeId: int?" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="infra-layer">
+          <mxGeometry x="920" y="40" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Presentation Layer -->
+        <mxCell id="presentation-layer" value="Presentation Layer (WebApp)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="960" width="1070" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="students-controller" value="StudentsController&#xa;─────────────────────&#xa;- _studentService: IStudentService&#xa;- _packageService: IPackageService&#xa;- _reservationService: IReservationService&#xa;─────────────────────&#xa;+ Dashboard(filters): Task&lt;IActionResult&gt;&#xa;+ PackageDetails(id): Task&lt;IActionResult&gt;&#xa;+ ReservePackage(packageId): Task&lt;IActionResult&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="presentation-layer">
+          <mxGeometry x="20" y="40" width="260" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="employees-controller" value="EmployeesController&#xa;─────────────────────&#xa;- _packageService: IPackageService&#xa;- _reservationService: IReservationService&#xa;- _employeeRepository: ICanteenEmployeeRepository&#xa;─────────────────────&#xa;+ Dashboard(): Task&lt;IActionResult&gt;&#xa;+ CreatePackage(): Task&lt;IActionResult&gt;&#xa;+ EditPackage(id): Task&lt;IActionResult&gt;&#xa;+ RegisterNoShow(packageId): Task&lt;IActionResult&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="presentation-layer">
+          <mxGeometry x="300" y="40" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="student-dashboard-vm" value="StudentDashboardViewModel&#xa;─────────────────────&#xa;- Student: Student&#xa;- AvailablePackages: IEnumerable&lt;PackageEligibilityViewModel&gt;&#xa;- FilterCity: City&#xa;- FilterMealType: MealType?" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="presentation-layer">
+          <mxGeometry x="600" y="40" width="240" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="employee-dashboard-vm" value="EmployeeDashboardViewModel&#xa;─────────────────────&#xa;- Employee: CanteenEmployee&#xa;- EmployeeCanteen: Canteen&#xa;- OwnCanteenPackages: List&lt;Package&gt;&#xa;- AllPackages: List&lt;Package&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="presentation-layer">
+          <mxGeometry x="860" y="40" width="190" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Key Relationships -->
+        <mxCell id="rel1" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="student-class" target="package-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="400" as="sourcePoint" />
+            <mxPoint x="550" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel1-label" value="reserves *" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="rel1">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel2" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="package-class" target="product-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel2-label" value="contains *" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="rel2">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="impl1" value="" style="endArrow=block;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="student-repo-impl" target="student-repo-interface">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="700" as="sourcePoint" />
+            <mxPoint x="450" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="impl1-label" value="implements" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="impl1">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="impl2" value="" style="endArrow=block;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="package-repo-impl" target="package-repo-interface">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="700" as="sourcePoint" />
+            <mxPoint x="600" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="impl2-label" value="implements" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="impl2">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="Clean Architecture Layers:&#xa;• Core Domain: Business entities and rules (no dependencies)&#xa;• Domain Services: Business logic orchestration&#xa;• Infrastructure: Data access implementations&#xa;• Presentation: UI controllers and view models&#xa;&#xa;Dependencies flow inward only" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1180" width="300" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

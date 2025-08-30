@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="packagediagram" version="22.1.16">
+  <diagram name="Package Diagram - Clean Architecture" id="package-clean-arch">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Avans Maaltijdreservering - Clean Architecture Package Diagram" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="350" y="30" width="470" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Core Domain (Center) -->
+        <mxCell id="core-domain-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.Core.Domain" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="450" y="300" width="300" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="entities-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Entities" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="core-domain-pkg">
+          <mxGeometry x="20" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="enums-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Enums" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="core-domain-pkg">
+          <mxGeometry x="160" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="interfaces-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Interfaces" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="core-domain-pkg">
+          <mxGeometry x="20" y="90" width="120" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="exceptions-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Exceptions" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="core-domain-pkg">
+          <mxGeometry x="160" y="90" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="validation-pkg" value="&lt;&lt;package&gt;&gt;&#xa;ValidationAttributes" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="core-domain-pkg">
+          <mxGeometry x="90" y="140" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Core Domain Service -->
+        <mxCell id="domain-service-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.Core.DomainService" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="150" y="150" width="250" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="services-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Services" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="domain-service-pkg">
+          <mxGeometry x="20" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="service-interfaces-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Interfaces" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="domain-service-pkg">
+          <mxGeometry x="130" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Infrastructure -->
+        <mxCell id="infrastructure-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.Infrastructure" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="200" width="280" height="180" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="data-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Data" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="infrastructure-pkg">
+          <mxGeometry x="20" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="repositories-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Repositories" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="infrastructure-pkg">
+          <mxGeometry x="110" y="40" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="identity-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Identity" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="infrastructure-pkg">
+          <mxGeometry x="200" y="40" width="60" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="migrations-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Migrations" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="infrastructure-pkg">
+          <mxGeometry x="20" y="90" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="logging-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Logging" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="infrastructure-pkg">
+          <mxGeometry x="110" y="90" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Presentation Layers -->
+        <mxCell id="webapp-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.WebApp" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="250" height="180" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="controllers-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Controllers" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="webapp-pkg">
+          <mxGeometry x="20" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="views-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Views" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="webapp-pkg">
+          <mxGeometry x="130" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="viewmodels-pkg" value="&lt;&lt;package&gt;&gt;&#xa;ViewModels" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="webapp-pkg">
+          <mxGeometry x="20" y="90" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="wwwroot-pkg" value="&lt;&lt;package&gt;&gt;&#xa;wwwroot" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="webapp-pkg">
+          <mxGeometry x="130" y="90" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- API Layer -->
+        <mxCell id="api-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.API" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="450" y="550" width="250" height="180" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="api-controllers-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Controllers" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="api-pkg">
+          <mxGeometry x="20" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="graphql-pkg" value="&lt;&lt;package&gt;&gt;&#xa;GraphQL" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="api-pkg">
+          <mxGeometry x="130" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="dtos-pkg" value="&lt;&lt;package&gt;&gt;&#xa;DTOs" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="api-pkg">
+          <mxGeometry x="20" y="90" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="middleware-pkg" value="&lt;&lt;package&gt;&gt;&#xa;Middleware" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="api-pkg">
+          <mxGeometry x="130" y="90" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Test Projects -->
+        <mxCell id="domain-tests-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.Core.Domain.Tests" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="550" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="infra-tests-pkg" value="&lt;&lt;package&gt;&gt;&#xa;AvansMaaltijdreservering.Infrastructure.Tests" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;" vertex="1" parent="1">
+          <mxGeometry x="800" y="650" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Dependencies (pointing inward) -->
+        <mxCell id="dep1" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="domain-service-pkg" target="core-domain-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="250" as="sourcePoint" />
+            <mxPoint x="450" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep1-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep1">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep2" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="infrastructure-pkg" target="core-domain-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="900" y="350" as="sourcePoint" />
+            <mxPoint x="950" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep2-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep2">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep3" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="infrastructure-pkg" target="domain-service-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="800" y="280" as="sourcePoint" />
+            <mxPoint x="400" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep3-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep3">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep4" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="webapp-pkg" target="core-domain-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="550" as="sourcePoint" />
+            <mxPoint x="500" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep4-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep4">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep5" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="webapp-pkg" target="domain-service-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="550" as="sourcePoint" />
+            <mxPoint x="250" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep5-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep5">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep6" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="webapp-pkg" target="infrastructure-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="350" y="600" as="sourcePoint" />
+            <mxPoint x="800" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep6-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep6">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep7" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="api-pkg" target="core-domain-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="575" y="550" as="sourcePoint" />
+            <mxPoint x="575" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep7-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep7">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep8" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="api-pkg" target="domain-service-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="550" as="sourcePoint" />
+            <mxPoint x="350" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep8-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep8">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep9" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="api-pkg" target="infrastructure-pkg">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="550" as="sourcePoint" />
+            <mxPoint x="850" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep9-label" value="depends on" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dep9">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Architecture Note -->
+        <mxCell id="arch-note" value="Clean Architecture Pattern:&#xa;• Dependencies point inward&#xa;• Core Domain has no dependencies&#xa;• Infrastructure implements interfaces from Domain&#xa;• Presentation layers depend on all inner layers" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="250" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

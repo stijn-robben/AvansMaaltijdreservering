@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="deploymentdiagram" version="22.1.16">
+  <diagram name="Deployment Diagram - Entire System" id="deployment-system">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Title -->
+        <mxCell id="title" value="Avans Maaltijdreservering - Deployment Diagram" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="350" y="30" width="470" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Client Devices -->
+        <mxCell id="student-laptop" value="&lt;&lt;device&gt;&gt;&#xa;Student Laptop/PC" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="student-browser" value="&lt;&lt;execution environment&gt;&gt;&#xa;Web Browser&#xa;(Chrome/Firefox/Edge)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="student-laptop">
+          <mxGeometry x="10" y="25" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="employee-laptop" value="&lt;&lt;device&gt;&gt;&#xa;Employee Laptop/PC" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="220" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="employee-browser" value="&lt;&lt;execution environment&gt;&gt;&#xa;Web Browser&#xa;(Chrome/Firefox/Edge)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="employee-laptop">
+          <mxGeometry x="10" y="25" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mobile-device" value="&lt;&lt;device&gt;&gt;&#xa;Mobile Device&#xa;(Android/iOS)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="340" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile-app" value="&lt;&lt;artifact&gt;&gt;&#xa;AvansOne Mobile App" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="mobile-device">
+          <mxGeometry x="10" y="25" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Load Balancer -->
+        <mxCell id="load-balancer" value="&lt;&lt;device&gt;&gt;&#xa;Azure Load Balancer" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="320" y="220" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Web Server Node -->
+        <mxCell id="web-server-node" value="&lt;&lt;node&gt;&gt;&#xa;Azure App Service&#xa;(Web Tier)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="520" y="100" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="webapp-artifact" value="&lt;&lt;artifact&gt;&gt;&#xa;WebApp.dll&#xa;(ASP.NET MVC)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="web-server-node">
+          <mxGeometry x="20" y="30" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="webapp-runtime" value="&lt;&lt;execution environment&gt;&gt;&#xa;.NET 8 Runtime" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="web-server-node">
+          <mxGeometry x="20" y="80" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="webapp-iis" value="&lt;&lt;execution environment&gt;&gt;&#xa;IIS / Kestrel Server" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="web-server-node">
+          <mxGeometry x="20" y="120" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- API Server Node -->
+        <mxCell id="api-server-node" value="&lt;&lt;node&gt;&gt;&#xa;Azure App Service&#xa;(API Tier)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="520" y="300" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="api-artifact" value="&lt;&lt;artifact&gt;&gt;&#xa;API.dll&#xa;(ASP.NET Core)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="api-server-node">
+          <mxGeometry x="20" y="30" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api-runtime" value="&lt;&lt;execution environment&gt;&gt;&#xa;.NET 8 Runtime" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="api-server-node">
+          <mxGeometry x="20" y="80" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="api-server" value="&lt;&lt;execution environment&gt;&gt;&#xa;Kestrel Server" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="api-server-node">
+          <mxGeometry x="20" y="120" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Business Logic Server Node -->
+        <mxCell id="business-server-node" value="&lt;&lt;node&gt;&gt;&#xa;Azure App Service&#xa;(Business Tier)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="780" y="200" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-artifact" value="&lt;&lt;artifact&gt;&gt;&#xa;Core.Domain.dll" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="business-server-node">
+          <mxGeometry x="20" y="30" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="services-artifact" value="&lt;&lt;artifact&gt;&gt;&#xa;DomainService.dll" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="business-server-node">
+          <mxGeometry x="20" y="70" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="infra-artifact" value="&lt;&lt;artifact&gt;&gt;&#xa;Infrastructure.dll" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="business-server-node">
+          <mxGeometry x="20" y="110" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Database Server Node -->
+        <mxCell id="db-server-node" value="&lt;&lt;node&gt;&gt;&#xa;Azure SQL Database&#xa;(Data Tier)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="520" y="520" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="main-db" value="&lt;&lt;artifact&gt;&gt;&#xa;AvansMaaltijdreservering&#xa;Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="db-server-node">
+          <mxGeometry x="20" y="40" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="identity-db" value="&lt;&lt;artifact&gt;&gt;&#xa;Identity&#xa;Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="db-server-node">
+          <mxGeometry x="110" y="40" width="80" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- External Services -->
+        <mxCell id="email-server" value="&lt;&lt;node&gt;&gt;&#xa;SMTP Server&#xa;(External)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="520" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="email-service" value="&lt;&lt;artifact&gt;&gt;&#xa;Email Service" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="email-server">
+          <mxGeometry x="10" y="30" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="log-server" value="&lt;&lt;node&gt;&gt;&#xa;Azure Monitor /&#xa;Application Insights" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="780" y="520" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="log-service" value="&lt;&lt;artifact&gt;&gt;&#xa;Logging Service" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="log-server">
+          <mxGeometry x="10" y="30" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- CDN -->
+        <mxCell id="cdn-node" value="&lt;&lt;node&gt;&gt;&#xa;Azure CDN" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="320" y="100" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="static-files" value="&lt;&lt;artifact&gt;&gt;&#xa;Static Files&#xa;(CSS, JS, Images)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="cdn-node">
+          <mxGeometry x="10" y="30" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Development Environment -->
+        <mxCell id="dev-env" value="&lt;&lt;node&gt;&gt;&#xa;Developer Machine" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="700" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="visual-studio" value="&lt;&lt;execution environment&gt;&gt;&#xa;Visual Studio 2022" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="dev-env">
+          <mxGeometry x="20" y="30" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dotnet-sdk" value="&lt;&lt;execution environment&gt;&gt;&#xa;NET 8 SDK" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="dev-env">
+          <mxGeometry x="20" y="70" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- CI/CD Pipeline -->
+        <mxCell id="cicd-node" value="&lt;&lt;node&gt;&gt;&#xa;Azure DevOps&#xa;(CI/CD Pipeline)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="320" y="700" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="build-agent" value="&lt;&lt;execution environment&gt;&gt;&#xa;Build Agent" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="cicd-node">
+          <mxGeometry x="20" y="30" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="deployment-agent" value="&lt;&lt;execution environment&gt;&gt;&#xa;Deployment Agent" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="cicd-node">
+          <mxGeometry x="20" y="70" width="160" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Version Control -->
+        <mxCell id="git-repo" value="&lt;&lt;node&gt;&gt;&#xa;Git Repository&#xa;(GitHub)" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="580" y="700" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="source-code" value="&lt;&lt;artifact&gt;&gt;&#xa;Source Code" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="git-repo">
+          <mxGeometry x="10" y="30" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Connections -->
+        <!-- Client to Load Balancer -->
+        <mxCell id="conn1" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="student-laptop" target="load-balancer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="140" as="sourcePoint" />
+            <mxPoint x="300" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn1-label" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn1">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn2" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="employee-laptop" target="load-balancer">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="260" as="sourcePoint" />
+            <mxPoint x="320" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn2-label" value="HTTPS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn2">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn3" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="mobile-device" target="api-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="380" as="sourcePoint" />
+            <mxPoint x="520" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn3-label" value="HTTPS/REST/GraphQL" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn3">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Load Balancer to Web Servers -->
+        <mxCell id="conn4" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="load-balancer" target="web-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="220" as="sourcePoint" />
+            <mxPoint x="520" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn4-label" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn4">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn5" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="load-balancer" target="api-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="280" as="sourcePoint" />
+            <mxPoint x="520" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn5-label" value="HTTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn5">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Web/API to Business Logic -->
+        <mxCell id="conn6" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="web-server-node" target="business-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="720" y="180" as="sourcePoint" />
+            <mxPoint x="780" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn6-label" value="Service Calls" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn6">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn7" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="api-server-node" target="business-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="720" y="380" as="sourcePoint" />
+            <mxPoint x="780" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn7-label" value="Service Calls" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn7">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Business Logic to Database -->
+        <mxCell id="conn8" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="business-server-node" target="db-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="820" y="360" as="sourcePoint" />
+            <mxPoint x="660" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn8-label" value="SQL/TDS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn8">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- CDN Connection -->
+        <mxCell id="conn9" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="cdn-node" target="web-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="140" as="sourcePoint" />
+            <mxPoint x="520" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn9-label" value="Content Delivery" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn9">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- External Services -->
+        <mxCell id="conn10" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="business-server-node" target="email-server">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="780" y="360" as="sourcePoint" />
+            <mxPoint x="220" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn10-label" value="SMTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn10">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn11" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="business-server-node" target="log-server">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="880" y="360" as="sourcePoint" />
+            <mxPoint x="850" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn11-label" value="Telemetry" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn11">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Development Flow -->
+        <mxCell id="conn12" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="dev-env" target="git-repo">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="280" y="740" as="sourcePoint" />
+            <mxPoint x="580" y="740" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn12-label" value="Git Push" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn12">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn13" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="git-repo" target="cicd-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="580" y="750" as="sourcePoint" />
+            <mxPoint x="520" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn13-label" value="Webhook" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn13">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn14" value="" style="endArrow=classic;html=1;rounded=0;dashed=1;" edge="1" parent="1" source="cicd-node" target="web-server-node">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="700" as="sourcePoint" />
+            <mxPoint x="600" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn14-label" value="Deploy" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="conn14">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Production Environment Boundary -->
+        <mxCell id="prod-boundary" value="Azure Cloud - Production Environment" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1f5582;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="700" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="deploy-legend" value="Deployment Architecture:&#xa;• Client Tier: User devices with web browsers/mobile apps&#xa;• CDN: Content delivery for static resources&#xa;• Load Balancer: Traffic distribution and SSL termination&#xa;• Web Tier: ASP.NET MVC application (UI)&#xa;• API Tier: ASP.NET Core REST/GraphQL API&#xa;• Business Tier: Domain services and business logic&#xa;• Data Tier: SQL Server databases (separate main + identity)&#xa;• External Services: SMTP email and logging&#xa;• CI/CD: Azure DevOps for automated deployment&#xa;&#xa;Protocols: HTTPS (external), HTTP (internal), SQL/TDS (data), SMTP (email)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+          <mxGeometry x="50" y="860" width="400" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Environment Notes -->
+        <mxCell id="env-notes" value="Deployment Environments:&#xa;• Development: Local developer machines&#xa;• Staging: Azure App Service (testing)&#xa;• Production: Azure App Service (live)&#xa;&#xa;Scalability:&#xa;• Horizontal scaling via Azure App Service&#xa;• Database scaling via Azure SQL elastic pools&#xa;• CDN for global content delivery&#xa;&#xa;Security:&#xa;• HTTPS everywhere&#xa;• Azure AD integration&#xa;• SQL injection protection via EF Core&#xa;• Input validation and sanitization" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+          <mxGeometry x="500" y="860" width="300" height="180" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
