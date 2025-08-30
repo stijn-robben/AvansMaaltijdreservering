@@ -28,10 +28,6 @@ public class HomeController : Controller
         }
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
 
     public async Task<IActionResult> TestData()
     {

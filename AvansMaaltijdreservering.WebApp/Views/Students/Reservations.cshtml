@@ -1,0 +1,270 @@
+@model AvansMaaltijdreservering.WebApp.ViewModels.Students.StudentReservationsViewModel
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2"><i class="bi bi-calendar-check-fill text-success"></i> My Reservations</h1>
+                    <p class="text-muted mb-0">
+                        Hello @Model.Student.Name • 
+                        @Model.Reservations.Count reservation@(Model.Reservations.Count != 1 ? "s" : "")
+                    </p>
+                </div>
+                <a asp-action="Dashboard" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Browse Packages
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Reservations.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="display-1 text-muted mb-3">📅</div>
+                    <h4 class="text-muted">No reservations yet</h4>
+                    <p class="text-muted">Start saving food by reserving your first package!</p>
+                    <a asp-action="Dashboard" class="btn btn-primary btn-lg">
+                        <i class="bi bi-search"></i> Browse Available Packages
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var reservation in Model.Reservations)
+            {
+                var isUpcoming = reservation.PickupTime > DateTime.Now;
+                var isPastDue = reservation.LatestPickupTime < DateTime.Now;
+                var isToday = reservation.PickupTime.Date == DateTime.Today;
+                
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm @(isPastDue ? "border-danger" : isToday ? "border-warning" : "border-success")">
+                        <div class="card-header @(isPastDue ? "bg-danger text-white" : isToday ? "bg-warning" : "bg-success text-white")">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h6 class="card-title mb-0">
+                                        @if (isPastDue)
+                                        {
+                                            <i class="bi bi-clock-history"></i>
+                                        }
+                                        else if (isToday)
+                                        {
+                                            <i class="bi bi-alarm-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-calendar-check"></i>
+                                        }
+                                        @reservation.Name
+                                    </h6>
+                                </div>
+                                <div class="col-auto">
+                                    @if (isPastDue)
+                                    {
+                                        <span class="badge bg-light text-danger">Expired</span>
+                                    }
+                                    else if (isToday)
+                                    {
+                                        <span class="badge bg-dark">Today!</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-success">€@reservation.Price.ToString("0.00")</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-6">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-geo-alt-fill"></i> Location
+                                    </small>
+                                    <strong>@reservation.City</strong><br>
+                                    <small>@reservation.CanteenLocation.ToString().Replace("_", " ")</small>
+                                </div>
+                                <div class="col-sm-6">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-cup-hot-fill"></i> Meal Type
+                                    </small>
+                                    <strong>
+                                        @switch (reservation.MealType)
+                                        {
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread:
+                                                <text>🍞 Bread</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal:
+                                                <text>🍽️ Warm Evening Meal</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink:
+                                                <text>🥤 Drink</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack:
+                                                <text>🍿 Snack</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch:
+                                                <text>🥪 Lunch</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast:
+                                                <text>🥐 Breakfast</text>
+                                                break;
+                                        }
+                                    </strong>
+                                    @if (reservation.ContainsAlcohol())
+                                    {
+                                        <span class="badge bg-warning text-dark ms-1">🔞 18+</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-6">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-clock-fill"></i> Pickup Time
+                                    </small>
+                                    <strong>@reservation.PickupTime.ToString("ddd dd MMM")</strong><br>
+                                    <strong class="@(isToday ? "text-warning" : "")">@reservation.PickupTime.ToString("HH:mm")</strong>
+                                </div>
+                                <div class="col-sm-6">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-clock-history"></i> Latest Pickup
+                                    </small>
+                                    <strong class="@(isPastDue ? "text-danger" : "")">@reservation.LatestPickupTime.ToString("HH:mm")</strong>
+                                    @if (isPastDue)
+                                    {
+                                        <br><small class="text-danger">⚠️ Pickup time passed</small>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (reservation.Products.Any())
+                            {
+                                <div class="mb-3">
+                                    <small class="text-muted d-block mb-2">
+                                        <i class="bi bi-list-ul"></i> Expected Products:
+                                    </small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach (var product in reservation.Products)
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                @if (product.ContainsAlcohol)
+                                                {
+                                                    <span>🍷</span>
+                                                }
+                                                @product.Name
+                                            </span>
+                                        }
+                                    </div>
+                                    <small class="text-muted fst-italic d-block mt-1">
+                                        <i class="bi bi-info-circle"></i> Actual contents may vary
+                                    </small>
+                                </div>
+                            }
+
+                            @if (isPastDue)
+                            {
+                                <div class="alert alert-danger py-2 mb-0">
+                                    <small>
+                                        <i class="bi bi-exclamation-triangle-fill"></i> 
+                                        This reservation has expired. If you didn't pick it up, this counts as a no-show.
+                                    </small>
+                                </div>
+                            }
+                            else if (isToday)
+                            {
+                                <div class="alert alert-warning py-2 mb-0">
+                                    <small>
+                                        <i class="bi bi-alarm-fill"></i> 
+                                        Pick up today before @reservation.LatestPickupTime.ToString("HH:mm")!
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                        
+                        @if (isUpcoming && !isPastDue)
+                        {
+                            <div class="card-footer bg-transparent">
+                                <form asp-action="CancelReservation" method="post" class="d-grid">
+                                    <input type="hidden" name="packageId" value="@reservation.Id" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                            onclick="return confirm('Are you sure you want to cancel this reservation? The package will become available to other students.')">
+                                        <i class="bi bi-trash"></i> Cancel Reservation
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Student Statistics -->
+    @if (Model.Reservations.Any())
+    {
+        var totalSaved = Model.Reservations.Sum(r => r.Price);
+        var totalPackages = Model.Reservations.Count();
+        
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-light shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-success">
+                            <i class="bi bi-award-fill"></i> Your Impact on Food Waste Reduction
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="h2 text-primary mb-0">@totalPackages</div>
+                                <small class="text-muted">Package@(totalPackages != 1 ? "s" : "") Rescued</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="h2 text-success mb-0">€@totalSaved.ToString("0.00")</div>
+                                <small class="text-muted">Money Saved</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="h2 text-warning mb-0">@Model.Student.NoShowCount</div>
+                                <small class="text-muted">No-Show@(Model.Student.NoShowCount != 1 ? "s" : "")</small>
+                            </div>
+                        </div>
+                        @if (Model.Student.NoShowCount >= 1)
+                        {
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i> 
+                                    Remember to pick up your reservations on time! 
+                                    @(2 - Model.Student.NoShowCount) more no-show@(2 - Model.Student.NoShowCount != 1 ? "s" : "") will block your account.
+                                </small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

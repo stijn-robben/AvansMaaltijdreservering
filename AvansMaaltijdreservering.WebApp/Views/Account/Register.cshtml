@@ -1,0 +1,210 @@
+@model AvansMaaltijdreservering.WebApp.ViewModels.Account.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h3><i class="bi bi-person-plus-fill"></i> Join Avans Meal Rescue</h3>
+                    <p class="mb-0">Help reduce food waste - Save money - Enjoy great meals!</p>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Register" method="post" id="registerForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Registration Type Selection -->
+                        <div class="mb-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input asp-for="IsStudent" class="form-check-input" value="true" id="studentRadio" />
+                                        <label class="form-check-label" for="studentRadio">
+                                            <i class="bi bi-mortarboard-fill text-primary"></i> I'm a Student
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input asp-for="IsStudent" class="form-check-input" value="false" id="employeeRadio" />
+                                        <label class="form-check-label" for="employeeRadio">
+                                            <i class="bi bi-briefcase-fill text-warning"></i> I'm a Canteen Employee
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label">
+                                        <i class="bi bi-person"></i> Full Name *
+                                    </label>
+                                    <input asp-for="Name" class="form-control" placeholder="Enter your full name" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">
+                                        <i class="bi bi-envelope"></i> Email Address *
+                                    </label>
+                                    <input asp-for="Email" class="form-control" placeholder="your.email@avans.nl" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Password" class="form-label">
+                                        <i class="bi bi-lock"></i> Password *
+                                    </label>
+                                    <input asp-for="Password" class="form-control" placeholder="Choose a strong password" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ConfirmPassword" class="form-label">
+                                        <i class="bi bi-lock-fill"></i> Confirm Password *
+                                    </label>
+                                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm your password" />
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student-specific fields -->
+                        <div id="studentFields" style="display: block;">
+                            <h5 class="text-primary mb-3"><i class="bi bi-mortarboard"></i> Student Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="StudentNumber" class="form-label">
+                                            <i class="bi bi-card-text"></i> Student Number *
+                                        </label>
+                                        <input asp-for="StudentNumber" class="form-control" placeholder="e.g., STU123456" />
+                                        <span asp-validation-for="StudentNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="DateOfBirth" class="form-label">
+                                            <i class="bi bi-calendar3"></i> Date of Birth *
+                                        </label>
+                                        <input asp-for="DateOfBirth" class="form-control" type="date" />
+                                        <small class="form-text text-muted">Must be at least 16 years old</small>
+                                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="StudyCity" class="form-label">
+                                            <i class="bi bi-geo-alt"></i> Study City
+                                        </label>
+                                        <select asp-for="StudyCity" class="form-select">
+                                            <option value="0">Breda</option>
+                                            <option value="1">Tilburg</option>
+                                            <option value="2">Den Bosch</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="PhoneNumber" class="form-label">
+                                            <i class="bi bi-telephone"></i> Phone Number
+                                        </label>
+                                        <input asp-for="PhoneNumber" class="form-control" placeholder="+31612345678" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee-specific fields -->
+                        <div id="employeeFields" style="display: none;">
+                            <h5 class="text-warning mb-3"><i class="bi bi-briefcase"></i> Employee Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeNumber" class="form-label">
+                                            <i class="bi bi-badge-ad"></i> Employee Number *
+                                        </label>
+                                        <input asp-for="EmployeeNumber" class="form-control" placeholder="e.g., EMP001" />
+                                        <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="CanteenId" class="form-label">
+                                            <i class="bi bi-building"></i> Your Canteen Location *
+                                        </label>
+                                        <select asp-for="CanteenId" class="form-select">
+                                            <option value="">Select your canteen</option>
+                                            <option value="1">Breda - LA Building</option>
+                                            <option value="2">Breda - LD Building</option>
+                                            <option value="3">Breda - HA Building</option>
+                                            <option value="4">Den Bosch Building</option>
+                                            <option value="5">Tilburg Building</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-person-plus"></i> Create Account & Start Saving Food!
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p class="mb-0">
+                        Already have an account? 
+                        <a asp-action="Login" class="text-success fw-bold text-decoration-none">
+                            <i class="bi bi-box-arrow-in-right"></i> Login here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Toggle between student and employee fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentRadio = document.getElementById('studentRadio');
+            const employeeRadio = document.getElementById('employeeRadio');
+            const studentFields = document.getElementById('studentFields');
+            const employeeFields = document.getElementById('employeeFields');
+
+            function toggleFields() {
+                if (studentRadio.checked) {
+                    studentFields.style.display = 'block';
+                    employeeFields.style.display = 'none';
+                } else {
+                    studentFields.style.display = 'none';
+                    employeeFields.style.display = 'block';
+                }
+            }
+
+            studentRadio.addEventListener('change', toggleFields);
+            employeeRadio.addEventListener('change', toggleFields);
+            
+            // Initialize on page load
+            toggleFields();
+        });
+    </script>
+}
