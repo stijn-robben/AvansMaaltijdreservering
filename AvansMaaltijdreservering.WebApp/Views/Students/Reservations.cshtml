@@ -72,7 +72,7 @@
     <!-- Your Reservations Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="labrada-font">Your Reservations (@Model.Reservations.Count())</h3>
+            <h3 class="labrada-font">Your reservations (@Model.Reservations.Count())</h3>
             <p class="text-muted mb-4">Your personal meal package reservations</p>
         </div>
     </div>
@@ -200,7 +200,7 @@
                                         <div class="package-products">
                                             @foreach (var product in reservation.Products)
                                             {
-                                                <div class="package-product">
+                                                <div class="package-product package-product-with-image-tooltip">
                                                     <span class="package-product-name">@product.Name</span>
                                                     @if (product.ContainsAlcohol)
                                                     {
@@ -209,6 +209,12 @@
                                                                 Adults Only (18+) - This product contains alcohol
                                                             </div>
                                                         </i>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(product.PhotoUrl))
+                                                    {
+                                                        <div class="product-image-tooltip">
+                                                            <img src="@product.PhotoUrl" alt="@product.Name" class="product-tooltip-image" />
+                                                        </div>
                                                     }
                                                 </div>
                                             }

@@ -32,7 +32,7 @@
     </div>
 
     <!-- Package Details -->
-    <div class="row mb-4">
+    <div class="row mb-4 d-flex">
         <!-- Left Column - Package Information (50%) -->
         <div class="col-md-6">
             <div class="package-details-card">
@@ -139,9 +139,6 @@
                                         </div>
                                     }
                                 </div>
-                                <p class="package-products-note">
-                                    <small>Products shown are examples. Actual contents may vary - part of the surprise!</small>
-                                </p>
                             </div>
                         </div>
                     }
@@ -205,11 +202,44 @@
             </div>
         </div>
 
-        <!-- Right Column - Additional Information (50%) -->
+        <!-- Right Column - Product Images (50%) -->
         <div class="col-md-6">
             <div class="package-details-card">
-                <h3 class="labrada-font">Additional Information</h3>
-                <p class="text-muted">This section is reserved for future content.</p>
+                <h3 class="labrada-font">What's Inside</h3>
+                @if (Model.Package.Products.Any())
+                {
+                    <div class="package-details-products">
+                        @foreach (var product in Model.Package.Products)
+                        {
+                            <div class="package-details-product-item">
+                                <div class="package-details-product-image-container">
+                                    @if (!string.IsNullOrEmpty(product.PhotoUrl))
+                                    {
+                                        <img src="@product.PhotoUrl" alt="@product.Name" class="package-details-product-image" />
+                                    }
+                                    else
+                                    {
+                                        <div class="package-details-product-placeholder">🍽️</div>
+                                    }
+                                </div>
+                                <div class="package-details-product-info">
+                                    <h4 class="package-details-product-name">@product.Name</h4>
+                                    @if (product.ContainsAlcohol)
+                                    {
+                                        <span class="package-details-product-badge">18+ Only</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <p class="package-details-note">
+                        <small>Products shown are examples. Actual contents may vary - part of the surprise!</small>
+                    </p>
+                }
+                else
+                {
+                    <p class="text-muted">No product information available for this package.</p>
+                }
             </div>
         </div>
     </div>

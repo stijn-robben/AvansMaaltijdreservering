@@ -297,6 +297,9 @@
                         selectedDateSpan.textContent = formatDisplayDate(selectedDate);
                         customCalendar.classList.remove('show');
                         
+                        // Add class to indicate date is selected
+                        calendarToggle.classList.add('has-selected-date');
+                        
                         // Trigger age validation
                         dateInput.dispatchEvent(new Event('change'));
                     });

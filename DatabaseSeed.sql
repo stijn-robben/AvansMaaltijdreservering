@@ -30,26 +30,27 @@ INSERT INTO Canteens (Location, City, ServesWarmMeals) VALUES
 
 -- 2. INSERT PRODUCTS
 INSERT INTO Products (Name, ContainsAlcohol, PhotoUrl) VALUES
-('Turkey Club Sandwich', 0, 'https://example.com/turkey.jpg'),
-('Fresh Orange Juice', 0, 'https://example.com/juice.jpg'),
-('Grilled Salmon Fillet', 0, 'https://example.com/salmon.jpg'),
-('Red Wine (House)', 1, 'https://example.com/wine.jpg'),
-('Pasta Bolognese', 0, 'https://example.com/pasta.jpg'),
-('Caesar Salad', 0, 'https://example.com/salad.jpg'),
-('Craft Beer', 1, 'https://example.com/beer.jpg'),
-('Vegetarian Wrap', 0, 'https://example.com/wrap.jpg'),
-('Hot Coffee', 0, 'https://example.com/coffee.jpg'),
-('Chocolate Cake', 0, 'https://example.com/cake.jpg'),
-('Chicken Tikka Masala', 0, 'https://example.com/tikka.jpg'),
-('Greek Salad', 0, 'https://example.com/greek.jpg'),
-('Fish & Chips', 0, 'https://example.com/fish.jpg'),
-('Margherita Pizza', 0, 'https://example.com/pizza.jpg'),
-('Thai Green Curry', 0, 'https://example.com/curry.jpg'),
-('Prosecco', 1, 'https://example.com/prosecco.jpg'),
-('Energy Drink', 0, 'https://example.com/energy.jpg'),
-('Mushroom Risotto', 0, 'https://example.com/risotto.jpg'),
-('BBQ Ribs', 0, 'https://example.com/ribs.jpg'),
-('Whiskey', 1, 'https://example.com/whiskey.jpg');
+('Apple Slices', 0, 'https://i.ibb.co/hFWT0Tpn/apple-slices.png'),
+('Bagel', 0, 'https://i.ibb.co/Fb99ym5q/bagel.png'),
+('Bread Carrero', 0, 'https://i.ibb.co/nNFVgJNV/bread-carrero.png'),
+('Caesar Salad', 0, 'https://i.ibb.co/WQtjcTg/ceasar-salad.png'),
+('Chicken Soup', 0, 'https://i.ibb.co/Pvh6CqQ3/chicken-soup.png'),
+('Chips Naturel', 0, 'https://i.ibb.co/DH79MCBZ/chips-naturel.png'),
+('Chocolate Cake', 0, 'https://i.ibb.co/cWDSYQt/chocolate-cake.png'),
+('Club Sandwich', 0, 'https://i.ibb.co/dsf9pN27/club-sandwich.png'),
+('Coffee Black', 0, 'https://i.ibb.co/HT7WrrjY/coffee-black.png'),
+('Croissant with Jam', 0, 'https://i.ibb.co/dwZzkk5D/croissant-jam.png'),
+('Grilled Salmon', 0, 'https://i.ibb.co/PzNrvWGB/grilled-salmon.png'),
+('Orange Juice', 0, 'https://i.ibb.co/cS95Ldt3/orange-juice.png'),
+('Pancakes', 0, 'https://i.ibb.co/4RQQn2vt/pancakes.png'),
+('Pasta Bolognese', 0, 'https://i.ibb.co/vNpRW2s/pasta-bolognese.png'),
+('Pretzel', 0, 'https://i.ibb.co/QFMdyPHW/pretzel.png'),
+('Scrambled Eggs', 0, 'https://i.ibb.co/YBpLFDND/scrambled-eggs.png'),
+('Blueberry Smoothie', 0, 'https://i.ibb.co/0jPw0mgc/smoothie-blueberry.png'),
+('Steak with Mashed Potato', 0, 'https://i.ibb.co/yn2M7SJD/steak-mashedpotato.png'),
+('Thai Green Curry', 0, 'https://i.ibb.co/v6pT3zy6/thai-green-curry.png'),
+('Toast with Jam', 0, 'https://i.ibb.co/VcLR9tpW/toast-jam.png'),
+('Tomato Soup', 0, 'https://i.ibb.co/ks7WqYRv/tomato-soup.png');
 
 -- 3. INSERT PACKAGES
 DECLARE @CanteenLA INT = (SELECT TOP 1 Id FROM Canteens WHERE Location = 0 AND City = 0);
@@ -71,7 +72,7 @@ INSERT INTO Packages (Name, City, CanteenLocation, PickupTime, LatestPickupTime,
 ('Weekend Pizza Party', 0, 2, DATEADD(hour, 17, @DayAfter), DATEADD(hour, 19, @DayAfter), 11.50, 1, @CanteenHA),
 ('Mediterranean Mix', 0, 0, DATEADD(hour, 11, DATEADD(minute, 45, @Tomorrow)), DATEADD(hour, 13, DATEADD(minute, 15, @Tomorrow)), 7.95, 0, @CanteenLA),
 ('BBQ Bonanza', 0, 1, DATEADD(hour, 18, DATEADD(minute, 30, @Tomorrow)), DATEADD(hour, 20, @Tomorrow), 16.95, 1, @CanteenLD),
-('Whiskey Tasting Dinner', 0, 2, DATEADD(hour, 19, DATEADD(minute, 30, @DayAfter)), DATEADD(hour, 21, @DayAfter), 24.95, 1, @CanteenHA);
+('Breakfast Special', 0, 2, DATEADD(hour, 8, @Tomorrow), DATEADD(hour, 10, @Tomorrow), 6.95, 5, @CanteenHA);
 
 -- Link products to packages (many-to-many relationship)
 DECLARE @Package1 INT = (SELECT Id FROM Packages WHERE Name = 'Healthy Lunch Special');
@@ -83,51 +84,52 @@ DECLARE @Package6 INT = (SELECT Id FROM Packages WHERE Name = 'Fish Friday Speci
 DECLARE @Package7 INT = (SELECT Id FROM Packages WHERE Name = 'Weekend Pizza Party');
 DECLARE @Package8 INT = (SELECT Id FROM Packages WHERE Name = 'Mediterranean Mix');
 DECLARE @Package9 INT = (SELECT Id FROM Packages WHERE Name = 'BBQ Bonanza');
-DECLARE @Package10 INT = (SELECT Id FROM Packages WHERE Name = 'Whiskey Tasting Dinner');
+DECLARE @Package10 INT = (SELECT Id FROM Packages WHERE Name = 'Breakfast Special');
 
 -- Get actual Product IDs (not hardcoded)
-DECLARE @TurkeySandwich INT = (SELECT Id FROM Products WHERE Name = 'Turkey Club Sandwich');
-DECLARE @OrangeJuice INT = (SELECT Id FROM Products WHERE Name = 'Fresh Orange Juice');
-DECLARE @Salmon INT = (SELECT Id FROM Products WHERE Name = 'Grilled Salmon Fillet');
-DECLARE @RedWine INT = (SELECT Id FROM Products WHERE Name = 'Red Wine (House)');
-DECLARE @Pasta INT = (SELECT Id FROM Products WHERE Name = 'Pasta Bolognese');
-DECLARE @Coffee INT = (SELECT Id FROM Products WHERE Name = 'Hot Coffee');
-DECLARE @Wrap INT = (SELECT Id FROM Products WHERE Name = 'Vegetarian Wrap');
-DECLARE @Caesar INT = (SELECT Id FROM Products WHERE Name = 'Caesar Salad');
-DECLARE @Tikka INT = (SELECT Id FROM Products WHERE Name = 'Chicken Tikka Masala');
-DECLARE @Greek INT = (SELECT Id FROM Products WHERE Name = 'Greek Salad');
-DECLARE @Fish INT = (SELECT Id FROM Products WHERE Name = 'Fish & Chips');
-DECLARE @Pizza INT = (SELECT Id FROM Products WHERE Name = 'Margherita Pizza');
-DECLARE @Curry INT = (SELECT Id FROM Products WHERE Name = 'Thai Green Curry');
-DECLARE @Prosecco INT = (SELECT Id FROM Products WHERE Name = 'Prosecco');
-DECLARE @Energy INT = (SELECT Id FROM Products WHERE Name = 'Energy Drink');
-DECLARE @Risotto INT = (SELECT Id FROM Products WHERE Name = 'Mushroom Risotto');
-DECLARE @Ribs INT = (SELECT Id FROM Products WHERE Name = 'BBQ Ribs');
-DECLARE @Whiskey INT = (SELECT Id FROM Products WHERE Name = 'Whiskey');
-DECLARE @Beer INT = (SELECT Id FROM Products WHERE Name = 'Craft Beer');
-DECLARE @Cake INT = (SELECT Id FROM Products WHERE Name = 'Chocolate Cake');
+DECLARE @AppleSlices INT = (SELECT Id FROM Products WHERE Name = 'Apple Slices');
+DECLARE @Bagel INT = (SELECT Id FROM Products WHERE Name = 'Bagel');
+DECLARE @BreadCarrero INT = (SELECT Id FROM Products WHERE Name = 'Bread Carrero');
+DECLARE @CaesarSalad INT = (SELECT Id FROM Products WHERE Name = 'Caesar Salad');
+DECLARE @ChickenSoup INT = (SELECT Id FROM Products WHERE Name = 'Chicken Soup');
+DECLARE @ChipsNaturel INT = (SELECT Id FROM Products WHERE Name = 'Chips Naturel');
+DECLARE @ChocolateCake INT = (SELECT Id FROM Products WHERE Name = 'Chocolate Cake');
+DECLARE @ClubSandwich INT = (SELECT Id FROM Products WHERE Name = 'Club Sandwich');
+DECLARE @CoffeeBlack INT = (SELECT Id FROM Products WHERE Name = 'Coffee Black');
+DECLARE @CroissantJam INT = (SELECT Id FROM Products WHERE Name = 'Croissant with Jam');
+DECLARE @GrilledSalmon INT = (SELECT Id FROM Products WHERE Name = 'Grilled Salmon');
+DECLARE @OrangeJuice INT = (SELECT Id FROM Products WHERE Name = 'Orange Juice');
+DECLARE @Pancakes INT = (SELECT Id FROM Products WHERE Name = 'Pancakes');
+DECLARE @PastaBolognese INT = (SELECT Id FROM Products WHERE Name = 'Pasta Bolognese');
+DECLARE @Pretzel INT = (SELECT Id FROM Products WHERE Name = 'Pretzel');
+DECLARE @ScrambledEggs INT = (SELECT Id FROM Products WHERE Name = 'Scrambled Eggs');
+DECLARE @BlueberrySmoothie INT = (SELECT Id FROM Products WHERE Name = 'Blueberry Smoothie');
+DECLARE @SteakMashedPotato INT = (SELECT Id FROM Products WHERE Name = 'Steak with Mashed Potato');
+DECLARE @ThaiGreenCurry INT = (SELECT Id FROM Products WHERE Name = 'Thai Green Curry');
+DECLARE @ToastJam INT = (SELECT Id FROM Products WHERE Name = 'Toast with Jam');
+DECLARE @TomatoSoup INT = (SELECT Id FROM Products WHERE Name = 'Tomato Soup');
 
 INSERT INTO PackageProducts (PackagesId, ProductsId) VALUES
 -- Package 1: Healthy Lunch (No alcohol)
-(@Package1, @TurkeySandwich), (@Package1, @OrangeJuice), (@Package1, @Caesar),
--- Package 2: Deluxe Evening (18+ - Contains Red Wine)
-(@Package2, @Salmon), (@Package2, @RedWine), (@Package2, @Cake),
+(@Package1, @ClubSandwich), (@Package1, @OrangeJuice), (@Package1, @CaesarSalad),
+-- Package 2: Deluxe Evening (No alcohol)
+(@Package2, @GrilledSalmon), (@Package2, @SteakMashedPotato), (@Package2, @ChocolateCake),
 -- Package 3: Hot Pasta (No alcohol) 
-(@Package3, @Pasta), (@Package3, @Coffee),
+(@Package3, @PastaBolognese), (@Package3, @CoffeeBlack),
 -- Package 4: Fresh Wrap (No alcohol)
-(@Package4, @Wrap), (@Package4, @OrangeJuice), (@Package4, @Greek),
+(@Package4, @ToastJam), (@Package4, @OrangeJuice), (@Package4, @AppleSlices),
 -- Package 5: Spicy Curry (No alcohol)
-(@Package5, @Tikka), (@Package5, @Curry), (@Package5, @Energy),
+(@Package5, @ThaiGreenCurry), (@Package5, @ChickenSoup), (@Package5, @BlueberrySmoothie),
 -- Package 6: Fish Friday (No alcohol)
-(@Package6, @Fish), (@Package6, @Coffee),
--- Package 7: Pizza Party (18+ - Contains Prosecco)
-(@Package7, @Pizza), (@Package7, @Prosecco),
+(@Package6, @GrilledSalmon), (@Package6, @CoffeeBlack),
+-- Package 7: Pizza Party (No alcohol)
+(@Package7, @Pretzel), (@Package7, @ChipsNaturel),
 -- Package 8: Mediterranean (No alcohol)
-(@Package8, @Greek), (@Package8, @OrangeJuice), (@Package8, @Risotto),
--- Package 9: BBQ Bonanza (18+ - Contains Beer)
-(@Package9, @Ribs), (@Package9, @Beer), (@Package9, @Cake),
--- Package 10: Whiskey Tasting (18+ - Contains Whiskey)
-(@Package10, @Salmon), (@Package10, @Whiskey), (@Package10, @Cake);
+(@Package8, @CaesarSalad), (@Package8, @OrangeJuice), (@Package8, @TomatoSoup),
+-- Package 9: BBQ Bonanza (No alcohol)
+(@Package9, @SteakMashedPotato), (@Package9, @ChocolateCake), (@Package9, @ChipsNaturel),
+-- Package 10: Breakfast Special (No alcohol)
+(@Package10, @Pancakes), (@Package10, @ScrambledEggs), (@Package10, @CroissantJam), (@Package10, @Bagel);
 
 PRINT 'Package-Product relationships created';
 
@@ -149,6 +151,6 @@ DECLARE @PackageCount INT = (SELECT COUNT(*) FROM Packages);
 
 PRINT '=== DATABASE SEEDED SUCCESSFULLY ===';
 PRINT 'Canteens: ' + CAST(@CanteenCount AS VARCHAR) + ' (Expected: 5)';
-PRINT 'Products: ' + CAST(@ProductCount AS VARCHAR) + ' (Expected: 20)';
+PRINT 'Products: ' + CAST(@ProductCount AS VARCHAR) + ' (Expected: 21)';
 PRINT 'Packages: ' + CAST(@PackageCount AS VARCHAR) + ' (Expected: 10)';
 

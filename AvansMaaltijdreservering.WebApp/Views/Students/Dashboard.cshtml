@@ -84,6 +84,51 @@
                     <div class="package-card">
                         <h3 class="package-card-title">@item.Package.Name</h3>
                         <div class="package-card-price">€@item.Package.Price.ToString("0.00")</div>
+                        
+                        @if (item.Package.Products.Any())
+                        {
+                            var products = item.Package.Products.ToList();
+                            var productCount = products.Count;
+                            
+                            <div class="package-product-images">
+                                @if (productCount <= 4)
+                                {
+                                    @for (int i = 0; i < productCount; i++)
+                                    {
+                                        <div class="package-product-item">
+                                            @if (!string.IsNullOrEmpty(products[i].PhotoUrl))
+                                            {
+                                                <img src="@products[i].PhotoUrl" alt="@products[i].Name" class="package-product-image" />
+                                            }
+                                            else
+                                            {
+                                                <div class="package-product-placeholder">🍽️</div>
+                                            }
+                                            <div class="package-product-tooltip">@products[i].Name</div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    @for (int i = 0; i < 3; i++)
+                                    {
+                                        <div class="package-product-item">
+                                            @if (!string.IsNullOrEmpty(products[i].PhotoUrl))
+                                            {
+                                                <img src="@products[i].PhotoUrl" alt="@products[i].Name" class="package-product-image" />
+                                            }
+                                            else
+                                            {
+                                                <div class="package-product-placeholder">🍽️</div>
+                                            }
+                                            <div class="package-product-tooltip">@products[i].Name</div>
+                                        </div>
+                                    }
+                                    <div class="package-product-more">+@(productCount - 3)</div>
+                                }
+                            </div>
+                        }
+                        
                         <div class="package-card-location">@item.Package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")</div>
                         <div class="package-card-time">@item.Package.PickupTime.ToString("ddd dd MMM, HH:mm")</div>
                         
