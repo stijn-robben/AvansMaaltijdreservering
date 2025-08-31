@@ -1,22 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using AvansMaaltijdreservering.Core.DomainService.Interfaces;
 using AvansMaaltijdreservering.Core.Domain.Entities;
 using AvansMaaltijdreservering.WebApp.Models;
+using AvansMaaltijdreservering.Infrastructure.Identity;
 
 namespace AvansMaaltijdreservering.WebApp.Controllers;
 
 public class HomeController : Controller
 {
     private readonly IPackageService _packageService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public HomeController(IPackageService packageService)
+    public HomeController(IPackageService packageService, UserManager<ApplicationUser> userManager)
     {
         _packageService = packageService;
+        _userManager = userManager;
     }
 
     public async Task<IActionResult> Index()
     {
+        // Check if user is authenticated
+        if (User.Identity.IsAuthenticated)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                
+                // Redirect to appropriate dashboard based on role
+                if (roles.Contains(IdentityRoles.Student))
+                {
+                    return RedirectToAction("Dashboard", "Students");
+                }
+                else if (roles.Contains(IdentityRoles.CanteenEmployee))
+                {
+                    return RedirectToAction("Dashboard", "Employees");
+                }
+            }
+        }
+
+        // If not authenticated or no valid role, show public index
         try
         {
             var packages = await _packageService.GetAvailablePackagesAsync();

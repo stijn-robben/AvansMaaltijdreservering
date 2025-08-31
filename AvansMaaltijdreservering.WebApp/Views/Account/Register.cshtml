@@ -3,178 +3,161 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white text-center">
-                    <h3><i class="bi bi-person-plus-fill"></i> Join Avans Meal Rescue</h3>
-                    <p class="mb-0">Help reduce food waste - Save money - Enjoy great meals!</p>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Register" method="post" id="registerForm">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Registration Type Selection -->
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input asp-for="IsStudent" class="form-check-input" value="true" id="studentRadio" />
-                                        <label class="form-check-label" for="studentRadio">
-                                            <i class="bi bi-mortarboard-fill text-primary"></i> I'm a Student
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input asp-for="IsStudent" class="form-check-input" value="false" id="employeeRadio" />
-                                        <label class="form-check-label" for="employeeRadio">
-                                            <i class="bi bi-briefcase-fill text-warning"></i> I'm a Canteen Employee
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="labrada-font">Register your account</h1>
+        </div>
+    </div>
 
-                        <!-- Common Fields -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Name" class="form-label">
-                                        <i class="bi bi-person"></i> Full Name *
-                                    </label>
-                                    <input asp-for="Name" class="form-control" placeholder="Enter your full name" />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Email" class="form-label">
-                                        <i class="bi bi-envelope"></i> Email Address *
-                                    </label>
-                                    <input asp-for="Email" class="form-control" placeholder="your.email@avans.nl" />
-                                    <span asp-validation-for="Email" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+    <div class="row">
+        <!-- Left Column - Form (40%) -->
+        <div class="col-md-5">
+            <div class="package-details-card">
+                <form asp-action="Register" method="post" id="registerForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <!-- Hidden field to always register as student -->
+                    <input asp-for="IsStudent" type="hidden" value="true" />
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Password" class="form-label">
-                                        <i class="bi bi-lock"></i> Password *
-                                    </label>
-                                    <input asp-for="Password" class="form-control" placeholder="Choose a strong password" />
-                                    <span asp-validation-for="Password" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="ConfirmPassword" class="form-label">
-                                        <i class="bi bi-lock-fill"></i> Confirm Password *
-                                    </label>
-                                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm your password" />
-                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Personal Information -->
+                    <h3 class="labrada-font" style="color: var(--color-primary-dark); margin-bottom: var(--spacing-lg);">
+                        Personal information
+                    </h3>
 
-                        <!-- Student-specific fields -->
-                        <div id="studentFields" style="display: block;">
-                            <h5 class="text-primary mb-3"><i class="bi bi-mortarboard"></i> Student Information</h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label asp-for="StudentNumber" class="form-label">
-                                            <i class="bi bi-card-text"></i> Student Number *
-                                        </label>
-                                        <input asp-for="StudentNumber" class="form-control" placeholder="e.g., STU123456" />
-                                        <span asp-validation-for="StudentNumber" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label asp-for="DateOfBirth" class="form-label">
-                                            <i class="bi bi-calendar3"></i> Date of Birth *
-                                        </label>
-                                        <input asp-for="DateOfBirth" class="form-control" type="date" />
-                                        <small class="form-text text-muted">Must be at least 16 years old</small>
-                                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label asp-for="StudyCity" class="form-label">
-                                            <i class="bi bi-geo-alt"></i> Study City
-                                        </label>
-                                        <select asp-for="StudyCity" class="form-select">
-                                            <option value="0">Breda</option>
-                                            <option value="1">Tilburg</option>
-                                            <option value="2">Den Bosch</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label asp-for="PhoneNumber" class="form-label">
-                                            <i class="bi bi-telephone"></i> Phone Number
-                                        </label>
-                                        <input asp-for="PhoneNumber" class="form-control" placeholder="+31612345678" />
-                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <input asp-for="Name" class="register-round-input" placeholder="Full name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-                        <!-- Employee-specific fields -->
-                        <div id="employeeFields" style="display: none;">
-                            <h5 class="text-warning mb-3"><i class="bi bi-briefcase"></i> Employee Information</h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label asp-for="EmployeeNumber" class="form-label">
-                                            <i class="bi bi-badge-ad"></i> Employee Number *
-                                        </label>
-                                        <input asp-for="EmployeeNumber" class="form-control" placeholder="e.g., EMP001" />
-                                        <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label asp-for="CanteenId" class="form-label">
-                                            <i class="bi bi-building"></i> Your Canteen Location *
-                                        </label>
-                                        <select asp-for="CanteenId" class="form-select">
-                                            <option value="">Select your canteen</option>
-                                            <option value="1">Breda - LA Building</option>
-                                            <option value="2">Breda - LD Building</option>
-                                            <option value="3">Breda - HA Building</option>
-                                            <option value="4">Den Bosch Building</option>
-                                            <option value="5">Tilburg Building</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="bi bi-person-plus"></i> Create Account & Start Saving Food!
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <div class="custom-calendar-wrapper">
+                            <button type="button" class="calendar-toggle" id="calendarToggle">
+                                <span id="selectedDate">Select date of birth</span>
+                                <i class="bi bi-calendar3"></i>
                             </button>
+                            <div class="custom-calendar" id="customCalendar">
+                                <div class="calendar-header">
+                                    <div class="calendar-nav-group">
+                                        <button type="button" class="calendar-nav" id="prevYear">
+                                            <i class="bi bi-chevron-double-left"></i>
+                                        </button>
+                                        <button type="button" class="calendar-nav" id="prevMonth">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </button>
+                                    </div>
+                                    <span class="calendar-month" id="currentMonth">January 2024</span>
+                                    <div class="calendar-nav-group">
+                                        <button type="button" class="calendar-nav" id="nextMonth">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                        <button type="button" class="calendar-nav" id="nextYear">
+                                            <i class="bi bi-chevron-double-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="calendar-days">
+                                    <div class="calendar-day-header">Sun</div>
+                                    <div class="calendar-day-header">Mon</div>
+                                    <div class="calendar-day-header">Tue</div>
+                                    <div class="calendar-day-header">Wed</div>
+                                    <div class="calendar-day-header">Thu</div>
+                                    <div class="calendar-day-header">Fri</div>
+                                    <div class="calendar-day-header">Sat</div>
+                                </div>
+                                <div class="calendar-grid" id="calendarGrid">
+                                    <!-- Days will be generated by JavaScript -->
+                                </div>
+                            </div>
+                            <input asp-for="DateOfBirth" type="hidden" id="dateOfBirth" />
                         </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">
-                        Already have an account? 
-                        <a asp-action="Login" class="text-success fw-bold text-decoration-none">
-                            <i class="bi bi-box-arrow-in-right"></i> Login here
-                        </a>
-                    </p>
-                </div>
+                        <small class="form-text text-muted" id="ageWarning" style="display: none;">Must be at least 16 years old</small>
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <input asp-for="PhoneNumber" class="register-round-input" placeholder="Phone number" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <small class="text-danger" id="phoneValidationError" style="display: none;">Please enter a valid Dutch mobile number (06xxxxxxxx or +316xxxxxxxx)</small>
+                    </div>
+
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <input asp-for="Password" type="password" class="register-round-input" placeholder="Password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <input asp-for="ConfirmPassword" type="password" class="register-round-input" placeholder="Confirm password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- Student Information -->
+                    <h3 class="labrada-font" style="color: var(--color-primary-dark); margin-bottom: var(--spacing-lg);">
+                        Student information
+                    </h3>
+
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <div class="student-number-group">
+                            <span class="stu-prefix">STU</span>
+                            <input type="text" id="studentNumberInput" class="register-round-input student-number-input" placeholder="Enter numbers only" inputmode="numeric" pattern="[0-9]*" />
+                        </div>
+                        <input asp-for="StudentNumber" type="hidden" id="fullStudentNumber" />
+                        <span asp-validation-for="StudentNumber" class="text-danger"></span>
+                    </div>
+
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <div class="email-input-group">
+                            <input type="text" id="emailName" class="register-round-input email-name-input" placeholder="Enter your name" />
+                            <span class="email-suffix">@@student.avans.nl</span>
+                        </div>
+                        <input asp-for="Email" type="hidden" id="fullEmail" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <small class="text-danger" id="emailValidationError" style="display: none;">Email name must be at least 4 characters with minimum 4 letters</small>
+                    </div>
+
+                    <div style="margin-bottom: var(--spacing-xl);">
+                        <div class="register-city-dropdown">
+                            <button type="button" class="register-city-toggle" id="studyCityToggle">
+                                <span id="selectedCity">Select your Avans location</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="register-city-menu" id="studyCityMenu">
+                                <div class="register-city-item" data-value="0">Breda</div>
+                                <hr class="dropdown-divider">
+                                <div class="register-city-item" data-value="1">Tilburg</div>
+                                <hr class="dropdown-divider">
+                                <div class="register-city-item" data-value="2">Den Bosch</div>
+                            </div>
+                            <input asp-for="StudyCity" type="hidden" id="studyCityValue" />
+                        </div>
+                    </div>
+
+                    <div class="package-details-buttons">
+                        <button type="submit" class="btn-package-reserve">
+                            Register account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column - Image (60%) -->
+        <div class="col-md-7">
+            <div class="package-details-card register-image-card">
+                <img src="~/images/register.jpg" alt="Avans Meal Rescue Registration" class="register-image" />
+            </div>
+        </div>
+    </div>
+            
+            <!-- Login Link -->
+            <div class="text-center" style="margin-top: var(--spacing-lg);">
+                <p class="text-muted mb-0">
+                    Already have an account? 
+                    <a asp-action="Login" class="meal-filter-btn" style="display: inline-block; margin-left: var(--spacing-sm);">
+                        <i class="bi bi-box-arrow-in-right"></i> Login here
+                    </a>
+                </p>
             </div>
         </div>
     </div>
@@ -183,28 +166,393 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        // Toggle between student and employee fields
         document.addEventListener('DOMContentLoaded', function() {
-            const studentRadio = document.getElementById('studentRadio');
-            const employeeRadio = document.getElementById('employeeRadio');
-            const studentFields = document.getElementById('studentFields');
-            const employeeFields = document.getElementById('employeeFields');
-
-            function toggleFields() {
-                if (studentRadio.checked) {
-                    studentFields.style.display = 'block';
-                    employeeFields.style.display = 'none';
+            // Date validation
+            const dateInput = document.getElementById('dateOfBirth');
+            const ageWarning = document.getElementById('ageWarning');
+            
+            dateInput.addEventListener('change', function() {
+                const birthDate = new Date(this.value);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                // Adjust age if birthday hasn't occurred this year
+                const adjustedAge = (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) ? age - 1 : age;
+                
+                if (adjustedAge < 16) {
+                    ageWarning.style.display = 'block';
                 } else {
-                    studentFields.style.display = 'none';
-                    employeeFields.style.display = 'block';
+                    ageWarning.style.display = 'none';
+                }
+            });
+
+            // Custom dropdown functionality
+            const toggle = document.getElementById('studyCityToggle');
+            const menu = document.getElementById('studyCityMenu');
+            const selectedCity = document.getElementById('selectedCity');
+            const hiddenInput = document.getElementById('studyCityValue');
+            const items = document.querySelectorAll('.register-city-item');
+
+            toggle.addEventListener('click', function() {
+                menu.classList.toggle('show');
+            });
+
+            items.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    
+                    selectedCity.textContent = text;
+                    hiddenInput.value = value;
+                    menu.classList.remove('show');
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+                    menu.classList.remove('show');
+                }
+            });
+
+            // Custom Calendar functionality
+            const calendarToggle = document.getElementById('calendarToggle');
+            const customCalendar = document.getElementById('customCalendar');
+            const selectedDateSpan = document.getElementById('selectedDate');
+            // Reuse the dateInput variable from above
+            const currentMonthSpan = document.getElementById('currentMonth');
+            const calendarGrid = document.getElementById('calendarGrid');
+            const prevMonthBtn = document.getElementById('prevMonth');
+            const nextMonthBtn = document.getElementById('nextMonth');
+            const prevYearBtn = document.getElementById('prevYear');
+            const nextYearBtn = document.getElementById('nextYear');
+            
+            // Debug: Check if elements exist
+            console.log('Calendar elements found:', {
+                toggle: !!calendarToggle,
+                calendar: !!customCalendar,
+                dateSpan: !!selectedDateSpan,
+                input: !!dateInput
+            });
+            
+            // Only proceed if all calendar elements exist
+            if (!calendarToggle || !customCalendar || !selectedDateSpan || !dateInput) {
+                console.error('Calendar elements not found');
+                return;
+            }
+            
+            let currentDate = new Date();
+            let selectedDate = null;
+            
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            function formatDate(date) {
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`;
+            }
+            
+            function formatDisplayDate(date) {
+                const day = date.getDate();
+                const month = months[date.getMonth()];
+                const year = date.getFullYear();
+                return `${day} ${month} ${year}`;
+            }
+            
+            function generateCalendar(year, month) {
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                currentMonthSpan.textContent = `${months[month]} ${year}`;
+                calendarGrid.innerHTML = '';
+                
+                for (let i = 0; i < 42; i++) {
+                    const date = new Date(startDate);
+                    date.setDate(startDate.getDate() + i);
+                    
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    dayElement.textContent = date.getDate();
+                    
+                    if (date.getMonth() !== month) {
+                        dayElement.classList.add('other-month');
+                    }
+                    
+                    if (date.toDateString() === new Date().toDateString()) {
+                        dayElement.classList.add('today');
+                    }
+                    
+                    if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                        dayElement.classList.add('selected');
+                    }
+                    
+                    dayElement.addEventListener('click', function() {
+                        selectedDate = new Date(date);
+                        dateInput.value = formatDate(selectedDate);
+                        selectedDateSpan.textContent = formatDisplayDate(selectedDate);
+                        customCalendar.classList.remove('show');
+                        
+                        // Trigger age validation
+                        dateInput.dispatchEvent(new Event('change'));
+                    });
+                    
+                    calendarGrid.appendChild(dayElement);
+                }
+            }
+            
+            // Test direct calendar show
+            console.log('Setting up calendar click handler');
+            
+            calendarToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Calendar toggle clicked - before toggle');
+                console.log('Current classes:', customCalendar.className);
+                
+                // Force show calendar for debugging
+                if (customCalendar.classList.contains('show')) {
+                    customCalendar.classList.remove('show');
+                    console.log('Calendar hidden');
+                } else {
+                    customCalendar.classList.add('show');
+                    console.log('Calendar shown');
+                    generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+                }
+                
+                console.log('New classes:', customCalendar.className);
+            });
+            
+            prevMonthBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            });
+            
+            nextMonthBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            });
+            
+            prevYearBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                currentDate.setFullYear(currentDate.getFullYear() - 1);
+                generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            });
+            
+            nextYearBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                currentDate.setFullYear(currentDate.getFullYear() + 1);
+                generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+            });
+            
+            // Close calendar when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!calendarToggle.contains(e.target) && !customCalendar.contains(e.target)) {
+                    customCalendar.classList.remove('show');
+                }
+            });
+
+            // Match image card height to form card height
+            function matchCardHeights() {
+                const formCard = document.querySelector('.col-md-5 .package-details-card');
+                const imageCard = document.querySelector('.register-image-card');
+                
+                if (formCard && imageCard) {
+                    const formHeight = formCard.offsetHeight;
+                    imageCard.style.height = formHeight + 'px';
                 }
             }
 
-            studentRadio.addEventListener('change', toggleFields);
-            employeeRadio.addEventListener('change', toggleFields);
-            
-            // Initialize on page load
-            toggleFields();
+            // Match heights on load and resize
+            matchCardHeights();
+            window.addEventListener('resize', matchCardHeights);
+
+            // Form validation and button state management
+            const submitButton = document.querySelector('.btn-package-reserve');
+            const formInputs = {
+                name: document.querySelector('input[name="Name"]'),
+                emailName: document.getElementById('emailName'),
+                email: document.getElementById('fullEmail'),
+                password: document.querySelector('input[name="Password"]'),
+                confirmPassword: document.querySelector('input[name="ConfirmPassword"]'),
+                studentNumberInput: document.getElementById('studentNumberInput'),
+                studentNumber: document.getElementById('fullStudentNumber'),
+                dateOfBirth: dateInput,
+                studyCity: document.getElementById('studyCityValue'),
+                phoneNumber: document.querySelector('input[name="PhoneNumber"]')
+            };
+
+            // Initially disable the button
+            submitButton.disabled = true;
+            submitButton.classList.add('btn-disabled');
+
+            function validateEmailName(emailName) {
+                // Only validate the name part (before the domain suffix)
+                // Minimum 4 characters, only letters, numbers, dots, underscores, hyphens
+                const nameRegex = /^[a-zA-Z0-9._-]+$/;
+                const trimmedName = emailName.trim();
+                
+                // Count only letters (a-z, A-Z)
+                const letterCount = (trimmedName.match(/[a-zA-Z]/g) || []).length;
+                
+                return trimmedName.length >= 4 && letterCount >= 4 && nameRegex.test(trimmedName);
+            }
+
+            function validateStudentNumber(studentNumber) {
+                // Only numbers allowed, minimum 1 digit
+                const numberRegex = /^[0-9]+$/;
+                return studentNumber.trim().length >= 1 && numberRegex.test(studentNumber.trim());
+            }
+
+            function validatePhoneNumber(phone) {
+                if (!phone || phone.trim() === '') return true; // Optional field
+                
+                // Clean the phone number: remove spaces, dashes, parentheses, dots
+                const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+                
+                // Dutch mobile numbers patterns:
+                // 06xxxxxxxx (10 digits total)
+                // +316xxxxxxxx (12 digits total)
+                // 0031xxxxxxxx (12 digits total)
+                const patterns = [
+                    /^06[0-9]{8}$/,           // 06 + 8 digits
+                    /^\+316[0-9]{8}$/,       // +31 + 6 + 8 digits  
+                    /^00316[0-9]{8}$/        // 0031 + 6 + 8 digits
+                ];
+                
+                return patterns.some(pattern => pattern.test(cleanPhone));
+            }
+
+            function calculateAge(birthDate) {
+                const today = new Date();
+                const birth = new Date(birthDate);
+                let age = today.getFullYear() - birth.getFullYear();
+                const monthDiff = today.getMonth() - birth.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                    age--;
+                }
+                return age;
+            }
+
+            function updateFullEmail() {
+                const emailName = formInputs.emailName.value.trim();
+                if (emailName) {
+                    formInputs.email.value = emailName + String.fromCharCode(64) + 'student.avans.nl';
+                } else {
+                    formInputs.email.value = '';
+                }
+            }
+
+            function updateFullStudentNumber() {
+                const studentNumberInput = formInputs.studentNumberInput.value.trim();
+                if (studentNumberInput) {
+                    formInputs.studentNumber.value = 'STU' + studentNumberInput;
+                } else {
+                    formInputs.studentNumber.value = '';
+                }
+            }
+
+            function validateForm() {
+                // Update the full email and student number whenever validation runs
+                updateFullEmail();
+                updateFullStudentNumber();
+                
+                const validations = {
+                    name: formInputs.name.value.trim().length >= 2 && formInputs.name.value.trim().length <= 100,
+                    email: formInputs.emailName.value.trim() !== '' && validateEmailName(formInputs.emailName.value.trim()),
+                    password: formInputs.password.value.length >= 6 && formInputs.password.value.length <= 100,
+                    confirmPassword: formInputs.confirmPassword.value === formInputs.password.value && formInputs.confirmPassword.value !== '',
+                    studentNumber: formInputs.studentNumberInput.value.trim() !== '' && validateStudentNumber(formInputs.studentNumberInput.value.trim()),
+                    dateOfBirth: formInputs.dateOfBirth.value !== '' && calculateAge(formInputs.dateOfBirth.value) >= 16,
+                    studyCity: formInputs.studyCity.value !== '' && formInputs.studyCity.value !== null,
+                    phoneNumber: validatePhoneNumber(formInputs.phoneNumber.value)
+                };
+
+                // Show/hide validation error messages
+                const emailValidationError = document.getElementById('emailValidationError');
+                const phoneValidationError = document.getElementById('phoneValidationError');
+
+                // Email validation display
+                if (formInputs.emailName.value.trim() !== '' && !validations.email) {
+                    emailValidationError.style.display = 'block';
+                } else {
+                    emailValidationError.style.display = 'none';
+                }
+
+                // Phone validation display (only show error if field has content and is invalid)
+                if (formInputs.phoneNumber.value.trim() !== '' && !validations.phoneNumber) {
+                    phoneValidationError.style.display = 'block';
+                } else {
+                    phoneValidationError.style.display = 'none';
+                }
+
+                const allValid = Object.values(validations).every(valid => valid);
+
+                if (allValid) {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('btn-disabled');
+                } else {
+                    submitButton.disabled = true;
+                    submitButton.classList.add('btn-disabled');
+                }
+
+                return allValid;
+            }
+
+            // Add event listeners to all form fields
+            Object.values(formInputs).forEach(input => {
+                if (input) {
+                    input.addEventListener('input', validateForm);
+                    input.addEventListener('change', validateForm);
+                    input.addEventListener('blur', validateForm);
+                }
+            });
+
+            // Email validation and filtering
+            formInputs.emailName.addEventListener('input', function(e) {
+                // Only allow valid email name characters
+                this.value = this.value.replace(/[^a-zA-Z0-9._-]/g, '');
+                updateFullEmail();
+            });
+
+            // Only allow numbers in student number field
+            formInputs.studentNumberInput.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+                updateFullStudentNumber();
+            });
+
+            // Prevent pasting non-numeric content in student number
+            formInputs.studentNumberInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const numericOnly = paste.replace(/[^0-9]/g, '');
+                this.value = numericOnly;
+                updateFullStudentNumber();
+                validateForm();
+            });
+
+            // Special handling for study city dropdown
+            const cityItems = document.querySelectorAll('.register-city-item');
+            cityItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    setTimeout(validateForm, 100); // Small delay to ensure value is set
+                });
+            });
+
+            // Initial validation
+            validateForm();
         });
     </script>
 }

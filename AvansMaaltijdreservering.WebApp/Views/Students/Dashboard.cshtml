@@ -68,7 +68,7 @@
                     <div class="display-1 text-muted mb-3">🍽️</div>
                     <h4 class="text-muted">No packages available</h4>
                     <p class="text-muted">Try adjusting your filters or check back later!</p>
-                    <a asp-action="Dashboard" class="btn btn-outline-primary">
+                    <a asp-action="Dashboard" class="meal-filter-btn">
                         <i class="bi bi-arrow-clockwise"></i> Reset Filters
                     </a>
                 </div>
@@ -84,7 +84,7 @@
                     <div class="package-card">
                         <h3 class="package-card-title">@item.Package.Name</h3>
                         <div class="package-card-price">€@item.Package.Price.ToString("0.00")</div>
-                        <div class="package-card-location">@item.Package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("HZ BUILDING", "HZ Building")</div>
+                        <div class="package-card-location">@item.Package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")</div>
                         <div class="package-card-time">@item.Package.PickupTime.ToString("ddd dd MMM, HH:mm")</div>
                         
                         <div class="package-buttons">

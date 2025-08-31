@@ -1,278 +1,288 @@
 @model AvansMaaltijdreservering.WebApp.ViewModels.Students.PackageDetailsViewModel
 @{
     ViewData["Title"] = Model.Package.Name;
-    var isToday = Model.Package.PickupTime.Date == DateTime.Today;
-    var isTomorrow = Model.Package.PickupTime.Date == DateTime.Today.AddDays(1);
 }
 
-<div class="container mt-4">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item active">@Model.Package.Name</li>
-        </ol>
-    </nav>
-
+<div class="mt-4">
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="row">
-        <!-- Main Package Info -->
-        <div class="col-lg-8">
-            <div class="card shadow-lg">
-                <div class="card-header bg-success text-white">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h1 class="h3 mb-0">
-                                <i class="bi bi-box2-heart-fill"></i> @Model.Package.Name
-                            </h1>
-                            @if (Model.Package.ContainsAlcohol())
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @Html.AntiForgeryToken()
+
+    <!-- Back to Dashboard -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <a asp-action="Dashboard" class="btn-package-details">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Package Details -->
+    <div class="row mb-4">
+        <!-- Left Column - Package Information (50%) -->
+        <div class="col-md-6">
+            <div class="package-details-card">
+                <div class="package-details-header">
+                    <h1 class="package-details-title labrada-font">@Model.Package.Name</h1>
+                    <div class="package-details-price">€@Model.Package.Price.ToString("0.00")</div>
+                </div>
+                
+                <div class="package-details-list">
+                    <div class="package-detail-item">
+                        <div class="package-detail-left">
+                            <i class="bi bi-geo-alt"></i>
+                            <span>Location</span>
+                        </div>
+                        <div class="package-detail-right">
+                            @Model.Package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")
+                        </div>
+                    </div>
+
+                    <div class="package-detail-item">
+                        <div class="package-detail-left">
+                            <i class="bi bi-calendar"></i>
+                            <span>Date</span>
+                        </div>
+                        <div class="package-detail-right">
+                            @Model.Package.PickupTime.ToString("dddd, MMMM dd yyyy")
+                        </div>
+                    </div>
+
+                    <div class="package-detail-item">
+                        <div class="package-detail-left">
+                            <i class="bi bi-clock"></i>
+                            <span>Pickup Time</span>
+                        </div>
+                        <div class="package-detail-right package-detail-hoverable">
+                            @Model.Package.PickupTime.ToString("HH:mm") - @Model.Package.LatestPickupTime.ToString("HH:mm") <i class="bi bi-info-circle pickup-time-info-icon"></i>
+                            <div class="pickup-time-tooltip">
+                                You can pick up the package from @Model.Package.PickupTime.ToString("HH:mm") until @Model.Package.LatestPickupTime.ToString("HH:mm"). If you don't pick up within this time window, you might get a no-show.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="package-detail-item">
+                        <div class="package-detail-left">
+                            <i class="bi bi-map"></i>
+                            <span>City</span>
+                        </div>
+                        <div class="package-detail-right">
+                            @Model.Package.City.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch")
+                        </div>
+                    </div>
+
+                    <div class="package-detail-item">
+                        <div class="package-detail-left">
+                            <i class="bi bi-tag"></i>
+                            <span>Meal Type</span>
+                        </div>
+                        <div class="package-detail-right">
+                            @switch (Model.Package.MealType)
                             {
-                                <span class="badge bg-warning text-dark mt-1">🔞 Adults Only (18+)</span>
+                                case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread:
+                                    <text>Bread</text>
+                                    break;
+                                case AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal:
+                                    <text>Warm Evening Meal</text>
+                                    break;
+                                case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink:
+                                    <text>Drink</text>
+                                    break;
+                                case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack:
+                                    <text>Snack</text>
+                                    break;
+                                case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch:
+                                    <text>Lunch</text>
+                                    break;
+                                case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast:
+                                    <text>Breakfast</text>
+                                    break;
                             }
                         </div>
-                        <div class="col-auto">
-                            <div class="text-end">
-                                <div class="h2 mb-0">€@Model.Package.Price.ToString("0.00")</div>
-                                <small class="opacity-75">Great Value!</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <!-- Location & Time Info -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-primary text-white rounded-circle p-3 me-3">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-0">Pickup Location</h6>
-                                    <strong>@Model.Package.City</strong><br>
-                                    <small class="text-muted">@Model.Package.CanteenLocation.ToString().Replace("_", " ")</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-warning text-white rounded-circle p-3 me-3">
-                                    <i class="bi bi-clock-fill"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-0">Pickup Time</h6>
-                                    <strong class="@(isToday ? "text-warning" : "")">
-                                        @if (isToday)
-                                        {
-                                            <text>Today, </text>
-                                        }
-                                        else if (isTomorrow)
-                                        {
-                                            <text>Tomorrow, </text>
-                                        }
-                                        else
-                                        {
-                                            @Model.Package.PickupTime.ToString("ddd dd MMM, ")
-                                        }
-                                        @Model.Package.PickupTime.ToString("HH:mm")
-                                    </strong><br>
-                                    <small class="text-muted">Latest: @Model.Package.LatestPickupTime.ToString("HH:mm")</small>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- US_06: Product Showcase -->
                     @if (Model.Package.Products.Any())
                     {
-                        <div class="mb-4">
-                            <h5><i class="bi bi-list-ul"></i> What's Inside This Package</h5>
-                            <div class="row">
-                                @foreach (var product in Model.Package.Products)
-                                {
-                                    <div class="col-sm-6 col-md-4 mb-3">
-                                        <div class="card h-100 bg-light border-0">
-                                            <div class="card-body text-center p-3">
-                                                <div class="mb-2">
-                                                    @if (!string.IsNullOrEmpty(product.PhotoUrl))
-                                                    {
-                                                        <img src="@product.PhotoUrl" alt="@product.Name" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                            @if (product.ContainsAlcohol)
-                                                            {
-                                                                <span style="font-size: 24px;">🍷</span>
-                                                            }
-                                                            else
-                                                            {
-                                                                <i class="bi bi-box-seam" style="font-size: 24px;"></i>
-                                                            }
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <h6 class="card-title mb-1">@product.Name</h6>
-                                                @if (product.ContainsAlcohol)
-                                                {
-                                                    <small class="badge bg-warning text-dark">🔞 Contains Alcohol</small>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
+                        <div class="package-detail-item package-detail-contents">
+                            <div class="package-detail-left">
+                                <i class="bi bi-box-seam"></i>
+                                <span>Contents</span>
                             </div>
-                            
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle-fill"></i>
-                                <strong>Important:</strong> Products shown are examples based on historical data. 
-                                The actual package contents may vary and there's no guarantee for exact items. 
-                                This is part of the food waste reduction concept - you get a surprise selection!
+                            <div class="package-detail-right">
+                                <div class="package-products">
+                                    @foreach (var product in Model.Package.Products)
+                                    {
+                                        <div class="package-product">
+                                            <span class="package-product-name">@product.Name</span>
+                                            @if (product.ContainsAlcohol)
+                                            {
+                                                <i class="bi bi-exclamation-triangle-fill package-product-warning">
+                                                    <div class="product-warning-tooltip">
+                                                        Adults Only (18+) - This product contains alcohol
+                                                    </div>
+                                                </i>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                <p class="package-products-note">
+                                    <small>Products shown are examples. Actual contents may vary - part of the surprise!</small>
+                                </p>
                             </div>
                         </div>
                     }
 
-                    <!-- Meal Type Info -->
-                    <div class="mb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-info text-white rounded-circle p-3 me-3">
-                                <i class="bi bi-cup-hot-fill"></i>
+                    @if (Model.Package.ContainsAlcohol())
+                    {
+                        <div class="package-detail-item package-detail-warning">
+                            <div class="package-detail-left">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>Age Restriction</span>
                             </div>
-                            <div>
-                                <h6 class="mb-0">Meal Category</h6>
-                                <strong>
-                                    @switch (Model.Package.MealType)
-                                    {
-                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread:
-                                            <text>🍞 Bread & Bakery Items</text>
-                                            break;
-                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal:
-                                            <text>🍽️ Warm Evening Meal</text>
-                                            break;
-                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink:
-                                            <text>🥤 Beverages</text>
-                                            break;
-                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack:
-                                            <text>🍿 Snacks & Light Bites</text>
-                                            break;
-                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch:
-                                            <text>🥪 Lunch Items</text>
-                                            break;
-                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast:
-                                            <text>🥐 Breakfast Items</text>
-                                            break;
-                                    }
-                                </strong>
+                            <div class="package-detail-right">
+                                <span class="warning-text">Adults Only (18+) - This package contains alcohol</span>
                             </div>
                         </div>
-                    </div>
+                    }
+                </div>
+
+                <div class="package-details-buttons">
+                    @if (!Model.IsAvailable)
+                    {
+                        <span class="btn-package-unavailable">
+                            Already Reserved
+                            <div class="unavailable-tooltip">
+                                This package has been reserved by another student
+                            </div>
+                        </span>
+                    }
+                    else if (!Model.CanReserve)
+                    {
+                        <span class="btn-package-unavailable">
+                            Cannot Reserve
+                            <div class="unavailable-tooltip">
+                                @if (Model.Package.ContainsAlcohol() && !Model.Student.IsAdultOnDate(Model.Package.PickupTime.Date))
+                                {
+                                    var ageOnPickup = Model.Student.GetAgeOnDate(Model.Package.PickupTime.Date);
+                                    <text>You must be 18+ to reserve packages with alcohol. You'll be @ageOnPickup on pickup day.</text>
+                                }
+                                else if (Model.Student.HasReservationOnDate(Model.Package.PickupTime.Date))
+                                {
+                                    <text>You already have a reservation for this date. Only one package per day allowed.</text>
+                                }
+                                else if (Model.Student.IsBlocked())
+                                {
+                                    <text>Your account is blocked due to @Model.Student.NoShowCount no-shows. Contact support.</text>
+                                }
+                                else
+                                {
+                                    <text>This package cannot be reserved</text>
+                                }
+                            </div>
+                        </span>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn-package-reserve" onclick="showReserveModal('@Model.Package.Id', '@Model.Package.Name')">
+                            Reserve
+                        </button>
+                    }
                 </div>
             </div>
         </div>
 
-        <!-- Reservation Sidebar -->
-        <div class="col-lg-4">
-            <div class="card shadow">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-calendar-plus"></i> Reserve This Package</h5>
-                </div>
-                <div class="card-body">
-                    @if (!Model.IsAvailable)
-                    {
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                            <strong>Sorry!</strong> This package has already been reserved by another student.
-                        </div>
-                        <div class="d-grid">
-                            <a asp-action="Dashboard" class="btn btn-primary">
-                                <i class="bi bi-search"></i> Find Other Packages
-                            </a>
-                        </div>
-                    }
-                    else if (!Model.CanReserve)
-                    {
-                        <div class="alert alert-danger">
-                            <i class="bi bi-x-circle-fill"></i>
-                            <strong>Cannot Reserve</strong><br>
-                            @if (Model.Package.ContainsAlcohol() && !Model.Student.IsAdultOnDate(Model.Package.PickupTime.Date))
-                            {
-                                var ageOnPickup = Model.Student.GetAgeOnDate(Model.Package.PickupTime.Date);
-                                <text>🔞 This package contains alcohol and requires you to be 18+ on pickup date. You'll be @ageOnPickup years old on pickup day.</text>
-                            }
-                            else if (Model.Student.HasReservationOnDate(Model.Package.PickupTime.Date))
-                            {
-                                <text>📅 You already have a reservation for this pickup date. You can only reserve one package per day.</text>
-                            }
-                            else if (Model.Student.IsBlocked())
-                            {
-                                <text>⚠️ Your account is blocked due to @Model.Student.NoShowCount no-shows. Contact student services for help.</text>
-                            }
-                        </div>
-                        <div class="d-grid">
-                            <a asp-action="Dashboard" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-left"></i> Back to Dashboard
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span>Package Price:</span>
-                                <strong class="text-success">€@Model.Package.Price.ToString("0.00")</strong>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <strong>Total to Pay:</strong>
-                                <strong class="h5 text-success">€@Model.Package.Price.ToString("0.00")</strong>
-                            </div>
-                        </div>
-
-                        <div class="alert alert-success">
-                            <i class="bi bi-check-circle-fill"></i>
-                            <strong>Great choice!</strong> You're helping reduce food waste while saving money.
-                        </div>
-
-                        <form asp-action="ReservePackage" method="post">
-                            <input type="hidden" name="packageId" value="@Model.Package.Id" />
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Reserve this package?')">
-                                    <i class="bi bi-calendar-plus-fill"></i> Reserve Now
-                                </button>
-                                <a asp-action="Dashboard" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left"></i> Keep Browsing
-                                </a>
-                            </div>
-                        </form>
-                    }
-                </div>
-            </div>
-
-            <!-- Environmental Impact Info -->
-            <div class="card shadow mt-4">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0"><i class="bi bi-globe-europe-africa"></i> Environmental Impact</h6>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <div class="display-4 mb-2">🌱</div>
-                        <p class="mb-2"><strong>By reserving this package, you help:</strong></p>
-                        <ul class="list-unstyled text-start">
-                            <li><i class="bi bi-check-circle text-success"></i> Prevent food waste</li>
-                            <li><i class="bi bi-check-circle text-success"></i> Reduce CO2 emissions</li>
-                            <li><i class="bi bi-check-circle text-success"></i> Save money</li>
-                            <li><i class="bi bi-check-circle text-success"></i> Support sustainability</li>
-                        </ul>
-                    </div>
-                </div>
+        <!-- Right Column - Additional Information (50%) -->
+        <div class="col-md-6">
+            <div class="package-details-card">
+                <h3 class="labrada-font">Additional Information</h3>
+                <p class="text-muted">This section is reserved for future content.</p>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Custom Reserve Modal -->
+<div id="reserveModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <h3 class="custom-modal-title">Reserve Package</h3>
+        <p class="custom-modal-text">Are you sure you want to reserve <strong id="packageName">@Model.Package.Name</strong>?</p>
+        <div class="custom-modal-buttons">
+            <button type="button" class="btn-modal-cancel" onclick="hideReserveModal()">Cancel</button>
+            <button type="button" class="btn-modal-confirm" onclick="confirmReservation()">Reserve</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+let currentPackageId = '@Model.Package.Id';
+
+function showReserveModal(packageId, packageName) {
+    currentPackageId = packageId;
+    document.getElementById('packageName').textContent = packageName;
+    document.getElementById('reserveModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function hideReserveModal() {
+    document.getElementById('reserveModal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function confirmReservation() {
+    if (currentPackageId) {
+        // Create and submit form
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '@Url.Action("ReservePackage", "Students")';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'packageId';
+        input.value = currentPackageId;
+        
+        // Add anti-forgery token
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Close modal when clicking outside
+document.getElementById('reserveModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        hideReserveModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        hideReserveModal();
+    }
+});
+</script>
+}

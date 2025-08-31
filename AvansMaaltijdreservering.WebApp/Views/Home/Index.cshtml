@@ -3,38 +3,163 @@
     ViewData["Title"] = "Available Packages";
 }
 
-
-<div class="row">
-    @if (Model.Any())
-    {
-        @foreach (var package in Model)
-        {
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@package.Name</h5>
-                        <p class="card-text">
-                            <strong>Price:</strong> €@package.Price<br/>
-                            <strong>Location:</strong> @package.City - @package.CanteenLocation<br/>
-                            <strong>Pickup:</strong> @package.PickupTime.ToString("dd/MM/yyyy HH:mm")<br/>
-                            <strong>Type:</strong> @package.MealType
-                            @if (package.Is18Plus)
-                            {
-                                <br/><span class="badge bg-warning">18+</span>
-                            }
+<div class="mt-4">
+    
+    <!-- Guest Registration Prompt -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="package-details-card" style="margin-bottom: var(--spacing-xl); background: var(--color-primary-dark); color: white;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <h4 class="labrada-font" style="color: white; margin-bottom: var(--spacing-sm);">
+                            Want to reserve packages?
+                        </h4>
+                        <p style="margin: 0; opacity: 0.9;">
+                            Create your student account to start reserving meal packages and help reduce food waste!
                         </p>
+                    </div>
+                    <div style="margin-left: var(--spacing-lg);">
+                        <a asp-action="Register" asp-controller="Account" class="meal-filter-btn" style="background: white; color: var(--color-primary-dark); border-color: white;">
+                            <i class="bi bi-person-plus-fill"></i> Register Now
+                        </a>
                     </div>
                 </div>
             </div>
-        }
-    }
-    else
-    {
+        </div>
+    </div>
+
+    <!-- Meal Type Filter Buttons -->
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="alert alert-info">
-                <h4>No packages available</h4>
-                <p>Check back later for new food packages!</p>
+            <div class="meal-type-filters">
+                <button class="meal-filter-btn active" data-meal-type="">
+                    🍽️ All
+                </button>
+                <button class="meal-filter-btn" data-meal-type="0">
+                    🍞 Bread
+                </button>
+                <button class="meal-filter-btn" data-meal-type="1">
+                    🍽️ Warm Evening Meal
+                </button>
+                <button class="meal-filter-btn" data-meal-type="2">
+                    🥤 Drink
+                </button>
+                <button class="meal-filter-btn" data-meal-type="3">
+                    🍿 Snack
+                </button>
+                <button class="meal-filter-btn" data-meal-type="4">
+                    🥪 Lunch
+                </button>
+                <button class="meal-filter-btn" data-meal-type="5">
+                    🥐 Breakfast
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Packages -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="labrada-font">Available Packages (@Model.Count())</h3>
+            <p class="text-muted mb-4 labrada-font">Browse our available food packages from all locations</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="display-1 text-muted mb-3">🍽️</div>
+                    <h4 class="text-muted">No packages available</h4>
+                    <p class="text-muted">Check back later for new food packages!</p>
+                    <a asp-action="Index" class="meal-filter-btn">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </a>
+                </div>
             </div>
         </div>
     }
+    else
+    {
+        <div class="row">
+            @foreach (var package in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="package-card" data-meal-type="@((int)package.MealType)">
+                        <h3 class="package-card-title">@package.Name</h3>
+                        <div class="package-card-price">€@package.Price.ToString("0.00")</div>
+                        <div class="package-card-location">@package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")</div>
+                        <div class="package-card-time">@package.PickupTime.ToString("ddd dd MMM, HH:mm")</div>
+                        
+                        <!-- No action buttons for public view -->
+                        <div class="package-buttons">
+                            <span class="btn-package-unavailable">
+                                Login to reserve
+                                <div class="unavailable-tooltip">
+                                    Please login to reserve packages
+                                </div>
+                            </span>
+                            <span class="btn-package-details-disabled">
+                                Details
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mealButtons = document.querySelectorAll('.meal-filter-btn');
+    const packageCards = document.querySelectorAll('.package-card');
+    
+    mealButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            mealButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Get meal type value
+            const mealType = this.getAttribute('data-meal-type');
+            
+            // Show/hide packages based on meal type
+            packageCards.forEach(card => {
+                const cardMealType = card.getAttribute('data-meal-type');
+                
+                if (mealType === '' || cardMealType === mealType) {
+                    card.parentElement.style.display = 'block';
+                } else {
+                    card.parentElement.style.display = 'none';
+                }
+            });
+            
+            // Update count
+            const visibleCards = Array.from(packageCards).filter(card => 
+                card.parentElement.style.display !== 'none'
+            );
+            
+            const countElement = document.querySelector('.labrada-font');
+            if (countElement) {
+                const mealTypeName = mealType === '' ? 'All' : this.textContent.trim().replace(/.*\s/, '');
+                countElement.textContent = `Available Packages (${visibleCards.length})`;
+                
+                const subtitle = document.querySelector('.text-muted.mb-4');
+                if (subtitle) {
+                    if (mealType === '') {
+                        subtitle.textContent = 'Browse our available food packages from all locations';
+                    } else {
+                        subtitle.textContent = `Showing ${mealTypeName.toLowerCase()} packages from all locations`;
+                    }
+                }
+            }
+        });
+    });
+});
+</script>
+}

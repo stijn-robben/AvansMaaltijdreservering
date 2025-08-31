@@ -81,8 +81,12 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
+                                        <span class="dropdown-item profile-item">Profile</span>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                            <button type="submit" class="dropdown-item">Logout</button>
+                                            <button type="submit" class="dropdown-item logout-button">Logout</button>
                                         </form>
                                     </li>
                                 </ul>

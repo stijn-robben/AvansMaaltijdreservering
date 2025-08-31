@@ -112,7 +112,12 @@ public class AccountController : Controller
                     try
                     {
                         await _studentService.RegisterStudentAsync(student);
-                        TempData["SuccessMessage"] = "Student registration successful! You can now log in.";
+                        
+                        // Automatically sign in the user
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        TempData["SuccessMessage"] = "Welcome! Your student registration was successful.";
+                        
+                        return RedirectToAction("Dashboard", "Students");
                     }
                     catch (ArgumentException ex)
                     {
@@ -136,7 +141,12 @@ public class AccountController : Controller
                     try
                     {
                         await _employeeRepository.AddAsync(employee);
-                        TempData["SuccessMessage"] = "Employee registration successful! You can now log in.";
+                        
+                        // Automatically sign in the user
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        TempData["SuccessMessage"] = "Welcome! Your employee registration was successful.";
+                        
+                        return RedirectToAction("Dashboard", "Employees");
                     }
                     catch
                     {
@@ -145,8 +155,6 @@ public class AccountController : Controller
                         return View(model);
                     }
                 }
-
-                return RedirectToAction("Login");
             }
 
             foreach (var error in result.Errors)
