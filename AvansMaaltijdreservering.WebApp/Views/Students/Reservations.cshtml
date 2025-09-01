@@ -1,13 +1,13 @@
 @model AvansMaaltijdreservering.WebApp.ViewModels.Students.StudentReservationsViewModel
 @{
-    ViewData["Title"] = "My Reservations";
+    ViewData["Title"] = "My reservations";
 }
 
 <div class="mt-4">
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="labrada-font">My Reservations</h1>
+            <h1 class="labrada-font">My reservations</h1>
             <p class="text-muted mb-0">
                 Hello @Model.Student.Name • 
                 @Model.Reservations.Count reservation@(Model.Reservations.Count != 1 ? "s" : "")

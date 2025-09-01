@@ -60,7 +60,7 @@
     <!-- Available Packages -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="labrada-font">Available Packages (@Model.Count())</h3>
+            <h3 class="labrada-font" id="package-count">Available Packages (@Model.Count())</h3>
             <p class="text-muted mb-4 labrada-font">Browse our available food packages from all locations</p>
         </div>
     </div>
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 card.parentElement.style.display !== 'none'
             );
             
-            const countElement = document.querySelector('.labrada-font');
+            const countElement = document.getElementById('package-count');
             if (countElement) {
                 const mealTypeName = mealType === '' ? 'All' : this.textContent.trim().replace(/.*\s/, '');
                 countElement.textContent = `Available Packages (${visibleCards.length})`;

@@ -1,328 +1,505 @@
 @model AvansMaaltijdreservering.WebApp.ViewModels.Employees.EmployeeDashboardViewModel
+@using System.Web
 @{
     ViewData["Title"] = "Employee Dashboard";
 }
 
-<div class="container-fluid mt-4">
+<div class="mt-4">
     <!-- Welcome Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="bg-warning text-dark p-4 rounded-3 shadow-sm">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h1 class="h2 mb-1"><i class="bi bi-briefcase-fill"></i> Welcome, @Model.Employee.Name!</h1>
-                        <p class="mb-0">
-                            <i class="bi bi-building"></i> @Model.EmployeeCanteen?.Location.ToString().Replace("_", " ") • 
-                            <i class="bi bi-badge-ad"></i> @Model.Employee.EmployeeNumber •
-                            <i class="bi bi-geo-alt"></i> @Model.EmployeeCanteen?.City
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <a asp-action="CreatePackage" class="btn btn-success btn-lg">
-                            <i class="bi bi-plus-circle-fill"></i> Create Package
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <h1 class="labrada-font">Dashboard</h1>
+            <p class="text-muted mb-4">
+                @Model.EmployeeCanteen?.Location.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building") • 
+                @Model.Employee.EmployeeNumber •
+                @Model.EmployeeCanteen?.City.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch")
+            </p>
         </div>
     </div>
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
 
     <!-- US_02: Own Canteen Packages -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-house-fill"></i> Your Canteen Packages (@Model.OwnCanteenPackages.Count)
-                        <small class="opacity-75">- @Model.EmployeeCanteen?.Location.ToString().Replace("_", " ")</small>
-                    </h4>
-                </div>
-                <div class="card-body">
-                    @if (!Model.OwnCanteenPackages.Any())
-                    {
-                        <div class="text-center py-4">
-                            <div class="display-1 text-muted mb-3">📦</div>
-                            <h5 class="text-muted">No packages created yet</h5>
-                            <p class="text-muted">Start reducing food waste by creating your first package!</p>
-                            <a asp-action="CreatePackage" class="btn btn-success">
-                                <i class="bi bi-plus-circle"></i> Create First Package
-                            </a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Package</th>
-                                        <th>Pickup Time</th>
-                                        <th>Price</th>
-                                        <th>Type</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var package in Model.OwnCanteenPackages)
-                                    {
-                                        var isPastDue = package.LatestPickupTime < DateTime.Now;
-                                        var isToday = package.PickupTime.Date == DateTime.Today;
-                                        
-                                        <tr class="@(isPastDue ? "table-danger" : isToday ? "table-warning" : "")">
-                                            <td>
-                                                <strong>@package.Name</strong>
-                                                @if (package.ContainsAlcohol())
-                                                {
-                                                    <span class="badge bg-warning text-dark ms-1">🔞 18+</span>
-                                                }
-                                                <br>
-                                                <small class="text-muted">@package.Products.Count() products</small>
-                                            </td>
-                                            <td>
-                                                <strong class="@(isToday ? "text-warning" : "")">
-                                                    @package.PickupTime.ToString("ddd dd MMM, HH:mm")
-                                                </strong>
-                                                <br>
-                                                <small class="text-muted">Latest: @package.LatestPickupTime.ToString("HH:mm")</small>
-                                            </td>
-                                            <td>
-                                                <span class="h6 text-success">€@package.Price.ToString("0.00")</span>
-                                            </td>
-                                            <td>
-                                                @switch (package.MealType)
-                                                {
-                                                    case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread:
-                                                        <text>🍞 Bread</text>
-                                                        break;
-                                                    case AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal:
-                                                        <text>🍽️ Warm Meal</text>
-                                                        break;
-                                                    case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink:
-                                                        <text>🥤 Drinks</text>
-                                                        break;
-                                                    case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack:
-                                                        <text>🍿 Snacks</text>
-                                                        break;
-                                                    case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch:
-                                                        <text>🥪 Lunch</text>
-                                                        break;
-                                                    case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast:
-                                                        <text>🥐 Breakfast</text>
-                                                        break;
-                                                }
-                                            </td>
-                                            <td>
-                                                @if (isPastDue)
-                                                {
-                                                    <span class="badge bg-danger">Expired</span>
-                                                }
-                                                else if (package.IsReserved)
-                                                {
-                                                    <span class="badge bg-success">Reserved</span>
-                                                    <br>
-                                                    <small class="text-muted">by @package.ReservedByStudent?.Name</small>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-primary">Available</span>
-                                                }
-                                            </td>
-                                            <td>
-                                                <div class="btn-group-vertical btn-group-sm">
-                                                    @if (!package.IsReserved && !isPastDue)
-                                                    {
-                                                        <a asp-action="EditPackage" asp-route-id="@package.Id" class="btn btn-outline-primary btn-sm">
-                                                            <i class="bi bi-pencil"></i> Edit
-                                                        </a>
-                                                        <form asp-action="DeletePackage" method="post" class="d-inline">
-                                                            <input type="hidden" name="id" value="@package.Id" />
-                                                            <button type="submit" class="btn btn-outline-danger btn-sm w-100" 
-                                                                    onclick="return confirm('Are you sure you want to delete this package?')">
-                                                                <i class="bi bi-trash"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    }
-                                                    @if (package.IsReserved && isPastDue)
-                                                    {
-                                                        <form asp-action="RegisterNoShow" method="post" class="d-inline">
-                                                            <input type="hidden" name="packageId" value="@package.Id" />
-                                                            <button type="submit" class="btn btn-warning btn-sm" 
-                                                                    onclick="return confirm('Register this as a no-show? This will increment the student\\'s no-show count.')">
-                                                                <i class="bi bi-exclamation-triangle"></i> No-Show
-                                                            </button>
-                                                        </form>
-                                                    }
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                </div>
-            </div>
+    <div class="row mb-4">
+        <div class="col-8">
+            <h3 class="labrada-font">Canteen packages (@Model.OwnCanteenPackages.Count)</h3>
+            <p class="text-muted mb-4">Manage packages for @Model.EmployeeCanteen?.Location.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")</p>
+        </div>
+        <div class="col-4 d-flex align-items-start justify-content-end">
+            <a asp-action="CreatePackage" class="meal-filter-btn">
+                <i class="bi bi-plus-circle-fill"></i> Create Package
+            </a>
         </div>
     </div>
 
-    <!-- US_02: All Canteens Overview -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-buildings"></i> All Canteens Overview (@Model.AllPackages.Count)
-                        <small class="opacity-75">- System-wide package status</small>
-                    </h4>
-                </div>
-                <div class="card-body">
-                    @if (!Model.AllPackages.Any())
-                    {
-                        <div class="text-center py-4">
-                            <div class="display-1 text-muted mb-3">🏢</div>
-                            <h5 class="text-muted">No packages in the system</h5>
-                            <p class="text-muted">Be the first to create a package and start reducing food waste!</p>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Location</th>
-                                        <th>Package</th>
-                                        <th>Pickup</th>
-                                        <th>Price</th>
-                                        <th>Status</th>
-                                        <th>Reserved By</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var package in Model.AllPackages.Take(20)) // Limit to 20 for performance
-                                    {
-                                        var isPastDue = package.LatestPickupTime < DateTime.Now;
-                                        var isToday = package.PickupTime.Date == DateTime.Today;
-                                        var isOwnCanteen = package.CanteenId == Model.Employee.CanteenId;
-                                        
-                                        <tr class="@(isOwnCanteen ? "table-primary" : "") @(isPastDue ? "opacity-50" : "")">
-                                            <td>
-                                                <strong class="@(isOwnCanteen ? "text-primary" : "")">
-                                                    @if (isOwnCanteen)
-                                                    {
-                                                        <i class="bi bi-house-fill"></i>
-                                                    }
-                                                    @package.City
-                                                </strong>
-                                                <br>
-                                                <small class="text-muted">@package.CanteenLocation.ToString().Replace("_", " ")</small>
-                                            </td>
-                                            <td>
-                                                <strong>@package.Name</strong>
-                                                @if (package.ContainsAlcohol())
-                                                {
-                                                    <span class="badge bg-warning text-dark ms-1">🔞</span>
-                                                }
-                                                <br>
-                                                <small class="text-muted">
-                                                    @switch (package.MealType)
-                                                    {
-                                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread:
-                                                            <text>🍞 Bread</text>
-                                                            break;
-                                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal:
-                                                            <text>🍽️ Warm Meal</text>
-                                                            break;
-                                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink:
-                                                            <text>🥤 Drinks</text>
-                                                            break;
-                                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack:
-                                                            <text>🍿 Snacks</text>
-                                                            break;
-                                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch:
-                                                            <text>🥪 Lunch</text>
-                                                            break;
-                                                        case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast:
-                                                            <text>🥐 Breakfast</text>
-                                                            break;
-                                                    }
-                                                </small>
-                                            </td>
-                                            <td>
-                                                <strong class="@(isToday ? "text-warning" : "")">
-                                                    @package.PickupTime.ToString("dd MMM, HH:mm")
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                <span class="text-success">€@package.Price.ToString("0.00")</span>
-                                            </td>
-                                            <td>
-                                                @if (isPastDue)
-                                                {
-                                                    <span class="badge bg-secondary">Expired</span>
-                                                }
-                                                else if (package.IsReserved)
-                                                {
-                                                    <span class="badge bg-success">Reserved</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-primary">Available</span>
-                                                }
-                                            </td>
-                                            <td>
-                                                @if (package.IsReserved)
-                                                {
-                                                    <strong>@package.ReservedByStudent?.Name</strong>
-                                                    <br>
-                                                    <small class="text-muted">@package.ReservedByStudent?.StudentNumber</small>
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted">-</span>
-                                                }
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                            
-                            @if (Model.AllPackages.Count > 20)
-                            {
-                                <div class="text-center mt-3">
-                                    <small class="text-muted">Showing latest 20 packages. Total packages in system: @Model.AllPackages.Count</small>
-                                </div>
-                            }
-                        </div>
-                    }
+    @if (!Model.OwnCanteenPackages.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="display-1 text-muted mb-3">📦</div>
+                    <h4 class="text-muted">No packages created yet</h4>
+                    <p class="text-muted">Start reducing food waste by creating your first package!</p>
+                    <a asp-action="CreatePackage" class="meal-filter-btn">
+                        <i class="bi bi-plus-circle"></i> Create First Package
+                    </a>
                 </div>
             </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="employee-table">
+                    <thead>
+                        <tr>
+                            <th>Package</th>
+                            <th>Pickup Time</th>
+                            <th>Price</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var package in Model.OwnCanteenPackages)
+                        {
+                            var isPastDue = package.LatestPickupTime < DateTime.Now;
+                            var isToday = package.PickupTime.Date == DateTime.Today;
+                            
+                            <tr class="@(isPastDue ? "expired-row" : isToday ? "today-row" : "")">
+                                <td>
+                                    <div class="package-name-container">
+                                        <div class="package-name">@package.Name</div>
+                                        @if (package.Products.Any())
+                                        {
+                                            <div class="package-products-tooltip">
+                                                @foreach (var product in package.Products)
+                                                {
+                                                    <div class="tooltip-product-item">
+                                                        @if (!string.IsNullOrEmpty(product.PhotoUrl))
+                                                        {
+                                                            <img src="@product.PhotoUrl" alt="@product.Name" class="tooltip-product-image" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="tooltip-product-placeholder">🍽️</div>
+                                                        }
+                                                        <span class="tooltip-product-name">@product.Name</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (package.ContainsAlcohol())
+                                    {
+                                        <span class="package-badge-18">🔞 18+</span>
+                                    }
+                                    <div class="package-info">@package.Products.Count() products</div>
+                                </td>
+                                <td>
+                                    <div class="pickup-time @(isToday ? "today-highlight" : "")">
+                                        @package.PickupTime.ToString("ddd dd MMM, HH:mm")
+                                    </div>
+                                    <div class="latest-time">Latest: @package.LatestPickupTime.ToString("HH:mm")</div>
+                                </td>
+                                <td>
+                                    <div class="package-price">€@package.Price.ToString("0.00")</div>
+                                </td>
+                                <td>
+                                    <div class="meal-type">
+                                        @switch (package.MealType)
+                                        {
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Bread:
+                                                <text>Bread</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.WarmEveningMeal:
+                                                <text>Warm Meal</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Drink:
+                                                <text>Drinks</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Snack:
+                                                <text>Snacks</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Lunch:
+                                                <text>Lunch</text>
+                                                break;
+                                            case AvansMaaltijdreservering.Core.Domain.Enums.MealType.Breakfast:
+                                                <text>Breakfast</text>
+                                                break;
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (isPastDue)
+                                    {
+                                        <span class="status-expired">Expired</span>
+                                    }
+                                    else if (package.IsReserved)
+                                    {
+                                        <span class="status-reserved">Reserved</span>
+                                        <div class="reserved-by-container">
+                                            <div class="reserved-by">by @package.ReservedByStudent?.Name</div>
+                                            @if (package.ReservedByStudent != null)
+                                            {
+                                                <div class="student-contact-tooltip">
+                                                    <div class="contact-item">
+                                                        <strong>@package.ReservedByStudent.Name</strong>
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.StudentNumber
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.Email
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.PhoneNumber
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.StudyCity.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch")
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-available">Available</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        @if (!package.IsReserved && !isPastDue)
+                                        {
+                                            <a asp-action="EditPackage" asp-route-id="@package.Id" class="btn-table-edit">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <button type="button" class="btn-table-delete" 
+                                                    onclick="showDeleteModal(@package.Id, '@package.Name')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        }
+                                        @if (package.IsReserved && isPastDue)
+                                        {
+                                            <button type="button" class="btn-table-noshow" 
+                                                    onclick="showNoShowModal(@package.Id, '@package.ReservedByStudent?.Name', '@package.Name')">
+                                                <i class="bi bi-exclamation-triangle"></i> No-Show
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+        </div>
+    }
+
+    <!-- All Canteens Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="labrada-font">All Canteens Overview (@Model.AllPackages.Count)</h3>
+            <p class="text-muted mb-4">System-wide package status from all locations</p>
+        </div>
+    </div>
+
+    @if (!Model.AllPackages.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="display-1 text-muted mb-3">🏢</div>
+                    <h4 class="text-muted">No packages in the system</h4>
+                    <p class="text-muted">Be the first to create a package and start reducing food waste!</p>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="employee-table">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Package</th>
+                        <th>Pickup</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Reserved By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var package in Model.AllPackages.Take(20))
+                    {
+                        var isPastDue = package.LatestPickupTime < DateTime.Now;
+                        var isToday = package.PickupTime.Date == DateTime.Today;
+                        var isOwnCanteen = package.CanteenId == Model.Employee.CanteenId;
+                        
+                        <tr class="@(isOwnCanteen ? "own-canteen-row" : "") @(isPastDue ? "expired-row" : "")">
+                            <td>
+                                <div class="location-info @(isOwnCanteen ? "own-location" : "")">
+                                    @package.City.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch")
+                                </div>
+                                <div class="canteen-location">
+                                    @if (isOwnCanteen)
+                                    {
+                                        <i class="bi bi-house-fill"></i>
+                                    }
+                                    @package.CanteenLocation.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")
+                                </div>
+                            </td>
+                            <td>
+                                <div class="package-name-container">
+                                    <div class="package-name">@package.Name</div>
+                                    @if (package.Products.Any())
+                                    {
+                                        <div class="package-products-tooltip">
+                                            @foreach (var product in package.Products)
+                                            {
+                                                <div class="tooltip-product-item">
+                                                    @if (!string.IsNullOrEmpty(product.PhotoUrl))
+                                                    {
+                                                        <img src="@product.PhotoUrl" alt="@product.Name" class="tooltip-product-image" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="tooltip-product-placeholder">🍽️</div>
+                                                    }
+                                                    <span class="tooltip-product-name">@product.Name</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                @if (package.ContainsAlcohol())
+                                {
+                                    <span class="package-badge-18">🔞</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="pickup-time @(isToday ? "today-highlight" : "")">
+                                    @package.PickupTime.ToString("dd MMM, HH:mm")
+                                </div>
+                                <div class="latest-time">Latest: @package.LatestPickupTime.ToString("HH:mm")</div>
+                            </td>
+                            <td>
+                                <div class="package-price">€@package.Price.ToString("0.00")</div>
+                            </td>
+                            <td>
+                                @if (isPastDue)
+                                {
+                                    <span class="status-expired">Expired</span>
+                                }
+                                else if (package.IsReserved)
+                                {
+                                    <span class="status-reserved">Reserved</span>
+                                }
+                                else
+                                {
+                                    <span class="status-available">Available</span>
+                                }
+                            </td>
+                            <td>
+                                @if (package.IsReserved)
+                                {
+                                    <div class="reserved-student-container">
+                                        <div class="reserved-student">@package.ReservedByStudent?.Name</div>
+                                        <div class="student-number">@package.ReservedByStudent?.StudentNumber</div>
+                                        @if (package.ReservedByStudent != null)
+                                        {
+                                            <div class="student-contact-tooltip">
+                                                <div class="contact-item">
+                                                    <strong>@package.ReservedByStudent.Name</strong>
+                                                </div>
+                                                <div class="contact-item">
+                                                    @package.ReservedByStudent.StudentNumber
+                                                </div>
+                                                <div class="contact-item">
+                                                    @package.ReservedByStudent.Email
+                                                </div>
+                                                <div class="contact-item">
+                                                    @package.ReservedByStudent.PhoneNumber
+                                                </div>
+                                                <div class="contact-item">
+                                                    @package.ReservedByStudent.StudyCity.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch")
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            
+            @if (Model.AllPackages.Count > 20)
+            {
+                <div class="text-center mt-3">
+                    <p class="text-muted">Showing latest 20 packages. Total packages in system: @Model.AllPackages.Count</p>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Custom Notification Modal -->
+<div id="notificationModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <h3 class="custom-modal-title" id="modalTitle">Notification</h3>
+        <p class="custom-modal-text" id="modalMessage"></p>
+        <div class="custom-modal-buttons">
+            <button type="button" class="btn-modal-confirm" onclick="hideNotificationModal()">OK</button>
         </div>
     </div>
 </div>
 
-<style>
-    .btn-group-vertical .btn {
-        margin-bottom: 2px;
-    }
-    .table-primary {
-        background-color: rgba(13, 110, 253, 0.1);
-    }
-</style>
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <h3 class="custom-modal-title">Delete Package</h3>
+        <p class="custom-modal-text">Are you sure you want to delete <strong id="deletePackageName"></strong>?</p>
+        <div class="custom-modal-buttons">
+            <button type="button" class="btn-modal-cancel" onclick="hideDeleteModal()">Cancel</button>
+            <button type="button" class="btn-modal-delete" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- No-Show Confirmation Modal -->
+<div id="noShowModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <h3 class="custom-modal-title">Register No-Show</h3>
+        <p class="custom-modal-text">Register <strong id="noShowStudentName"></strong> as a no-show for <strong id="noShowPackageName"></strong>? This will increment the student's no-show count.</p>
+        <div class="custom-modal-buttons">
+            <button type="button" class="btn-modal-cancel" onclick="hideNoShowModal()">Cancel</button>
+            <button type="button" class="btn-modal-confirm" onclick="confirmNoShow()">Register No-Show</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Show notification modal if there are TempData messages
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showNotificationModal("Error", "@Html.Raw(HttpUtility.JavaScriptStringEncode(TempData["ErrorMessage"].ToString()))");
+            </text>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showNotificationModal("Success", "@Html.Raw(HttpUtility.JavaScriptStringEncode(TempData["SuccessMessage"].ToString()))");
+            </text>
+        }
+
+        function showNotificationModal(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('notificationModal').classList.add('show');
+        }
+
+        function hideNotificationModal() {
+            document.getElementById('notificationModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('notificationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideNotificationModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideNotificationModal();
+                hideDeleteModal();
+                hideNoShowModal();
+            }
+        });
+
+        // Delete modal functions
+        let deletePackageId = null;
+
+        function showDeleteModal(packageId, packageName) {
+            deletePackageId = packageId;
+            document.getElementById('deletePackageName').textContent = packageName;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deletePackageId = null;
+        }
+
+        function confirmDelete() {
+            if (deletePackageId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("DeletePackage")';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'id';
+                input.value = deletePackageId;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // No-show modal functions
+        let noShowPackageId = null;
+
+        function showNoShowModal(packageId, studentName, packageName) {
+            noShowPackageId = packageId;
+            document.getElementById('noShowStudentName').textContent = studentName;
+            document.getElementById('noShowPackageName').textContent = packageName;
+            document.getElementById('noShowModal').classList.add('show');
+        }
+
+        function hideNoShowModal() {
+            document.getElementById('noShowModal').classList.remove('show');
+            noShowPackageId = null;
+        }
+
+        function confirmNoShow() {
+            if (noShowPackageId) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("RegisterNoShow")';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'packageId';
+                input.value = noShowPackageId;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
+            }
+        });
+
+        document.getElementById('noShowModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideNoShowModal();
+            }
+        });
+    </script>
+}
