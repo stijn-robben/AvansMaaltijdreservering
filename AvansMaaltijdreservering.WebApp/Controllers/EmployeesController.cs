@@ -38,7 +38,7 @@ public class EmployeesController : Controller
     }
 
     // US_02: Employee Dashboard - Own canteen packages + All canteens overview
-    public async Task<IActionResult> Dashboard()
+    public async Task<IActionResult> Dashboard(string? statusFilter = null, City? cityFilter = null)
     {
         try
         {
@@ -56,11 +56,26 @@ public class EmployeesController : Controller
             // Get employee's own canteen packages
             var ownCanteenPackages = await _packageService.GetPackagesForEmployeeCanteenAsync(employee.Id);
 
-            // Get all packages from all canteens (for overview)
-            var allPackages = (await _packageService.GetAvailablePackagesAsync())
-                .Concat(ownCanteenPackages.Where(p => p.IsReserved))
-                .DistinctBy(p => p.Id)
-                .OrderBy(p => p.PickupTime);
+            // Get ALL packages from all canteens (available and reserved)
+            var allPackages = (await _packageService.GetAllPackagesAsync()).AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                if (statusFilter.Equals("available", StringComparison.OrdinalIgnoreCase))
+                {
+                    allPackages = allPackages.Where(p => !p.IsReserved);
+                }
+                else if (statusFilter.Equals("reserved", StringComparison.OrdinalIgnoreCase))
+                {
+                    allPackages = allPackages.Where(p => p.IsReserved);
+                }
+            }
+
+            if (cityFilter.HasValue)
+            {
+                allPackages = allPackages.Where(p => p.City == cityFilter.Value);
+            }
 
             var canteen = await _canteenRepository.GetByIdAsync(employee.CanteenId);
 
@@ -69,7 +84,9 @@ public class EmployeesController : Controller
                 Employee = employee,
                 EmployeeCanteen = canteen,
                 OwnCanteenPackages = ownCanteenPackages.OrderBy(p => p.PickupTime).ToList(),
-                AllPackages = allPackages.ToList()
+                AllPackages = allPackages.OrderBy(p => p.PickupTime).ToList(),
+                StatusFilter = statusFilter,
+                CityFilter = cityFilter
             };
 
             return View(viewModel);
@@ -107,7 +124,11 @@ public class EmployeesController : Controller
                 EmployeeCanteen = canteen,
                 AvailableProducts = allProducts.ToList(),
                 PickupTime = DateTime.Today.AddDays(1).AddHours(12), // Default tomorrow at noon
-                LatestPickupTime = DateTime.Today.AddDays(1).AddHours(14) // 2 hours later
+                LatestPickupTime = DateTime.Today.AddDays(1).AddHours(14), // 2 hours later
+                // Auto-populate based on employee's canteen
+                City = canteen?.City ?? City.BREDA,
+                CanteenLocation = canteen?.Location ?? CanteenLocation.BREDA_LA_BUILDING
+                // Don't set MealType - let it remain unselected (default enum value)
             };
 
             return View(viewModel);
@@ -137,6 +158,47 @@ public class EmployeesController : Controller
                 return RedirectToAction("Login", "Account");
             }
 
+            // Debug: Log model state and values
+            Console.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+            Console.WriteLine($"Model Name: {model.Name}");
+            Console.WriteLine($"Model Price: {model.Price}");
+            Console.WriteLine($"Model MealType: {model.MealType}");
+            Console.WriteLine($"Model PickupTime: {model.PickupTime}");
+            Console.WriteLine($"Model LatestPickupTime: {model.LatestPickupTime}");
+            Console.WriteLine($"Selected Products Count: {model.SelectedProductIds?.Count ?? 0}");
+            
+            // Log validation errors
+            foreach (var modelError in ModelState)
+            {
+                var key = modelError.Key;
+                var errors = modelError.Value.Errors;
+                if (errors.Count > 0)
+                {
+                    Console.WriteLine($"Validation Error for {key}: {string.Join(", ", errors.Select(e => e.ErrorMessage))}");
+                }
+            }
+
+            // Parse the price string with comma as decimal separator
+            if (!string.IsNullOrEmpty(model.PriceString))
+            {
+                var priceString = model.PriceString.Replace(',', '.');
+                if (decimal.TryParse(priceString, System.Globalization.NumberStyles.Number, 
+                    System.Globalization.CultureInfo.InvariantCulture, out decimal parsedPrice))
+                {
+                    model.Price = parsedPrice;
+                }
+                else
+                {
+                    ModelState.AddModelError("PriceString", "Invalid price format. Please use comma as decimal separator (e.g. 2,50)");
+                }
+            }
+            
+            // Validate price range
+            if (model.Price < 0.01m || model.Price > 999.99m)
+            {
+                ModelState.AddModelError("PriceString", "Price must be between €0,01 and €999,99");
+            }
+
             if (ModelState.IsValid)
             {
                 var package = new Package
@@ -151,9 +213,17 @@ public class EmployeesController : Controller
                 };
 
                 // US_03: Business rule - max 2 days ahead
-                if (package.PickupTime > DateTime.Today.AddDays(2))
+                if (package.PickupTime.Date > DateTime.Today.AddDays(2))
                 {
                     ModelState.AddModelError("PickupTime", "Packages can only be planned up to 2 days ahead");
+                    await RepopulateCreateViewModel(model, employee);
+                    return View(model);
+                }
+
+                // Business rule - LatestPickupTime must be after PickupTime
+                if (package.LatestPickupTime <= package.PickupTime)
+                {
+                    ModelState.AddModelError("LatestPickupTime", "Latest pickup time must be after the initial pickup time");
                     await RepopulateCreateViewModel(model, employee);
                     return View(model);
                 }
@@ -162,6 +232,11 @@ public class EmployeesController : Controller
                 
                 TempData["SuccessMessage"] = $"✅ Package '{createdPackage.Name}' created successfully!";
                 return RedirectToAction("Dashboard");
+            }
+            else
+            {
+                Console.WriteLine("ModelState is invalid - repopulating view");
+                TempData["ErrorMessage"] = "Please correct the validation errors and try again.";
             }
 
             await RepopulateCreateViewModel(model, employee);
@@ -223,6 +298,7 @@ public class EmployeesController : Controller
                 PickupTime = package.PickupTime,
                 LatestPickupTime = package.LatestPickupTime,
                 Price = package.Price,
+                PriceString = package.Price.ToString("0.00").Replace('.', ','),
                 MealType = package.MealType,
                 SelectedProductIds = package.Products.Select(p => p.Id).ToList(),
                 Employee = employee,
@@ -257,6 +333,27 @@ public class EmployeesController : Controller
                 return RedirectToAction("Login", "Account");
             }
 
+            // Parse the price string with comma as decimal separator
+            if (!string.IsNullOrEmpty(model.PriceString))
+            {
+                var priceString = model.PriceString.Replace(',', '.');
+                if (decimal.TryParse(priceString, System.Globalization.NumberStyles.Number, 
+                    System.Globalization.CultureInfo.InvariantCulture, out decimal parsedPrice))
+                {
+                    model.Price = parsedPrice;
+                }
+                else
+                {
+                    ModelState.AddModelError("PriceString", "Invalid price format. Please use comma as decimal separator (e.g. 2,50)");
+                }
+            }
+            
+            // Validate price range
+            if (model.Price < 0.01m || model.Price > 999.99m)
+            {
+                ModelState.AddModelError("PriceString", "Price must be between €0,01 and €999,99");
+            }
+
             if (ModelState.IsValid)
             {
                 var package = new Package
@@ -271,7 +368,7 @@ public class EmployeesController : Controller
                     MealType = model.MealType
                 };
 
-                var updatedPackage = await _packageService.UpdatePackageAsync(package, employee.Id);
+                var updatedPackage = await _packageService.UpdatePackageAsync(package, employee.Id, model.SelectedProductIds);
                 
                 TempData["SuccessMessage"] = $"✅ Package '{updatedPackage.Name}' updated successfully!";
                 return RedirectToAction("Dashboard");
@@ -351,7 +448,7 @@ public class EmployeesController : Controller
 
             await _reservationService.RegisterNoShowAsync(packageId, employee.Id);
             
-            TempData["SuccessMessage"] = "⚠️ No-show registered. Student's no-show count has been updated and package is now available again.";
+            TempData["SuccessMessage"] = "No-show registered. Student's no-show count has been updated and package is now available again.";
             return RedirectToAction("Dashboard");
         }
         catch (Exception ex)
@@ -391,6 +488,10 @@ public class EmployeesController : Controller
         model.Employee = employee;
         model.EmployeeCanteen = canteen;
         model.AvailableProducts = allProducts.ToList();
+        
+        // Ensure City and CanteenLocation are always set from employee's canteen
+        model.City = canteen?.City ?? City.BREDA;
+        model.CanteenLocation = canteen?.Location ?? CanteenLocation.BREDA_LA_BUILDING;
     }
 
     private async Task RepopulateEditViewModel(EditPackageViewModel model, CanteenEmployee employee)

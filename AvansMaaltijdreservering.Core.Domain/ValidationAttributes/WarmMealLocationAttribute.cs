@@ -29,6 +29,7 @@ public class WarmMealLocationAttribute : ValidationAttribute
             return ValidationResult.Success;
 
         var mealType = (MealType)mealTypeValue;
+        
         var canteenLocation = (CanteenLocation)canteenLocationValue;
 
         // Check if trying to create warm meal at location that doesn't serve them

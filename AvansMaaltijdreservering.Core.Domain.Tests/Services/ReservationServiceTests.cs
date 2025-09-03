@@ -268,6 +268,10 @@ public class ReservationServiceTests
                               .ReturnsAsync(employee);
         _mockStudentRepository.Setup(x => x.GetByIdAsync(studentId))
                              .ReturnsAsync(student);
+        
+        // Setup for future reservations cancellation
+        _mockPackageRepository.Setup(x => x.GetPackagesByStudentIdAsync(studentId))
+                             .ReturnsAsync(new List<Package>()); // No future reservations for simplicity
 
         // Act
         await _reservationService.RegisterNoShowAsync(packageId, employeeId);
@@ -279,6 +283,64 @@ public class ReservationServiceTests
         // Verify logging occurred for blocking
         _mockLogger.Verify(
             x => x.LogWarning(It.Is<string>(s => s.Contains("blocked") && s.Contains("excessive no-shows"))),
+            Times.Once
+        );
+        
+        // Verify that future reservations query was called when student becomes blocked
+        _mockPackageRepository.Verify(x => x.GetPackagesByStudentIdAsync(studentId), Times.Once);
+    }
+
+    [Fact]
+    [Trait("UserStory", "US_10")]
+    public async Task RegisterNoShowAsync_ShouldCancelFutureReservations_WhenStudentBecomesBlocked()
+    {
+        // Arrange
+        const int packageId = 1;
+        const int employeeId = 1;
+        const int studentId = 1;
+
+        var currentPackage = PackageTestDataBuilder.CreateReservedPackage("Current No Show Package", studentId);
+        var futurePackage1 = PackageTestDataBuilder.CreateFuturePackage(1, "Future Package 1");
+        futurePackage1.ReservedByStudentId = studentId;
+        var futurePackage2 = PackageTestDataBuilder.CreateFuturePackage(2, "Future Package 2");
+        futurePackage2.ReservedByStudentId = studentId;
+        var pastPackage = PackageTestDataBuilder.CreatePastPackage("Past Package");
+        pastPackage.ReservedByStudentId = studentId;
+
+        var student = StudentTestDataBuilder.CreateAdultStudent().WithNoShowCount(1); // Already has 1 no-show
+        var employee = new CanteenEmployee { Id = employeeId };
+
+        var allStudentPackages = new List<Package> { futurePackage1, futurePackage2, pastPackage };
+
+        _mockPackageRepository.Setup(x => x.GetByIdAsync(packageId))
+                             .ReturnsAsync(currentPackage);
+        _mockEmployeeRepository.Setup(x => x.GetByIdAsync(employeeId))
+                              .ReturnsAsync(employee);
+        _mockStudentRepository.Setup(x => x.GetByIdAsync(studentId))
+                             .ReturnsAsync(student);
+        _mockPackageRepository.Setup(x => x.GetPackagesByStudentIdAsync(studentId))
+                             .ReturnsAsync(allStudentPackages);
+
+        // Act
+        await _reservationService.RegisterNoShowAsync(packageId, employeeId);
+
+        // Assert
+        student.IsBlocked().Should().BeTrue("because student should be blocked with 2 no-shows");
+        
+        // Verify that future packages were unreserved (past packages should not be affected)
+        futurePackage1.ReservedByStudentId.Should().BeNull("because future reservation should be cancelled");
+        futurePackage2.ReservedByStudentId.Should().BeNull("because future reservation should be cancelled");
+        pastPackage.ReservedByStudentId.Should().Be(studentId, "because past packages should not be affected");
+        
+        // Verify that UpdateAsync was called for each future package
+        _mockPackageRepository.Verify(x => x.UpdateAsync(futurePackage1), Times.Once);
+        _mockPackageRepository.Verify(x => x.UpdateAsync(futurePackage2), Times.Once);
+        _mockPackageRepository.Verify(x => x.UpdateAsync(pastPackage), Times.Never, 
+            "because past packages should not be updated");
+        
+        // Verify logging for cancelled reservations
+        _mockLogger.Verify(
+            x => x.LogWarning(It.Is<string>(s => s.Contains("Cancelled 2 future reservations"))),
             Times.Once
         );
     }

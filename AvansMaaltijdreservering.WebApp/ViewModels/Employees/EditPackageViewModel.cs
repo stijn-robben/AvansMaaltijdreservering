@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using AvansMaaltijdreservering.Core.Domain.Entities;
 using AvansMaaltijdreservering.Core.Domain.Enums;
 using AvansMaaltijdreservering.Core.Domain.ValidationAttributes;
@@ -33,8 +34,11 @@ public class EditPackageViewModel
     public DateTime LatestPickupTime { get; set; }
 
     [Required(ErrorMessage = "Price is required")]
-    [Range(0.01, 999.99, ErrorMessage = "Price must be between €0.01 and €999.99")]
     [Display(Name = "Price (€)")]
+    [RegularExpression(@"^[0-9]+([,][0-9]{1,2})?$", ErrorMessage = "Please enter a valid price (e.g., 2,50)")]
+    public string PriceString { get; set; } = string.Empty;
+    
+    // This will be set by the controller after parsing PriceString
     public decimal Price { get; set; }
 
     [Display(Name = "Meal Type")]
@@ -44,8 +48,13 @@ public class EditPackageViewModel
     [Display(Name = "Select Products")]
     public List<int> SelectedProductIds { get; set; } = new();
 
-    // Navigation properties (not bound)
+    // Navigation properties (not bound) - exclude from validation
+    [ValidateNever]
     public CanteenEmployee Employee { get; set; } = new();
+    
+    [ValidateNever]
     public Canteen? EmployeeCanteen { get; set; }
+    
+    [ValidateNever]
     public List<Product> AvailableProducts { get; set; } = new();
 }

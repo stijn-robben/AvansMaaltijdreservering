@@ -67,6 +67,19 @@
                 </div>
             </div>
         </div>
+
+    }
+
+    <!-- Blocked Account Warning -->
+    @if (Model.Student.NoShowCount >= 2)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <strong>Your account is temporarily blocked due to @Model.Student.NoShowCount no-shows. Please contact student services for assistance.</strong>
+                </div>
+            </div>
+        </div>
     }
 
     <!-- Your Reservations Section -->
@@ -106,7 +119,11 @@
                         <div class="package-details-header">
                             <h1 class="package-details-title labrada-font">
                                 @reservation.Name
-                                @if (isToday)
+                                @if (isPastDue)
+                                {
+                                    <span class="warning-text">Expired</span>
+                                }
+                                else if (isToday)
                                 {
                                     <span class="warning-text">Today!</span>
                                 }
@@ -142,10 +159,6 @@
                                 </div>
                                 <div class="package-detail-right">
                                     @reservation.PickupTime.ToString("HH:mm") - @reservation.LatestPickupTime.ToString("HH:mm")
-                                    @if (isPastDue)
-                                    {
-                                        <span class="warning-text">Expired</span>
-                                    }
                                 </div>
                             </div>
 

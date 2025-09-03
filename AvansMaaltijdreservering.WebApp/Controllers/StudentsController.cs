@@ -49,7 +49,7 @@ public class StudentsController : Controller
             // US_10: Check if student is blocked
             if (student.IsBlocked())
             {
-                TempData["ErrorMessage"] = $"⚠️ Your account is temporarily blocked due to {student.NoShowCount} no-shows. Please contact student services for assistance.";
+                TempData["ErrorMessage"] = $"Your account is temporarily blocked due to {student.NoShowCount} no-shows. Please contact student services for assistance.";
             }
 
             // Get available packages
@@ -93,7 +93,7 @@ public class StudentsController : Controller
                     }
                     else if (student.IsBlocked())
                     {
-                        ineligibilityReason = "⚠️ Account blocked due to no-shows";
+                        ineligibilityReason = "Account blocked due to no-shows";
                     }
                 }
 
@@ -228,7 +228,7 @@ public class StudentsController : Controller
         }
         catch (StudentBlockedException ex)
         {
-            TempData["ErrorMessage"] = $"⚠️ Your account is blocked due to {ex.NoShowCount} no-shows. Please contact student services.";
+            TempData["ErrorMessage"] = $"Your account is blocked due to {ex.NoShowCount} no-shows. Please contact student services.";
             return RedirectToAction("Dashboard");
         }
         catch (Exception ex)

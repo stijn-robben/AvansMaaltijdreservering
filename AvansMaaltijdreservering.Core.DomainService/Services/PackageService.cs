@@ -32,6 +32,11 @@ public class PackageService : IPackageService
         return await _packageRepository.GetAvailablePackagesAsync();
     }
 
+    public async Task<IEnumerable<Package>> GetAllPackagesAsync()
+    {
+        return await _packageRepository.GetAllAsync();
+    }
+
     public async Task<Package?> GetPackageByIdAsync(int id)
     {
         return await _packageRepository.GetByIdAsync(id);
@@ -91,7 +96,7 @@ public class PackageService : IPackageService
         return await _packageRepository.AddAsync(package);
     }
 
-    public async Task<Package> UpdatePackageAsync(Package package, int employeeId)
+    public async Task<Package> UpdatePackageAsync(Package package, int employeeId, List<int>? productIds = null)
     {
         var existing = await _packageRepository.GetByIdAsync(package.Id);
         if (existing == null)
@@ -115,6 +120,23 @@ public class PackageService : IPackageService
         existing.Price = package.Price;
         existing.MealType = package.MealType;
         // Note: CanteenId should not be changed - employee can only update packages for their own canteen
+        
+        // Update products if specified
+        if (productIds != null)
+        {
+            // Clear existing products
+            existing.Products.Clear();
+            
+            // Add new products
+            foreach (var productId in productIds)
+            {
+                var product = await _productRepository.GetByIdAsync(productId);
+                if (product != null)
+                {
+                    existing.Products.Add(product);
+                }
+            }
+        }
         
         // Is18Plus is now automatically calculated from ContainsAlcohol()
 

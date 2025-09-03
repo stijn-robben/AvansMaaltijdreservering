@@ -51,6 +51,15 @@ builder.Services.AddScoped<ILoggerService, LoggerService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Configure culture for comma as decimal separator
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { "nl-NL", "nl-BE" }; // Dutch cultures use comma as decimal separator
+    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("nl-NL");
+    options.SupportedCultures = supportedCultures.Select(c => new System.Globalization.CultureInfo(c)).ToList();
+    options.SupportedUICultures = supportedCultures.Select(c => new System.Globalization.CultureInfo(c)).ToList();
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,6 +72,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRequestLocalization();
 app.UseRouting();
 
 app.UseAuthentication();

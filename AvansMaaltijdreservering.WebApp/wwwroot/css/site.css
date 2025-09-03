@@ -233,6 +233,27 @@ main {
     box-shadow: 0 0 0 3px rgba(var(--color-primary-dark-rgb), 0.1);
 }
 
+select.register-round-input {
+    cursor: pointer;
+    color: var(--color-text-muted);
+}
+
+select.register-round-input:not([value=""]) {
+    color: var(--color-primary-dark);
+}
+
+select.register-round-input:valid {
+    color: var(--color-primary-dark);
+}
+
+select.register-round-input option {
+    color: var(--color-primary-dark);
+}
+
+select.register-round-input option:not([value=""]) {
+    color: var(--color-primary-dark);
+}
+
 .register-round-input::placeholder {
     color: var(--color-text-muted);
 }
@@ -517,6 +538,290 @@ main {
 .calendar-day.today {
     border-color: var(--color-primary-dark);
     font-weight: 600;
+}
+
+.calendar-day.disabled {
+    color: var(--color-text-muted);
+    background-color: var(--color-neutral-light);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.calendar-day.disabled:hover {
+    background-color: var(--color-neutral-light);
+}
+
+/* Custom Datetime Wrapper */
+.custom-datetime-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.datetime-toggle {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid var(--color-neutral-border);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    background-color: var(--color-neutral-white);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition-base);
+    color: var(--color-text-muted);
+}
+
+.datetime-toggle:hover {
+    border-color: var(--color-primary-dark);
+    color: var(--color-primary-dark);
+}
+
+.datetime-toggle i {
+    color: var(--color-text-muted);
+    transition: var(--transition-base);
+}
+
+.datetime-toggle:hover i {
+    color: var(--color-primary-dark);
+}
+
+.datetime-toggle.has-selected-date {
+    color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    background-color: var(--color-neutral-white);
+}
+
+.datetime-toggle.has-selected-date i {
+    color: var(--color-primary-dark);
+}
+
+.custom-datetime-picker {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--color-neutral-white);
+    border: 2px solid var(--color-neutral-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 1000;
+    padding: var(--spacing-lg);
+    display: none;
+    margin-top: var(--spacing-xs);
+}
+
+.custom-datetime-picker.show {
+    display: block !important;
+}
+
+.custom-calendar {
+    margin-bottom: var(--spacing-lg);
+}
+
+.custom-calendar.show {
+    display: block !important;
+}
+
+.datetime-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.datetime-section:last-child {
+    margin-bottom: 0;
+}
+
+.datetime-section label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-secondary);
+}
+
+.time-selectors {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.time-selectors select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--color-neutral-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    background-color: var(--color-neutral-white);
+    cursor: pointer;
+    transition: var(--transition-base);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.time-selectors select:hover,
+.time-selectors select:focus {
+    border-color: var(--color-primary-dark);
+    outline: none;
+}
+
+.time-selectors span {
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    font-size: 1.1rem;
+}
+
+/* Time Section Styles */
+.time-section {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-neutral-border);
+    background-color: var(--color-neutral-white);
+}
+
+.time-section label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-secondary);
+}
+
+.time-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.time-input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.time-btn {
+    background: var(--color-neutral-white);
+    border: 1px solid var(--color-neutral-border);
+    border-radius: var(--radius-sm);
+    width: 32px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-base);
+    font-size: 0.8rem;
+    color: var(--color-primary-dark);
+}
+
+.time-btn:hover {
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary-dark);
+}
+
+.time-btn:active {
+    background-color: var(--color-primary-dark);
+    color: var(--color-neutral-white);
+}
+
+.time-input {
+    width: 40px;
+    height: 32px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-primary-dark);
+    background: var(--color-neutral-white);
+    border: 2px solid var(--color-neutral-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: var(--transition-base);
+}
+
+.time-input:focus {
+    border-color: var(--color-primary-dark);
+}
+
+.time-separator {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    margin: 0 var(--spacing-sm);
+}
+
+/* Pickup Schedule Tooltip */
+.pickup-schedule-info-icon-container {
+    position: relative;
+    margin-left: var(--spacing-sm);
+    align-self: flex-start;
+    margin-top: -4px;
+}
+
+.pickup-schedule-info-icon {
+    color: var(--color-primary-dark);
+    font-size: 1rem;
+    cursor: help;
+}
+
+.pickup-schedule-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-primary-dark);
+    color: var(--color-primary-light);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-primary);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: var(--spacing-xs);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-base);
+    pointer-events: none;
+}
+
+.pickup-schedule-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--color-primary-dark);
+}
+
+.pickup-schedule-info-icon-container:hover .pickup-schedule-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Form Select Styling */
+.form-select {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid var(--color-neutral-border);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    color: var(--color-primary-dark);
+    background-color: var(--color-neutral-white);
+    transition: var(--transition-base);
+}
+
+.form-select:focus {
+    border-color: var(--color-primary-dark);
+    outline: none;
+    box-shadow: none;
+}
+
+.form-select:hover {
+    border-color: var(--color-primary-dark);
 }
 
 /* Register image styling */
@@ -1306,6 +1611,140 @@ main {
     font-family: var(--font-secondary);
     font-size: 1.1rem;
     border: none;
+}
+
+.employee-table th:first-child {
+    border-top-left-radius: var(--radius-xl);
+}
+
+.employee-table th:last-child {
+    border-top-right-radius: var(--radius-xl);
+}
+
+/* ===== CREATE PACKAGE STYLES ===== */
+
+/* Products Gallery */
+.products-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.product-item {
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+
+.product-image-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-neutral-white);
+    cursor: pointer;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: filter 0.2s ease;
+    background: transparent;
+}
+
+.product-image-container:hover .product-image,
+.product-item.selected .product-image {
+    filter: brightness(0.7);
+}
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-neutral-light-gray);
+    font-size: 2rem;
+}
+
+.product-18-badge {
+    position: absolute;
+    top: var(--spacing-xs);
+    right: var(--spacing-xs);
+    background: #ff6b6b;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    z-index: 2;
+}
+
+
+.product-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-xs);
+    text-align: center;
+}
+
+.product-selected-indicator {
+    font-size: 1.5rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: var(--transition-base);
+}
+
+.product-item.selected .product-selected-indicator {
+    opacity: 1;
+}
+
+
+
+/* Guidelines Grid */
+.guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.guideline-card {
+    background: var(--color-neutral-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    transition: var(--transition-base);
+}
+
+.guideline-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+}
+
+.guideline-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.guideline-content h5 {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--color-primary-dark);
+    font-family: var(--font-secondary);
+    font-size: 1.1rem;
+}
+
+.guideline-content p {
+    margin: 0;
+    color: var(--color-neutral-medium-gray);
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 .employee-table td {

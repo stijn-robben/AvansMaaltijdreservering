@@ -321,20 +321,31 @@ public class PackageTests
 
     [Theory]
     [Trait("UserStory", "US_03")]
-    [InlineData(0)] // Today
+    [InlineData(0)] // Today (but ensure it's in the future)
     [InlineData(1)] // Tomorrow
     [InlineData(2)] // Day after tomorrow
     public void IsValidPickupTime_ShouldReturnTrue_ForValidDaysAhead(int daysAhead)
     {
         // Arrange
         var package = PackageTestDataBuilder.CreateRegularPackage();
-        package.PickupTime = DateTime.Today.AddDays(daysAhead).AddHours(12); // Noon on the specified day
+        
+        // Ensure pickup time is always in the future, even for "today"
+        var baseDate = DateTime.Today.AddDays(daysAhead);
+        if (daysAhead == 0)
+        {
+            // For "today", set pickup time to be at least 1 hour from now to ensure it's future
+            package.PickupTime = DateTime.Now.AddHours(1);
+        }
+        else
+        {
+            package.PickupTime = baseDate.AddHours(12); // Noon on the specified day
+        }
 
         // Act
         var isValid = package.IsValidPickupTime();
 
         // Assert
-        isValid.Should().BeTrue($"because pickup time is {daysAhead} days ahead (within allowed range)");
+        isValid.Should().BeTrue($"because pickup time is {daysAhead} days ahead (within allowed range) and in the future");
     }
 
     [Theory]

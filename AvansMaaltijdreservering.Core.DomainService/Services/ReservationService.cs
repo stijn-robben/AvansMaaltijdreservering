@@ -140,6 +140,45 @@ public class ReservationService : IReservationService
         if (student.IsBlocked())
         {
             _logger.LogWarning($"Student {student.Id} is now blocked due to excessive no-shows");
+            
+            try
+            {
+                // Cancel all future reservations for this blocked student
+                var futureReservations = await _packageRepository.GetPackagesByStudentIdAsync(student.Id);
+                
+                if (futureReservations != null)
+                {
+                    var futurePendingReservations = futureReservations
+                        .Where(p => p != null && p.PickupTime > DateTime.Now && p.ReservedByStudentId == student.Id)
+                        .ToList();
+                    
+                    foreach (var reservation in futurePendingReservations)
+                    {
+                        try
+                        {
+                            reservation.ReservedByStudentId = null;
+                            reservation.ReservedByStudent = null;
+                            await _packageRepository.UpdateAsync(reservation);
+                            
+                            _logger.LogInfo($"Cancelled future reservation for package {reservation.Id} (pickup: {reservation.PickupTime}) due to student blocking");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning($"Failed to cancel reservation for package {reservation.Id}: {ex.Message}");
+                        }
+                    }
+                    
+                    if (futurePendingReservations.Any())
+                    {
+                        _logger.LogWarning($"Cancelled {futurePendingReservations.Count} future reservations for blocked student {student.Id}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Error while cancelling future reservations for blocked student {student.Id}: {ex.Message}");
+                // Don't rethrow - the main no-show registration should still succeed
+            }
         }
     }
 

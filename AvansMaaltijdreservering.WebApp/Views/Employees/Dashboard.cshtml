@@ -4,6 +4,8 @@
     ViewData["Title"] = "Employee Dashboard";
 }
 
+@Html.AntiForgeryToken()
+
 <div class="mt-4">
     <!-- Welcome Header -->
     <div class="row mb-4">
@@ -17,17 +19,46 @@
         </div>
     </div>
 
+    <hr class="my-5">
 
     <!-- US_02: Own Canteen Packages -->
     <div class="row mb-4">
         <div class="col-8">
-            <h3 class="labrada-font">Canteen packages (@Model.OwnCanteenPackages.Count)</h3>
+            <h3 class="labrada-font">Your canteen packages (@Model.OwnCanteenPackages.Count)</h3>
             <p class="text-muted mb-4">Manage packages for @Model.EmployeeCanteen?.Location.ToString().Replace("_", " ").Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch").Replace("LA BUILDING", "LA Building").Replace("LD BUILDING", "LD Building").Replace("HA BUILDING", "HA Building")</p>
         </div>
         <div class="col-4 d-flex align-items-start justify-content-end">
             <a asp-action="CreatePackage" class="meal-filter-btn">
                 <i class="bi bi-plus-circle-fill"></i> Create Package
             </a>
+        </div>
+    </div>
+
+    <!-- Status Filter Buttons for Your Canteen Packages -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <button type="button" onclick="applyCanteenFilter('all')" 
+                        class="meal-filter-btn active" 
+                        id="canteen-status-all">
+                    All
+                </button>
+                <button type="button" onclick="applyCanteenFilter('available')" 
+                        class="meal-filter-btn" 
+                        id="canteen-status-available">
+                    Available
+                </button>
+                <button type="button" onclick="applyCanteenFilter('reserved')" 
+                        class="meal-filter-btn" 
+                        id="canteen-status-reserved">
+                    Reserved
+                </button>
+                <button type="button" onclick="applyCanteenFilter('expired')" 
+                        class="meal-filter-btn" 
+                        id="canteen-status-expired">
+                    Expired
+                </button>
+            </div>
         </div>
     </div>
 
@@ -134,6 +165,29 @@
                                     @if (isPastDue)
                                     {
                                         <span class="status-expired">Expired</span>
+                                        @if (package.IsReserved && package.ReservedByStudent != null)
+                                        {
+                                            <div class="reserved-by-container">
+                                                <div class="reserved-by">by @package.ReservedByStudent?.Name</div>
+                                                <div class="student-contact-tooltip">
+                                                    <div class="contact-item">
+                                                        <strong>@package.ReservedByStudent.Name (@package.ReservedByStudent.NoShowCount no-shows)</strong>
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.StudentNumber
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.Email
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.PhoneNumber
+                                                    </div>
+                                                    <div class="contact-item">
+                                                        @package.ReservedByStudent.StudyCity.ToString().Replace("BREDA", "Breda").Replace("TILBURG", "Tilburg").Replace("DENBOSCH", "Den Bosch")
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                     }
                                     else if (package.IsReserved)
                                     {
@@ -144,7 +198,7 @@
                                             {
                                                 <div class="student-contact-tooltip">
                                                     <div class="contact-item">
-                                                        <strong>@package.ReservedByStudent.Name</strong>
+                                                        <strong>@package.ReservedByStudent.Name (@package.ReservedByStudent.NoShowCount no-shows)</strong>
                                                     </div>
                                                     <div class="contact-item">
                                                         @package.ReservedByStudent.StudentNumber
@@ -182,8 +236,8 @@
                                         @if (package.IsReserved && isPastDue)
                                         {
                                             <button type="button" class="btn-table-noshow" 
-                                                    onclick="showNoShowModal(@package.Id, '@package.ReservedByStudent?.Name', '@package.Name')">
-                                                <i class="bi bi-exclamation-triangle"></i> No-Show
+                                                    onclick="showNoShowModal(@package.Id, '@package.ReservedByStudent?.Name', '@package.Name', '@package.ReservedByStudent?.StudentNumber', '@package.ReservedByStudent?.Email', '@package.ReservedByStudent?.PhoneNumber', @package.ReservedByStudent?.NoShowCount)">
+                                                No-Show
                                             </button>
                                         }
                                     </div>
@@ -196,10 +250,64 @@
     }
 
     <!-- All Canteens Overview -->
-    <div class="row mb-4">
+    <div class="row mb-4 mt-5">
         <div class="col-12">
-            <h3 class="labrada-font">All Canteens Overview (@Model.AllPackages.Count)</h3>
-            <p class="text-muted mb-4">System-wide package status from all locations</p>
+            <h3 class="labrada-font">All canteens overview (@Model.AllPackages.Count)</h3>
+            <p class="text-muted mb-4">Packages from all canteens</p>
+        </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <!-- Status Filter Buttons (Left) -->
+            <div class="d-flex gap-2">
+                <button type="button" onclick="applyFilter('all', null)" 
+                        class="meal-filter-btn @(string.IsNullOrEmpty(Model.StatusFilter) ? "active" : "")" 
+                        id="status-all">
+                    All
+                </button>
+                <button type="button" onclick="applyFilter('available', null)" 
+                        class="meal-filter-btn @(Model.StatusFilter == "available" ? "active" : "")" 
+                        id="status-available">
+                    Available
+                </button>
+                <button type="button" onclick="applyFilter('reserved', null)" 
+                        class="meal-filter-btn @(Model.StatusFilter == "reserved" ? "active" : "")" 
+                        id="status-reserved">
+                    Reserved
+                </button>
+                <button type="button" onclick="applyFilter('expired', null)" 
+                        class="meal-filter-btn @(Model.StatusFilter == "expired" ? "active" : "")" 
+                        id="status-expired">
+                    Expired
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- City Filter Buttons (Right) -->
+            <div class="d-flex gap-2 justify-content-md-end">
+                <button type="button" onclick="applyFilter(null, 'all')" 
+                        class="meal-filter-btn @(!Model.CityFilter.HasValue ? "active" : "")" 
+                        id="city-all">
+                    All Cities
+                </button>
+                <button type="button" onclick="applyFilter(null, 'BREDA')" 
+                        class="meal-filter-btn @(Model.CityFilter == AvansMaaltijdreservering.Core.Domain.Enums.City.BREDA ? "active" : "")" 
+                        id="city-breda">
+                    Breda
+                </button>
+                <button type="button" onclick="applyFilter(null, 'TILBURG')" 
+                        class="meal-filter-btn @(Model.CityFilter == AvansMaaltijdreservering.Core.Domain.Enums.City.TILBURG ? "active" : "")" 
+                        id="city-tilburg">
+                    Tilburg
+                </button>
+                <button type="button" onclick="applyFilter(null, 'DENBOSCH')" 
+                        class="meal-filter-btn @(Model.CityFilter == AvansMaaltijdreservering.Core.Domain.Enums.City.DENBOSCH ? "active" : "")" 
+                        id="city-denbosch">
+                    Den Bosch
+                </button>
+            </div>
         </div>
     </div>
 
@@ -230,7 +338,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var package in Model.AllPackages.Take(20))
+                    @foreach (var package in Model.AllPackages)
                     {
                         var isPastDue = package.LatestPickupTime < DateTime.Now;
                         var isToday = package.PickupTime.Date == DateTime.Today;
@@ -309,7 +417,7 @@
                                         {
                                             <div class="student-contact-tooltip">
                                                 <div class="contact-item">
-                                                    <strong>@package.ReservedByStudent.Name</strong>
+                                                    <strong>@package.ReservedByStudent.Name (@package.ReservedByStudent.NoShowCount no-shows)</strong>
                                                 </div>
                                                 <div class="contact-item">
                                                     @package.ReservedByStudent.StudentNumber
@@ -337,12 +445,12 @@
                 </tbody>
             </table>
             
-            @if (Model.AllPackages.Count > 20)
-            {
-                <div class="text-center mt-3">
-                    <p class="text-muted">Showing latest 20 packages. Total packages in system: @Model.AllPackages.Count</p>
+            <!-- Pagination Controls -->
+            <div class="text-center mt-4">
+                <div class="d-flex gap-2 justify-content-center" id="pagination-numbers">
+                    <!-- Page numbers will be generated by JavaScript -->
                 </div>
-            }
+            </div>
         </div>
     }
 </div>
@@ -374,7 +482,17 @@
 <div id="noShowModal" class="custom-modal-overlay">
     <div class="custom-modal">
         <h3 class="custom-modal-title">Register No-Show</h3>
-        <p class="custom-modal-text">Register <strong id="noShowStudentName"></strong> as a no-show for <strong id="noShowPackageName"></strong>? This will increment the student's no-show count.</p>
+        <div class="custom-modal-text">
+            <p><strong id="noShowStudentName"></strong> did not pick up <strong id="noShowPackageName"></strong>.</p>
+            <p>Register as no-show? This will increment the student's no-show count.</p>
+            <div style="background-color: var(--color-neutral-light-gray); padding: var(--spacing-md); border-radius: var(--radius-sm); margin-top: var(--spacing-md);">
+                <div><span id="noShowStudentNameDetail"></span></div>
+                <div><span id="noShowStudentNumber"></span></div>
+                <div><span id="noShowStudentEmail"></span></div>
+                <div><span id="noShowStudentPhone"></span></div>
+                <div><span id="noShowStudentNoShows"></span></div>
+            </div>
+        </div>
         <div class="custom-modal-buttons">
             <button type="button" class="btn-modal-cancel" onclick="hideNoShowModal()">Cancel</button>
             <button type="button" class="btn-modal-confirm" onclick="confirmNoShow()">Register No-Show</button>
@@ -450,7 +568,13 @@
                 input.name = 'id';
                 input.value = deletePackageId;
                 
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                
                 form.appendChild(input);
+                form.appendChild(tokenInput);
                 document.body.appendChild(form);
                 form.submit();
             }
@@ -459,10 +583,15 @@
         // No-show modal functions
         let noShowPackageId = null;
 
-        function showNoShowModal(packageId, studentName, packageName) {
+        function showNoShowModal(packageId, studentName, packageName, studentNumber, studentEmail, studentPhone, noShowCount) {
             noShowPackageId = packageId;
             document.getElementById('noShowStudentName').textContent = studentName;
             document.getElementById('noShowPackageName').textContent = packageName;
+            document.getElementById('noShowStudentNameDetail').textContent = studentName;
+            document.getElementById('noShowStudentNumber').textContent = studentNumber;
+            document.getElementById('noShowStudentEmail').textContent = studentEmail;
+            document.getElementById('noShowStudentPhone').textContent = studentPhone;
+            document.getElementById('noShowStudentNoShows').textContent = noShowCount + ' no-shows';
             document.getElementById('noShowModal').classList.add('show');
         }
 
@@ -477,12 +606,18 @@
                 form.method = 'POST';
                 form.action = '@Url.Action("RegisterNoShow")';
                 
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'packageId';
-                input.value = noShowPackageId;
+                const packageIdInput = document.createElement('input');
+                packageIdInput.type = 'hidden';
+                packageIdInput.name = 'packageId';
+                packageIdInput.value = noShowPackageId;
                 
-                form.appendChild(input);
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                
+                form.appendChild(packageIdInput);
+                form.appendChild(tokenInput);
                 document.body.appendChild(form);
                 form.submit();
             }
@@ -499,6 +634,288 @@
             if (e.target === this) {
                 hideNoShowModal();
             }
+        });
+
+        // Filtering and Pagination functionality
+        let currentStatusFilter = '@Model.StatusFilter';
+        let currentCityFilter = '@Model.CityFilter';
+        let currentPage = 1;
+        const itemsPerPage = 9;
+        
+        // Canteen packages filtering
+        let currentCanteenStatusFilter = 'all';
+
+        function applyFilter(statusFilter, cityFilter) {
+            // Update current filters
+            if (statusFilter !== null) {
+                currentStatusFilter = statusFilter === 'all' ? '' : statusFilter;
+            }
+            if (cityFilter !== null) {
+                currentCityFilter = cityFilter === 'all' ? '' : cityFilter;
+            }
+
+            // Update button states
+            updateButtonStates();
+
+            // Reset to page 1 when filtering
+            currentPage = 1;
+            
+            // Filter and paginate table rows
+            filterAndPaginateTable();
+        }
+
+        function updateButtonStates() {
+            // Status buttons
+            document.getElementById('status-all').classList.toggle('active', currentStatusFilter === '');
+            document.getElementById('status-available').classList.toggle('active', currentStatusFilter === 'available');
+            document.getElementById('status-reserved').classList.toggle('active', currentStatusFilter === 'reserved');
+            document.getElementById('status-expired').classList.toggle('active', currentStatusFilter === 'expired');
+
+            // City buttons
+            document.getElementById('city-all').classList.toggle('active', currentCityFilter === '');
+            document.getElementById('city-breda').classList.toggle('active', currentCityFilter === 'BREDA');
+            document.getElementById('city-tilburg').classList.toggle('active', currentCityFilter === 'TILBURG');
+            document.getElementById('city-denbosch').classList.toggle('active', currentCityFilter === 'DENBOSCH');
+        }
+
+        function filterAndPaginateTable() {
+            // Get the second employee-table (All canteens overview)
+            const allTables = document.querySelectorAll('.employee-table');
+            const allCanteensTable = allTables[1]; // Second table is All canteens overview
+            
+            if (!allCanteensTable) {
+                return;
+            }
+            
+            const tableRows = allCanteensTable.querySelectorAll('tbody tr:not(.no-results-row)');
+            const filteredRows = [];
+            
+            // First pass: Filter rows based on current filters
+            tableRows.forEach((row) => {
+                const statusCell = row.querySelector('td:nth-child(5)');
+                const cityCell = row.querySelector('td:nth-child(1) .location-info');
+                
+                if (!statusCell || !cityCell) {
+                    return;
+                }
+                
+                const statusText = statusCell.textContent.trim();
+                const cityText = cityCell.textContent.trim();
+                
+                let showRow = true;
+
+                // Status filter
+                if (currentStatusFilter && currentStatusFilter !== '') {
+                    if (currentStatusFilter === 'available' && !statusText.includes('Available')) {
+                        showRow = false;
+                    }
+                    if (currentStatusFilter === 'reserved' && !statusText.includes('Reserved')) {
+                        showRow = false;
+                    }
+                    if (currentStatusFilter === 'expired' && !statusText.includes('Expired')) {
+                        showRow = false;
+                    }
+                }
+
+                // City filter
+                if (currentCityFilter && currentCityFilter !== '') {
+                    const cityMatch = currentCityFilter === 'BREDA' ? 'Breda' : 
+                                     currentCityFilter === 'TILBURG' ? 'Tilburg' : 
+                                     currentCityFilter === 'DENBOSCH' ? 'Den Bosch' : '';
+                    if (!cityText.includes(cityMatch)) {
+                        showRow = false;
+                    }
+                }
+
+                if (showRow) {
+                    filteredRows.push(row);
+                }
+            });
+
+            // Second pass: Apply pagination
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            
+            tableRows.forEach((row, index) => {
+                row.style.display = 'none'; // Hide all rows first
+            });
+            
+            const allCanteensTableBody = allCanteensTable.querySelector('tbody');
+            let noResultsRow = allCanteensTableBody.querySelector('.no-results-row');
+            
+            if (filteredRows.length === 0) {
+                // Show empty state
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="6" class="text-center py-5">
+                            <div class="text-muted">
+                                <div>No packages match your current filter</div>
+                            </div>
+                        </td>
+                    `;
+                    allCanteensTableBody.appendChild(noResultsRow);
+                }
+                noResultsRow.style.display = '';
+            } else {
+                // Hide empty state and show paginated results
+                if (noResultsRow) {
+                    noResultsRow.style.display = 'none';
+                }
+                
+                filteredRows.forEach((row, index) => {
+                    if (index >= startIndex && index < endIndex) {
+                        row.style.display = ''; // Show rows for current page
+                    }
+                });
+            }
+
+            // Update count in title - find the specific "All canteens overview" title
+            const titleElements = document.querySelectorAll('.labrada-font');
+            let titleElement = null;
+            
+            titleElements.forEach(element => {
+                if (element.textContent.includes('All canteens overview')) {
+                    titleElement = element;
+                }
+            });
+            
+            if (titleElement) {
+                const baseTitle = 'All canteens overview';
+                titleElement.textContent = `${baseTitle} (${filteredRows.length})`;
+            }
+            
+            // Update pagination controls
+            updatePaginationControls(filteredRows.length);
+        }
+
+
+        function goToPage(page) {
+            currentPage = page;
+            filterAndPaginateTable();
+        }
+
+        function updatePaginationControls(totalFilteredItems) {
+            const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
+            const paginationNumbers = document.getElementById('pagination-numbers');
+            paginationNumbers.innerHTML = '';
+            
+            // Only show pagination if there are multiple pages
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // Generate page number buttons using the same style as filter buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.type = 'button';
+                pageBtn.className = `meal-filter-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => goToPage(i);
+                paginationNumbers.appendChild(pageBtn);
+            }
+        }
+
+        // Canteen packages filtering
+        function applyCanteenFilter(statusFilter) {
+            currentCanteenStatusFilter = statusFilter;
+            updateCanteenButtonStates();
+            filterCanteenTable();
+        }
+
+        function updateCanteenButtonStates() {
+            document.getElementById('canteen-status-all').classList.toggle('active', currentCanteenStatusFilter === 'all');
+            document.getElementById('canteen-status-available').classList.toggle('active', currentCanteenStatusFilter === 'available');
+            document.getElementById('canteen-status-reserved').classList.toggle('active', currentCanteenStatusFilter === 'reserved');
+            document.getElementById('canteen-status-expired').classList.toggle('active', currentCanteenStatusFilter === 'expired');
+        }
+
+        function filterCanteenTable() {
+            // Get the first employee-table (Your canteen packages)
+            const allTables = document.querySelectorAll('.employee-table');
+            const canteenTable = allTables[0]; // First table is Your canteen packages
+            
+            if (!canteenTable) {
+                return;
+            }
+            
+            const tableRows = canteenTable.querySelectorAll('tbody tr:not(.no-results-row)');
+            let visibleCount = 0;
+            
+            tableRows.forEach((row) => {
+                const statusCell = row.querySelector('td:nth-child(5)');
+                
+                if (!statusCell) {
+                    return;
+                }
+                
+                const statusText = statusCell.textContent.trim();
+                let showRow = true;
+
+                // Status filter
+                if (currentCanteenStatusFilter !== 'all') {
+                    if (currentCanteenStatusFilter === 'available' && !statusText.includes('Available')) {
+                        showRow = false;
+                    }
+                    if (currentCanteenStatusFilter === 'reserved' && !statusText.includes('Reserved')) {
+                        showRow = false;
+                    }
+                    if (currentCanteenStatusFilter === 'expired' && !statusText.includes('Expired')) {
+                        showRow = false;
+                    }
+                }
+
+                row.style.display = showRow ? '' : 'none';
+                if (showRow) visibleCount++;
+            });
+
+            // Show/hide empty state
+            const canteenTableBody = canteenTable.querySelector('tbody');
+            let noResultsRow = canteenTableBody.querySelector('.no-results-row');
+            
+            if (visibleCount === 0) {
+                // Show empty state
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="6" class="text-center py-5">
+                            <div class="text-muted">
+                                <div>No packages match your current filter</div>
+                            </div>
+                        </td>
+                    `;
+                    canteenTableBody.appendChild(noResultsRow);
+                }
+                noResultsRow.style.display = '';
+            } else {
+                // Hide empty state
+                if (noResultsRow) {
+                    noResultsRow.style.display = 'none';
+                }
+            }
+
+            // Update count in title - find the specific "Your canteen packages" title
+            const titleElements = document.querySelectorAll('.labrada-font');
+            let canteenTitleElement = null;
+            
+            titleElements.forEach(element => {
+                if (element.textContent.includes('Your canteen packages')) {
+                    canteenTitleElement = element;
+                }
+            });
+            
+            if (canteenTitleElement) {
+                const baseTitle = 'Your canteen packages';
+                canteenTitleElement.textContent = `${baseTitle} (${visibleCount})`;
+            }
+        }
+
+        // Initialize pagination on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            filterAndPaginateTable();
+            filterCanteenTable(); // Initialize canteen table filtering
         });
     </script>
 }
