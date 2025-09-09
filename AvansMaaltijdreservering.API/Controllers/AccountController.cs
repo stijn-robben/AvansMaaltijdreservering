@@ -86,13 +86,14 @@ public class AccountController : ControllerBase
     }
 
     /// <summary>
-    /// Register test users (DEVELOPMENT ONLY - REMOVE IN PRODUCTION)
+    /// Register users (can be enabled/disabled via configuration)
     /// </summary>
     [HttpPost("register")]
     public async Task<ActionResult> RegisterTestUser([FromBody] RegisterRequest request)
     {
-        // SECURITY: Only allow in Development environment
-        if (!_environment.IsDevelopment())
+        // Check if registration is allowed via configuration
+        var allowRegistration = _configuration.GetValue<bool>("Registration:AllowRegistration", false);
+        if (!allowRegistration)
         {
             return BadRequest(new { message = "Registration is disabled in production" });
         }
