@@ -40,6 +40,22 @@
       arguments: '--configuration $(buildConfiguration) --no-build --collect "Code coverage"'
 
   - task: DotNetCoreCLI@2
+    displayName: 'Install EF Tools'
+    inputs:
+      command: 'custom'
+      custom: 'tool'
+      arguments: 'install --global dotnet-ef'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Create EF Bundle'
+    inputs:
+      command: 'custom'
+      custom: 'ef'
+      arguments: 'migrations bundle --project **/AvansMaaltijdreservering.Infrastructure.csproj --startup-project
+  **/AvansMaaltijdreservering.API.csproj --output $(Build.ArtifactStagingDirectory)/efbundle --configuration
+  $(buildConfiguration)'
+
+  - task: DotNetCoreCLI@2
     displayName: 'Publish WebApp'
     inputs:
       command: 'publish'
