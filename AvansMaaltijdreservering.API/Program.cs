@@ -29,12 +29,29 @@ else
     builder.Logging.SetMinimumLevel(LogLevel.Information);
 }
 
-// Add Entity Framework DbContexts (same as WebApp)
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+var connection = String.Empty;
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+    builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+
+}
+else
+{
+    var connectionStringDefault = Environment.GetEnvironmentVariable("CONNECTION_STRING_DEFAULT");
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionStringDefault));
+
+    var connectionStringIdentity = Environment.GetEnvironmentVariable("CONNECTION_STRING_IDENTITY");
+    builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+    options.UseSqlServer(connectionStringIdentity));
+
+}
+
+// Add Entity Framework DbContexts (same as WebApp)
 
 // Add Identity services with roles
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
@@ -80,13 +97,8 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo 
     { 
         Title = "Avans Meal Rescue API", 
-        Version = "v1",
         Description = "RESTful API for the Avans Meal Rescue platform - Richardson Maturity Model Level 2",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact
-        {
-            Name = "Avans Development Team",
-            Email = "support@avans.nl"
-        }
+        
     });
     
     // Enable XML comments for better documentation
