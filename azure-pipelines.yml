@@ -1,5 +1,7 @@
 # ASP.NET Core
 # Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
 - master
@@ -70,16 +72,25 @@ steps:
     zipAfterPublish: true
 
 - task: DotNetCoreCLI@2
-  displayName: 'Create EF migrations bundle'
+  displayName: 'Create EF migrations bundle - ApplicationDbContext'
   inputs:
     command: 'custom'
     custom: 'ef'
-    arguments: 'migrations bundle --self-contained -s $(Build.SourcesDirectory)/AvansMaaltijdreservering.API -p $(Build.SourcesDirectory)/AvansMaaltijdreservering.API -o $(Build.SourcesDirectory)/AvansMaaltijdreservering.API/migration_bundle/bundle'
+    arguments: 'migrations bundle --self-contained -s $(Build.SourcesDirectory)/AvansMaaltijdreservering.API -p $(Build.SourcesDirectory)/AvansMaaltijdreservering.API -c ApplicationDbContext -o $(Build.SourcesDirectory)/AvansMaaltijdreservering.API/migration_bundle/bundle_application'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Create EF migrations bundle - ApplicationIdentityDbContext'
+  inputs:
+    command: 'custom'
+    custom: 'ef'
+    arguments: 'migrations bundle --self-contained -s $(Build.SourcesDirectory)/AvansMaaltijdreservering.API -p $(Build.SourcesDirectory)/AvansMaaltijdreservering.API -c ApplicationIdentityDbContext -o $(Build.SourcesDirectory)/AvansMaaltijdreservering.API/migration_bundle/bundle_identity'
 
 - task: CmdLine@2
   displayName: 'Copy appsettings.json to migration bundle'
   inputs:
-    script: 'cp AvansMaaltijdreservering.API/appsettings.json AvansMaaltijdreservering.API/migration_bundle/'
+    script: |
+      mkdir -p AvansMaaltijdreservering.API/migration_bundle
+      cp AvansMaaltijdreservering.API/appsettings.json AvansMaaltijdreservering.API/migration_bundle/
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
