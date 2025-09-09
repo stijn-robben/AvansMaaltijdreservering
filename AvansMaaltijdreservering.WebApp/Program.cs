@@ -10,12 +10,28 @@ using AvansMaaltijdreservering.Infrastructure.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Entity Framework DbContexts (separate databases as required)
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+var connection = String.Empty;
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+    builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+
+}
+else
+{
+    var connectionStringDefault = Environment.GetEnvironmentVariable("CONNECTION_STRING_DEFAULT");
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionStringDefault));
+
+    var connectionStringIdentity = Environment.GetEnvironmentVariable("CONNECTION_STRING_IDENTITY");
+    builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+    options.UseSqlServer(connectionStringIdentity));
+
+}
+
 
 // Add Identity services with roles
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
