@@ -154,14 +154,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    
-    // Enable GraphQL IDE (Banana Cake Pop)
-    app.MapGraphQL("/graphql").WithName("GraphQL");
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// Enable GraphQL IDE (Banana Cake Pop)
+app.MapGraphQL("/graphql").WithName("GraphQL");
 
 app.UseHttpsRedirection();
 app.UseCors("MobileApp");
