@@ -33,21 +33,25 @@ var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
     builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
 }
 else
 {
     var connectionStringDefault = Environment.GetEnvironmentVariable("CONNECTION_STRING_DEFAULT");
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionStringDefault));
+    options.UseSqlServer(connectionStringDefault,
+        sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
     var connectionStringIdentity = Environment.GetEnvironmentVariable("CONNECTION_STRING_IDENTITY");
     builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-    options.UseSqlServer(connectionStringIdentity));
+    options.UseSqlServer(connectionStringIdentity,
+        sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
 }
 

@@ -3,7 +3,7 @@
 -- ========================================
 
 -- STEP 1: Clear Identity Database
-USE AvansMaaltijdreserveringIdentity;
+USE sswpi-stijnrobben-2;
 PRINT 'Clearing Identity Database...';
 
 DELETE FROM AspNetUserRoles;

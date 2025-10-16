@@ -1,275 +1,450 @@
-cd /mnt/c/Users/stijn/Documents/GitHub/AvansMaaltijdreservering
+<div align="center">
+  <img src="https://i.ibb.co/WW93TtxG/front-img.jpg" alt="Avans Meal Rescue " width="400"/>
 
-# Complete Project Context - Avans Maaltijdreservering Systeem
+  # Avans Meal Rescue Platform
 
-## 🎯 CASUS OVERZICHT
+  ### Combating Food Waste Through Technology
 
-**Probleem:** Avans kantines gooien dagelijks veel eten weg aan het eind van de dag.
-**Oplossing:** Een "Too Good To Go" alternatief specifiek voor Avans studenten.
-**Doel:** Voedselverspilling tegengaan door overschotten tegen gereduceerde prijs aan te bieden.
+  [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+  [![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-MVC-512BD4)](https://docs.microsoft.com/aspnet/core)
+  [![Azure](https://img.shields.io/badge/Azure-Deployed-0078D4?logo=microsoft-azure)](https://azure.microsoft.com/)
+  [![Entity Framework](https://img.shields.io/badge/Entity%20Framework-Code%20First-512BD4)](https://docs.microsoft.com/ef/)
+  [![License](https://img.shields.io/badge/License-Educational-green.svg)](LICENSE)
 
-## 👥 ACTOREN & ROLLEN
+</div>
 
-### Student
-- **Gegevens:** Naam, geboortedatum, studentnummer, e-mail, studiestad, telefoonnummer
-- **Restricties:** 
-  - Geboortedatum mag niet in toekomst liggen
-  - Minimaal 16 jaar bij aanmelden
-  - Maximaal 1 pakket per afhaaldag
-  - Geen 18+ pakketten voor minderjarigen
-  - Na 2+ no-shows: geen nieuwe reserveringen mogelijk
+---
 
-### Kantinemedewerker
-- **Gegevens:** Naam, personeelsnummer, locatie (kantine waar hij/zij werkt)
-- **Rechten:**
-  - Pakketten aanmaken/wijzigen/verwijderen (alleen eigen locatie)
-  - Overzicht alle pakketten (eigen + andere kantines)
-  - No-shows registreren
+## 👨‍💻 About This Project
 
-## 🏢 LOCATIES & KANTINES
+This application was developed by **Stijn Robben**, a Computer Science student at Avans University of Applied Sciences, as part of the course **Server-Side Web Development Individual (EIIN-SSWPI)**.
 
-### Steden
-- Breda
-- Tilburg  
-- Den Bosch
+The project demonstrates a full-stack enterprise application built with modern .NET technologies, implementing clean architecture principles, RESTful APIs, and a complete CI/CD pipeline.
 
-### Kantines
-- Per stad meerdere kantines (via enumeratie)
-- Elke kantine heeft indicatie of warme maaltijden aangeboden worden
-- Kantinemedewerker gekoppeld aan specifieke kantine
+### 🎯 Project Goal
 
-## 📦 PAKKET SYSTEEM
+Avans Meal Rescue is a web-based platform designed to combat food waste at Avans University. Similar to "Too Good To Go," the system allows canteen employees to offer surplus food packages at reduced prices, which students can reserve and pick up before closing time.
 
-### Pakket Eigenschappen
-- **Beschrijvende naam** (verplicht, niet leeg)
-- **Productenlijst** (indicatie op basis van historie - GEEN garantie!)
-- **Locatie** (stad + specifieke kantine)
-- **Ophaaltijd** (datum + tijd)
-- **Uiterste ophaaltijd**
-- **18+ indicator** (automatisch als alcoholhoudend product)
-- **Prijs**
-- **Type maaltijd** (brood, warme avondmaaltijd, drank, etc. - enumeratie)
-- **Reservering** (referentie naar student)
+---
 
-### Belangrijke Business Rules
-- Pakket mag max 2 dagen vooruit gepland worden
-- Wijzigen/verwijderen alleen als nog geen reservering
-- Warme maaltijd pakketten alleen op locaties die dit aanbieden
-- Automatische 18+ marking bij alcoholhoudende producten
+## ✨ Key Features
 
-### Product Eigenschappen
-- **Naam** (verplicht, niet leeg)
-- **Alcoholhoudend** (ja/nee)
-- **Foto**
+### For Students
+- 📦 **Browse Available Packages** - View all surplus food packages from different canteen locations
+- 🔍 **Smart Filtering** - Filter by location (Breda, Tilburg, Den Bosch) and meal type
+- 🛒 **One-Click Reservations** - Reserve packages instantly with real-time availability
+- 🔞 **Age Verification** - Automatic 18+ validation for packages containing alcohol
+- 📱 **Responsive Design** - Full mobile and desktop support
+- 🚫 **No-Show Protection** - Fair system preventing abuse (max 2 no-shows)
 
-## 🎯 VERPLICHTE USER STORIES (1-7) + 1 EXTRA (8, 9, OF 10)
+### For Canteen Employees
+- ➕ **Package Management** - Create, edit, and delete food packages
+- 👥 **Reservation Overview** - View all reservations with student contact details
+- ⚠️ **No-Show Registration** - Track students who don't pick up their packages
+- 📊 **Multi-Canteen View** - See offerings from all Avans canteens
+- ⏰ **Time-Based Controls** - Packages limited to max 2 days in advance
 
-### US_01 (3 SP) - Student Overzicht
-- Twee pagina's: beschikbare pakketten + eigen reserveringen
-- Duidelijke navigatie tussen beide overzichten
+### Technical Highlights
+- 🏗️ **Onion Architecture** - Clean separation of concerns with Domain-Driven Design
+- 🔐 **ASP.NET Identity** - Secure authentication and role-based authorization
+- 🌐 **RESTful API (RMM Level 2)** - Full CRUD operations with proper HTTP verbs
+- 📡 **GraphQL Endpoint** - Flexible data querying for mobile clients
+- 🔒 **Thread-Safe Reservations** - Race condition prevention with locking mechanism
+- 🧪 **Comprehensive Testing** - Unit tests with Moq + Postman E2E tests
+- 🚀 **CI/CD Pipeline** - Automated builds, tests, and deployments to Azure
 
-### US_02 (2 SP) - Kantinemedewerker Overzicht  
-- Eigen kantine pakketten (gesorteerd op datum)
-- Alle kantines overzicht (gesorteerd op datum)
+---
 
-### US_03 (3 SP) - Pakket Beheer
-- CRUD operaties voor pakketten (alleen eigen locatie)
-- Max 2 dagen vooruitplannen
-- Alleen wijzigen/verwijderen zonder reserveringen
+## 📸 Screenshots
 
-### US_04 (1 SP) - 18+ Restricties
-- Automatische 18+ marking bij alcohol
-- Leeftijdscontrole bij reservering (tov ophaaldatum)
+### Student Dashboard
+![Student Dashboard](https://i.ibb.co/nMRWK4V7/student-dashboard.jpg)
+*Students can browse available packages with filters for location and meal type*
 
-### US_05 (3 SP) - Reservering Plaatsen
-- Student kan pakket reserveren
-- Max 1 pakket per afhaaldag per student
+### Package Details
+![Package Details](https://i.ibb.co/GQV86ytb/package-details.jpg)
+*Detailed view showing example products with photos and 18+ indicators*
 
-### US_06 (3 SP) - Product Informatie
-- Voorbeeldproducten zichtbaar in pakket
-- Duidelijke disclaimer: geen garantie voor exacte inhoud
-- Aantrekkelijke weergave
+### Employee Dashboard
+![Employee Dashboard](https://i.ibb.co/HpP2ZZMj/employee-dashboard.jpg)
+*Canteen employees can manage packages and track reservations*
 
-### US_07 (1 SP) - Dubbele Reserveringen Voorkomen
-- First-come-first-served principe
-- Klantvriendelijke foutmelding bij dubbele reservering
+### API Documentation (Swagger)
+![Swagger API](https://i.ibb.co/yFLbYMJ1/swagger.png)
+*Interactive API documentation for all REST endpoints*
 
-### EXTRA KEUZE (implementeer 1 van 3):
+---
 
-**US_08 (2 SP) - Filteren**
-- Filter op locatie (studiestad als default)
-- Filter op type maaltijd
+## 🏗️ Architecture
 
-**US_09 (1 SP) - Warme Maaltijd Restrictie**
-- Alleen warme maaltijd pakketten op locaties die dit aanbieden
-- Validatie bij pakket aanmaken
+This project implements **Clean Architecture (Onion Architecture)** with strict dependency rules:
 
-**US_10 (2 SP) - No-Show Management**
-- No-shows registreren door kantinemedewerker
-- Na 2+ no-shows: blokkering nieuwe reserveringen
+### Package Diagram
+![Package Diagram](https://i.ibb.co/G438zNs0/Package-Diagram.jpg)
 
-## 🏗️ TECHNISCHE ARCHITECTUUR
+### Class Diagram
+![Class Diagram](https://i.ibb.co/6qjyK0P/Class-Diagram.jpg)
 
-### Onion Architecture - Project Structuur
+### Deployment Diagram
+![Deployment Diagram](https://i.ibb.co/RGYmXfXS/Deployment-Diagram.jpg)
+
+### Project Structure
 ```
 AvansMaaltijdreservering/
-├── AvansMaaltijdreservering.Core.Domain/          # Entities, Enums, Interfaces
-├── AvansMaaltijdreservering.Core.DomainService/   # Business Logic Services  
-├── AvansMaaltijdreservering.Infrastructure/       # Data Access, Repositories
-├── AvansMaaltijdreservering.WebApp/              # ASP.NET MVC Core 8
-├── AvansMaaltijdreservering.API/                 # RESTful API + GraphQL
-├── AvansMaaltijdreservering.Core.Domain.Tests/   # Unit Tests
-├── AvansMaaltijdreservering.Infrastructure.Tests/ # Infrastructure Tests
-└── AvansMaaltijdreservering.sln
+├── Core.Domain/              # Domain entities and interfaces (no dependencies)
+├── Core.DomainService/       # Business logic and domain services
+├── Infrastructure/           # Data access, repositories, Identity
+│   ├── Data/                 # EF Core DbContext & migrations
+│   ├── Repositories/         # Repository implementations
+│   └── Identity/             # ASP.NET Identity configuration
+├── API/                      # RESTful Web API + GraphQL
+│   ├── Controllers/          # REST API endpoints
+│   ├── GraphQL/              # GraphQL queries and mutations
+│   └── DTOs/                 # Data transfer objects
+├── WebApp/                   # ASP.NET MVC Web Application
+│   ├── Controllers/          # MVC controllers
+│   ├── Views/                # Razor views
+│   └── ViewModels/           # View models
+└── Tests/
+    ├── Core.Domain.Tests/    # Domain unit tests
+    └── Infrastructure.Tests/ # Repository tests
 ```
 
-### Dependency Flow (Onion Architecture)
-- **Dependencies wijzen ALTIJD naar binnen**
-- Core.Domain: Geen dependencies
-- Core.DomainService: → Core.Domain
-- Infrastructure: → Core.Domain + Core.DomainService  
-- WebApp/API: → Alle andere projecten
+---
 
-### Technische Requirements
-- **ASP.NET Core 8** 
-- **Entity Framework Code First** met migrations
-- **Microsoft Identity** voor authenticatie (aparte database!)
-- **Dependency Injection** container
-- **Repository Pattern** met interfaces
-- **Strongly Typed Views**
-- **Lambda expressions** voor data filtering
-- **Nullable Reference Types** enabled
-- **Geen warnings/errors** tijdens build
+## 🛠️ Technology Stack
 
-## 🗄️ DATABASE ARCHITECTUUR
+### Backend
+- **Framework:** ASP.NET Core 9.0 MVC
+- **Language:** C# 12
+- **ORM:** Entity Framework Core 9.0 (Code First)
+- **Database:** Azure SQL Database (2 databases: Main + Identity)
+- **Authentication:** ASP.NET Core Identity with JWT tokens
+- **API:** REST (RMM Level 2) + GraphQL (HotChocolate)
 
-### Twee Databases (VERPLICHT!)
-1. **Hoofddatabase:** Maaltijdreservering data
-2. **Identity Database:** Gebruikers, rollen, authenticatie
+### Frontend
+- **UI Framework:** Bootstrap 5
+- **View Engine:** Razor Pages
+- **JavaScript:** Vanilla JS for interactive features
+- **Responsive Design:** Mobile-first approach
 
-### Belangrijke Relaties
-- Student ↔ Pakket (reserveringen)
-- Pakket ↔ Product (veel-op-veel - VERPLICHT!)
-- Kantinemedewerker ↔ Kantine
-- **Minimaal 1 veel-op-veel relatie vereist**
+### DevOps & Cloud
+- **Cloud Platform:** Microsoft Azure
+  - App Services (WebApp + API)
+  - Azure SQL Database
+  - Application Insights
+- **CI/CD:** Azure DevOps Pipelines
+- **Version Control:** Git + GitHub
+- **API Testing:** Postman with automated collections
 
-### Connection Strings
-- **NOOIT** credentials in appsettings.json
-- Gebruik Azure Configuration of Environment Variables
+### Testing
+- **Unit Testing:** xUnit
+- **Mocking:** Moq
+- **E2E Testing:** Postman
 
-## 🔧 API REQUIREMENTS
+### Architecture Patterns
+- **Clean Architecture (Onion Architecture)**
+- **Repository Pattern**
+- **Dependency Injection**
+- **SOLID Principles**
 
-### RESTful API (RMM Level 2)
-- **Richardson Maturity Model Level 2**
-- Standard HTTP verbs (GET, POST, PUT, DELETE)
-- Resource-based URLs
-- Proper HTTP status codes
-- **Swagger documentatie**
+---
+
+## 🚀 CI/CD Pipeline
+
+![Azure DevOps Pipeline](https://i.ibb.co/HfHMT8FL/devops.jpg)
+
+The project uses Azure DevOps for continuous integration and deployment:
+
+1. **Build Stage**
+   - Restore NuGet packages
+   - Compile solution (0 warnings policy)
+   - Run unit tests with code coverage
+
+2. **Test Stage**
+   - Execute xUnit tests
+   - Validate business rules
+   - Check code quality
+
+3. **Deploy Stage**
+   - Deploy WebApp to Azure App Service
+   - Deploy API to Azure App Service
+   - Run EF Core migrations on Azure SQL Database
+   - Update Application Insights
+
+All stages run automatically on every commit to `master` branch.
+
+---
+
+## 📋 Implemented User Stories
+
+### Mandatory (7/7 ✅)
+- ✅ **US_01:** Student package overview (available + reserved)
+- ✅ **US_02:** Canteen employee dashboard (own + all canteens)
+- ✅ **US_03:** Package CRUD operations with 2-day limit
+- ✅ **US_04:** Automatic 18+ marking for alcohol products
+- ✅ **US_05:** Student reservations (max 1 per day)
+- ✅ **US_06:** Product information with photos and disclaimer
+- ✅ **US_07:** Race condition prevention (first-come-first-served)
+
+### Extra Features (2/3 ✅)
+- ✅ **US_08:** Filter by location and meal type
+- ✅ **US_10:** No-show registration with automatic blocking (2+ no-shows)
+
+### Technical Requirements (100% ✅)
+- ✅ Onion Architecture
+- ✅ Repository Pattern with interfaces
+- ✅ Entity Framework Code First + Migrations
+- ✅ ASP.NET Identity (separate database)
+- ✅ RESTful API (Richardson Maturity Model Level 2)
+- ✅ GraphQL endpoint
+- ✅ Unit tests with Moq
+- ✅ Postman E2E tests
+- ✅ Azure deployment
+- ✅ CI/CD pipeline
+- ✅ No build warnings
+- ✅ Thread-safe operations
+
+---
+
+## 🔑 API Endpoints
+
+### REST API (RMM Level 2)
+
+#### Packages
+```http
+GET    /api/packages              # Get all packages
+GET    /api/packages/{id}         # Get package by ID
+POST   /api/packages              # Create new package
+PUT    /api/packages/{id}         # Update package
+DELETE /api/packages/{id}         # Delete package
+```
+
+#### Reservations
+```http
+POST   /api/reservations          # Create reservation
+DELETE /api/reservations/{id}     # Cancel reservation
+GET    /api/reservations/student/{id}  # Get student reservations
+```
+
+#### Students
+```http
+GET    /api/students/{id}         # Get student by ID
+POST   /api/students              # Register new student
+```
 
 ### GraphQL Endpoint
-- Losse endpoint naast REST API
-- Voor mobile app (AvansOne team)
-- Query capabilities voor pakketten + producten
 
-### API Constraints Checklist
-- ✅ Client/server architecture
-- ✅ Stateless communication  
-- ✅ Resources with multiple representations
-- ✅ Standard operations
+**Endpoint:** `/graphql`
 
-## 🧪 TESTING STRATEGY
+**Example Query:**
+```graphql
+query {
+  packages {
+    id
+    name
+    price
+    pickupDateTime
+    canteenLocation
+    products {
+      name
+      containsAlcohol
+      photoUrl
+    }
+  }
+}
+```
 
-### Unit Tests (VERPLICHT)
-- **Business rules** uit acceptatiecriteria testen
-- **Happy flow** + **error scenarios**  
-- **Mocking** voor repositories
-- **GEEN** simpele getters/setters testen
-- **Per user story** tests uitwerken
+**Example Mutation:**
+```graphql
+mutation {
+  createReservation(packageId: 1, studentId: 1) {
+    id
+    reservedByStudent {
+      name
+      email
+    }
+  }
+}
+```
 
-### End-to-End Tests
-- **Postman collecties** voor API endpoints
-- **Automatisch uitvoerbaar** zonder manual token copy/paste
-- Test alle CRUD operaties
+📖 **API Documentation available via Swagger UI at `/swagger` endpoint**
 
-## 🚀 CI/CD PIPELINE
+---
 
-### Development Pipeline
-- **Automatic build** bij code push
-- **Unit tests** automatisch uitvoeren  
-- **Automatic deployment** naar Azure
-- **Database migrations** via pipeline (NIET in code!)
+## 🧪 Testing
 
-### Azure Deployment
-- Web App + API gedeployed
-- Beide databases op Azure
-- Connection strings via Azure Configuration
+### Unit Tests
+Located in `AvansMaaltijdreservering.Core.Domain.Tests/`
 
-## 📋 VALIDATION RULES
+**Coverage:**
+- ✅ Package business rules (18+ marking, product validation)
+- ✅ Student validation (age restrictions, no-show blocking)
+- ✅ Reservation logic (1 per day, duplicate prevention)
+- ✅ Custom validation attributes
 
-### Student Validatie
-- Geboortedatum niet in toekomst
-- Minimaal 16 jaar bij aanmelden
-- Uniek studentnummer + email
-- Telefoonnummer formaat
+**Run tests:**
+```bash
+dotnet test
+```
 
-### Pakket Validatie  
-- Naam niet leeg
-- Ophaaltijd in de toekomst
-- Max 2 dagen vooruit plannen
-- Prijs > 0
-- Locatie validatie tegen kantinemedewerker locatie
+### E2E Tests
+Postman collections in `/Rest/` directory:
+- `endpoint-tests-azure.postman_collection.json` - Azure deployment
+- `endpoint-tests.postman_collection.json` - Local development
 
-### Product Validatie
-- Naam niet leeg
-- Foto vereist
-- Alcohol flag correct
+**Features:**
+- Automated JWT token management
+- Full CRUD workflow tests
+- Error scenario validation
+- GraphQL query testing
 
-## 🎨 UX/UI REQUIREMENTS
+---
 
-### Design Principes
-- **Gebruiksvriendelijk** interface
-- **Consistent** design
-- **Responsive** voor verschillende devices
-- **Accessibility** compliance
-- **Student-focused** design (denk aan target audience)
+## 💻 Local Development
 
-### Thema Keuze
-- Specifieke studentgroepen targeten
-- Deeltijd vs voltijd studenten
-- Avondmaaltijden voor deeltijdstudenten
-- **Kleur geven aan generieke opdracht**
+### Prerequisites
+- .NET 9.0 SDK
+- SQL Server (LocalDB or full instance)
+- Visual Studio 2022 / VS Code / Rider
+- Git
 
-## ⚠️ CRITICAL SUCCESS FACTORS
+### Setup
 
-### Code Quality
-- **Coding guidelines** naleven
-- **Geen uitgecommentarieerde code**
-- **Consistente naamgeving** (geen Class1.cs, Project1)
-- **Netjes uitgelijnd**
-- **EditorConfig** gebruiken
+1. **Clone repository**
+```bash
+git clone https://github.com/stijnrobben/AvansMaaltijdreservering.git
+cd AvansMaaltijdreservering
+```
 
-### Architecture Compliance
-- **Onion Architecture** correct toepassen
-- **Dependency injection** overal
-- **Repository pattern** met interfaces
-- **Separation of concerns**
+2. **Update connection strings**
 
-### Oplevering Requirements
-- **Gedeployde applicatie** URL
-- **Test accounts** (kantinemedewerker + studenten)
-- **Demo video** van alle functionaliteit
-- **Postman collectie** werkend
-- **Swagger documentatie** compleet
-- **UML diagrammen** (package, class, component, deployment)
+Edit `appsettings.Development.json` in both API and WebApp projects:
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=AvansMeals;Trusted_Connection=True;",
+    "IdentityConnection": "Server=(localdb)\\mssqllocaldb;Database=AvansMealsIdentity;Trusted_Connection=True;"
+  }
+}
+```
 
-## 🚨 FAIL CONDITIONS (AUTO NV!)
+3. **Run migrations**
+```bash
+cd AvansMaaltijdreservering.Infrastructure
+dotnet ef database update --context ApplicationDbContext
+dotnet ef database update --context ApplicationIdentityDbContext
+```
 
-- ❌ Rommelige oplevering (warnings, unused files)
-- ❌ Connection strings met credentials in appsettings.json  
-- ❌ Geen working deployed application
-- ❌ Missing required artifacts
-- ❌ EF migrations in program code
-- ❌ Solution > 100MB (clean before zip!)
+4. **Seed database**
 
+Run the SQL scripts in `/Rest/` directory:
+- `DatabaseSeed.sql` - Test data (canteens, products, packages)
 
-Dit systeem simuleert een real-world food waste reduction platform met complexe business rules, multi-user scenarios, en enterprise-level technical requirements.
+5. **Run applications**
+
+**Option A: Visual Studio**
+- Set multiple startup projects (API + WebApp)
+- Press F5
+
+**Option B: CLI**
+```bash
+# Terminal 1 - API
+cd AvansMaaltijdreservering.API
+dotnet run
+
+# Terminal 2 - WebApp
+cd AvansMaaltijdreservering.WebApp
+dotnet run
+```
+
+**Local URLs:**
+- WebApp: https://localhost:7001
+- API: https://localhost:7002
+- Swagger: https://localhost:7002/swagger
+- GraphQL: https://localhost:7002/graphql
+
+---
+
+## 📦 Database Schema
+
+### Main Database (ApplicationDbContext)
+- **Students** - Student accounts and no-show tracking
+- **CanteenEmployees** - Employee accounts linked to canteens
+- **Canteens** - Canteen locations and capabilities
+- **Packages** - Food packages with pricing and availability
+- **Products** - Individual food items with photos
+- **PackageProducts** - Many-to-many relationship
+
+### Identity Database (ApplicationIdentityDbContext)
+- **AspNetUsers** - User credentials (linked to Students/Employees)
+- **AspNetRoles** - Roles (Student, CanteenEmployee)
+- Standard ASP.NET Identity tables
+
+---
+
+## 🔒 Security Features
+
+- ✅ **ASP.NET Identity** - Secure password hashing (PBKDF2)
+- ✅ **Role-Based Authorization** - Separate student/employee permissions
+- ✅ **Anti-Forgery Tokens** - CSRF protection on all forms
+- ✅ **JWT Authentication** - Secure API access
+- ✅ **SQL Injection Prevention** - Entity Framework parameterized queries
+- ✅ **HTTPS Enforcement** - All traffic encrypted
+- ✅ **Separate Identity Database** - Credentials isolated from business data
+- ✅ **No Credentials in Code** - Connection strings in Azure Configuration
+
+---
+
+## 🎓 Learning Outcomes
+
+This project demonstrates proficiency in:
+
+1. **Software Architecture**
+   - Clean Architecture / Onion Architecture
+   - Dependency Inversion Principle
+   - Separation of Concerns
+
+2. **Backend Development**
+   - ASP.NET Core MVC
+   - Entity Framework Core (Code First)
+   - Repository Pattern
+   - Domain-Driven Design
+   - Business Rule Validation
+
+3. **API Development**
+   - RESTful API design (RMM Level 2)
+   - GraphQL schema design
+   - API documentation (Swagger/OpenAPI)
+   - Proper HTTP status codes
+
+4. **Database Design**
+   - Relational database modeling
+   - Many-to-many relationships
+   - Migrations and version control
+   - Database normalization
+
+5. **Testing**
+   - Unit testing with xUnit
+   - Mocking with Moq
+   - Test-Driven Development
+   - E2E testing with Postman
+
+6. **DevOps**
+   - Azure App Services deployment
+   - CI/CD pipelines
+   - Automated testing in pipeline
+   - Database migration automation
+
+7. **Security**
+   - Authentication & Authorization
+   - Identity management
+   - Secure coding practices
+
+8. **UX Design**
+   - Responsive web design
+   - User-centered design
+   - Accessibility considerations
+
+---
+

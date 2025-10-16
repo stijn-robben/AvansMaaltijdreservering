@@ -1,0 +1,199 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.9">
+  <diagram id="package-diagram" name="Package Diagram">
+    <mxGraphModel dx="1480" dy="866" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Package Diagram - Onion Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="500" y="40" width="400" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Core Domain Layer (innermost - no dependencies) -->
+        <mxCell id="core-domain" value="" style="shape=folder;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="550" y="350" width="300" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="core-domain-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Core.Domain&lt;/b&gt;&lt;br&gt;&lt;br&gt;Entities&lt;br&gt;Enums&lt;br&gt;Interfaces (Repositories)&lt;br&gt;Validation Attributes&lt;br&gt;Exceptions" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="570" y="390" width="260" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Core DomainService Layer -->
+        <mxCell id="core-domainservice" value="" style="shape=folder;tabWidth=120;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="320" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="core-domainservice-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Core.DomainService&lt;/b&gt;&lt;br&gt;&lt;br&gt;Business Logic Services&lt;br&gt;IStudentService&lt;br&gt;IPackageService&lt;br&gt;IReservationService" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="220" y="360" width="260" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Infrastructure Layer -->
+        <mxCell id="infrastructure" value="" style="shape=folder;tabWidth=100;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="900" y="320" width="300" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="infrastructure-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Infrastructure&lt;/b&gt;&lt;br&gt;&lt;br&gt;Data (DbContexts)&lt;br&gt;Repositories&lt;br&gt;Identity&lt;br&gt;Logging&lt;br&gt;Migrations" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="920" y="360" width="260" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- WebApp Presentation Layer -->
+        <mxCell id="webapp" value="" style="shape=folder;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="120" width="280" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="webapp-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;WebApp&lt;/b&gt;&lt;br&gt;&lt;br&gt;MVC Controllers&lt;br&gt;Razor Views&lt;br&gt;ViewModels&lt;br&gt;wwwroot" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="220" y="160" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- API Presentation Layer -->
+        <mxCell id="api" value="" style="shape=folder;tabWidth=60;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="920" y="120" width="280" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="api-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;API&lt;/b&gt;&lt;br&gt;&lt;br&gt;REST Controllers&lt;br&gt;GraphQL (Query/Mutation)&lt;br&gt;DTOs&lt;br&gt;Middleware" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="940" y="160" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Test Projects -->
+        <mxCell id="domain-tests" value="" style="shape=folder;tabWidth=120;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="570" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="domain-tests-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Core.Domain.Tests&lt;/b&gt;&lt;br&gt;&lt;br&gt;Unit Tests (xUnit)&lt;br&gt;Test Data Builders" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="220" y="610" width="240" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="infra-tests" value="" style="shape=folder;tabWidth=120;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="920" y="570" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="infra-tests-label" value="&lt;&lt;package&gt;&gt;&lt;br&gt;&lt;b&gt;Infrastructure.Tests&lt;/b&gt;&lt;br&gt;&lt;br&gt;Repository Tests&lt;br&gt;Integration Tests" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="940" y="610" width="240" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Dependencies (arrows point inward to core) -->
+
+        <!-- DomainService depends on Domain -->
+        <mxCell id="dep-domainservice-domain" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;" edge="1" parent="1" source="core-domainservice" target="core-domain">
+          <mxGeometry x="-0.2" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Infrastructure depends on Domain and DomainService -->
+        <mxCell id="dep-infra-domain" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;" edge="1" parent="1" source="infrastructure" target="core-domain">
+          <mxGeometry x="0.2" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-infra-domainservice" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="infrastructure" target="core-domainservice">
+          <mxGeometry x="0.2" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- WebApp depends on all lower layers -->
+        <mxCell id="dep-webapp-domainservice" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;" edge="1" parent="1" source="webapp" target="core-domainservice">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-webapp-domain" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="webapp" target="core-domain">
+          <mxGeometry x="-0.3" y="-10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-webapp-infra" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="webapp" target="infrastructure">
+          <mxGeometry x="-0.5" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- API depends on all lower layers -->
+        <mxCell id="dep-api-infrastructure" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;" edge="1" parent="1" source="api" target="infrastructure">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-api-domain" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="api" target="core-domain">
+          <mxGeometry x="0.3" y="-10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-api-domainservice" value="&lt;&lt;use&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="api" target="core-domainservice">
+          <mxGeometry x="0.5" y="10" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Test dependencies -->
+        <mxCell id="dep-domaintests-domain" value="&lt;&lt;test&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="domain-tests" target="core-domain">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="600" as="sourcePoint" />
+            <mxPoint x="650" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-domaintests-domainservice" value="&lt;&lt;test&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="domain-tests" target="core-domainservice">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="600" as="sourcePoint" />
+            <mxPoint x="650" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dep-infratests-infra" value="&lt;&lt;test&gt;&gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;fontSize=10;strokeWidth=2;strokeColor=#666666;" edge="1" parent="1" source="infra-tests" target="infrastructure">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="600" as="sourcePoint" />
+            <mxPoint x="650" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="350" width="140" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1240" y="360" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-use" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;strokeWidth=2;fontSize=10;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1260" y="400" as="sourcePoint" />
+            <mxPoint x="1320" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-use-label" value="&lt;&lt;use&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="390" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-test" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;strokeWidth=2;fontSize=10;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1260" y="430" as="sourcePoint" />
+            <mxPoint x="1320" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-test-label" value="&lt;&lt;test&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="420" width="50" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-note" value="Dependencies always point inward toward Core.Domain (Onion Architecture)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="470" width="120" height="50" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
